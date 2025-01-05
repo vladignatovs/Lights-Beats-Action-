@@ -68,12 +68,6 @@ public class DashManager : MonoBehaviour {
         - song appearance at the start of the level;
         - fix dying in playtest mode accidentaly making you create a new action;
         - optimize editor loading. 
-    *//* MOTIVATION CONTROL:
-        [~16.08.24] seems like the motivation is still here, although i've started to allow myself more and more breaks, which
-    is obviously not ideal. Still able to work on the project majority of my time though, so I'll continue to monitor.
-        [26.08.24] became quickly irritated, the progress is going mad slow and I've started to get bored from 
-    long sessions. Much worse than what I've had before. I should definitely spend some time rethinking the time I've spent as 
-    I can't just throw all my work out the window like that.
     */
 
     // DONT FORGET TO WRITE UP EVERYTHING ON THE WAY, MAKE PLANS AND THINK THINGS THROUGH.

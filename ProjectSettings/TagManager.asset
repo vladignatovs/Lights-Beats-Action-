@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Logic
+  - Border
+  - DashRadius
+  - Wall
+  - ActionCreator
+  - ActionLine
+  - AudioLine
+  - Content
+  - Attack
+  - Telegraph
+  - RainController
+  - EventSystem
+  - MainCanvas
+  - SelectPanel
+  - SelectedActions
+  - VisualizerCamera
+  - GroupPanel
+  - Controller
+  - ControllerPanel
+  - LifeTimeLine
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Player
+  - Water
+  - UI
+  - Attack
+  - IgnoreCollision
+  - Telegraph
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: dashRadius
+    uniqueID: 1303170879
+    locked: 0
+  - name: telegraph
+    uniqueID: 3477262545
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0

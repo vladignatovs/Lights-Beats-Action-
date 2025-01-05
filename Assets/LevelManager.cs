@@ -86,6 +86,7 @@ public class LevelManager : MonoBehaviour {
 
         if(wReq.result != UnityWebRequest.Result.Success) {
             Debug.LogError("Failed to get levels: " + wReq.error);
+            // If can't connect, make sure that the server is running (USING MAMP)
         }
         JsonData jsonData = JsonMapper.ToObject(wReq.downloadHandler.text);
         List<Level> levels = new();

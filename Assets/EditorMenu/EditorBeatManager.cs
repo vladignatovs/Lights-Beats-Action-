@@ -1,5 +1,5 @@
 using UnityEngine;
-public class EditorBeatManager : BasicBeatManager {
+public class EditorBeatManager : BaseBeatManager {
     [Header("                UNIQUE EDITOR REFS")]
     [SerializeField] ActionCreator _actionCreator;
     [SerializeField] AudioLineManager _audioLineManager;

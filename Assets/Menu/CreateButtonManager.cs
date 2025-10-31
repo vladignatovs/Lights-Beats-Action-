@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
-using Unity.VisualScripting;
 
 public class CreateButtonManager : MonoBehaviour
 {
@@ -15,21 +11,15 @@ public class CreateButtonManager : MonoBehaviour
     void Start()
     {
         _createButton = GetComponent<Button>();
-        _createButton.onClick.AddListener(CreateLevelOnClick);
-    }
-
-    void CreateLevelOnClick() {
-        StartCoroutine(CreateLevel());
+        _createButton.onClick.AddListener(CreateLevel);
     }
     
-    IEnumerator CreateLevel() {
-        float.TryParse(_bpmInput.text.Replace(".", ","), out float bpm);
-        Level level = new (_levelNameInput.text, null, bpm, "Audio/" + _audioDropdown.options[_audioDropdown.value].text);
-        yield return StartCoroutine(LevelManager.CreateLevel(level));
-        // level.SaveLevel();
-        // LevelCompletionsManager.AddLevelCompletion(level.id);
-        // LevelSettings.AddLevelSettings(level.id);
-        // Debug.Log($"Creating level: {levelNameInput.text} with BPM: {bpmInput.text} and audio: {audioDropdown.options[audioDropdown.value].text}");
+    async void CreateLevel() {
+        await LevelManager.CreateNewLevel(
+            _levelNameInput.text,
+            float.Parse(_bpmInput.text.Replace(".", ",")),
+            "Audio/" + _audioDropdown.options[_audioDropdown.value].text
+        );
         SceneManager.LoadScene("LevelSelect");
     }
 

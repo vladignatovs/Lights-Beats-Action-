@@ -38,5 +38,5 @@ using UnityEngine;
         this.firstBeat = beat; // required to count times
     }
 
-    public Action Clone() => new Action(beat, times, delay, gObject, position, rotation, scale, animationDuration, lifeTime, groups);
+    public Action Clone() => new(beat, times, delay, gObject, position, rotation, scale, animationDuration, lifeTime, groups);
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BasicBeatManager : MonoBehaviour {
+public abstract class BaseBeatManager : MonoBehaviour {
     [Header ("                BEAT INFO")]
     [SerializeField] float _secondsPerBeat;
     public float SecondsPerBeat {

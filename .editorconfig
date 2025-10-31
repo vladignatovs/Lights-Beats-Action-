@@ -1,0 +1,5 @@
+# C# code style settings
+[*.{cs,vb}]
+
+# New line preferences
+csharp_new_line_before_open_brace = none

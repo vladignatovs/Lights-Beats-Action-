@@ -1,5 +1,5 @@
 using UnityEngine;
-public class BeatManager : BasicBeatManager {
+public class BeatManager : BaseBeatManager {
     [Header("                LOADED LEVEL")]
     [SerializeField] LevelCompleteManager _levelCompleteManager;
     Level _level;
@@ -36,7 +36,7 @@ public class BeatManager : BasicBeatManager {
     
     public override void TryEndLevel() {
         if(SongPositionInBeats/LevelEnd >= 1) {
-            _levelCompleteManager.LevelComplete(StateNameManager.Level.id);
+            _levelCompleteManager.LevelComplete(StateNameManager.Level.localId);
         }
     }
 }

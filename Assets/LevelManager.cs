@@ -1,147 +1,131 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
-using LitJson;
-using UnityEngine.UI;
-using System.Text;
-
 public class LevelManager : MonoBehaviour {
+    // single source of truth for the loaded levels
+    public static List<Level> Levels { get; private set; }
+    static string LevelsFolder => Path.Combine(Application.persistentDataPath, "Levels"); // TODO: make folder account specific
 
-    /// <summary>
-    /// Point of this method is to create a new level in the database, and it doesn't parse in the id of the level, as it doesn't exist in
-    /// the database yet. When creating a new level, it will most definitely have an empty actions list, so I didn't even bother fixing it.
-    /// </summary>
-    /// <param name="level"></param>
-    /// <returns></returns>
-    public static IEnumerator CreateLevel(Level level) {
-        WWWForm form = new();
-        form.AddField("level_name", level.levelName);
-        form.AddField("bpm", level.bpm.ToString());
-        form.AddField("audio_path", level.audioPath);
+    static JsonSerializerOptions Options => new() {
+        WriteIndented = true,
+        // IncludeFields = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
-        UnityWebRequest wReq = UnityWebRequest.Post("http://localhost/sqlconnect/create_level.php", form);
-        yield return wReq.SendWebRequest();
+    static string GetLevelPath(int id) => Path.Combine(LevelsFolder, $"{id}.lvl");
 
-        if(wReq.result == UnityWebRequest.Result.Success) {
-            if(wReq.downloadHandler.text == "success") {
-                Debug.Log("Level created successfully");
-            } else {
-                Debug.LogError("Failed to created level: " + wReq.downloadHandler.text);
-            }
-        } else {
-            Debug.LogError("Failed to created level: " + wReq.error);
-        }
+    static int _lastId = 0;
+
+    public static async Task Initialize() {
+        Levels = await LoadLevels();
+        _lastId = (Levels != null && Levels.Count > 0) ? Levels.Max(l => l.localId) : 0;
     }
 
-    // public void CallUpdateLevel(Level level) {
-    //     StartCoroutine(UpdateLevel(level));
-    // }
-
-    /// <summary>
-    /// Updating a level is a complicated operation as it might not change some of the aspects of the level. Updating all of the levels
-    /// values at once might be unoptimzied and inefficient, so should be avoided. In order to do so I should check what information is
-    /// being changed.
-    /// </summary>
-    /// <param name="level"></param>
-    /// <returns></returns>
-    public static IEnumerator UpdateLevel(Level level) {
-        WWWForm form = new();
-        form.AddField("id", level.id.ToString());
-        form.AddField("level_name", level.levelName);
-
-        StringBuilder actionsBuilder = new ();
-        actionsBuilder.Append("[");
-        foreach (var action in level.actions) {
-            actionsBuilder.Append(JsonUtility.ToJson(action)).Append(",");
-        }
-        if (actionsBuilder.Length > 1) {
-            actionsBuilder.Length--; // Remove the trailing comma
-        }
-        actionsBuilder.Append("]");
-        form.AddField("actions", actionsBuilder.ToString());
-
-        form.AddField("bpm", level.bpm.ToString());
-        form.AddField("audio_path", level.audioPath);
-
-        Debug.Log(actionsBuilder.ToString());
-        UnityWebRequest wReq = UnityWebRequest.Post("http://localhost/sqlconnect/update_level.php", form);
-        yield return wReq.SendWebRequest();
-
-        if(wReq.result == UnityWebRequest.Result.Success) {
-            if(wReq.downloadHandler.text == "success") {
-                Debug.Log("Level updated successfully");
-            } else {
-                Debug.LogError("Failed to update level: " + wReq.downloadHandler.text);
-            }
-        } else {
-            Debug.LogError("Failed to update level: " + wReq.error);
-        }
+    public static int GetNextId() {
+        _lastId++;
+        return _lastId;
     }
-
-    public static IEnumerator GetLevels(Action<List<Level>> callback) {
-        UnityWebRequest wReq = UnityWebRequest.Get("http://localhost/sqlconnect/get_levels.php");
-        yield return wReq.SendWebRequest();
-
-        if(wReq.result != UnityWebRequest.Result.Success) {
-            Debug.LogError("Failed to get levels: " + wReq.error);
-            // If can't connect, make sure that the server is running (USING MAMP) omfg DELETE THIS WHOLE THING
-        }
-        JsonData jsonData = JsonMapper.ToObject(wReq.downloadHandler.text);
-        List<Level> levels = new();
-        foreach(JsonData level in jsonData) {
-            Level newLevel = new() {
-                id = (int)level["id"],
-                levelName = level["level_name"].ToString(),
-                audioPath = level["audio_path"].ToString()
-            };
-            levels.Add(newLevel);
-        }
-        callback(levels);
+    
+    public static async Task CreateNewLevel(string name, float bpm, string audioPath) {
+        Level level = new() {
+            localId = GetNextId(),
+            name = name,
+            bpm = bpm,
+            audioPath = audioPath,
+            actions = new()
+        };
+        await SaveLevel(level);
     }
-
-    public static IEnumerator GetLevelById(Action<Level> callback) {
-        WWWForm form = new();
-        form.AddField("id", StateNameManager.Level.id);
-        UnityWebRequest wReq = UnityWebRequest.Post("http://localhost/sqlconnect/get_level_by_id.php", form);
-        yield return wReq.SendWebRequest();
-        if(wReq.result == UnityWebRequest.Result.Success) {
-            Debug.Log("Level gotten successfully.");
-        } else {
-            Debug.LogError("Failed to get level by ID: " + wReq.error);
+    
+    public static async Task SaveLevel(Level level) {
+        if (!Directory.Exists(LevelsFolder)) {
+            Directory.CreateDirectory(LevelsFolder);
         }
 
-        JsonData jsonData = JsonMapper.ToObject(wReq.downloadHandler.text);
-        Level newLevel = new() {
-            id = (int)jsonData["id"],
-            levelName = jsonData["level_name"].ToString(),
-            actions = new List<Action>(),
-            bpm = (float)jsonData["bpm"],
-            audioPath = jsonData["audio_path"].ToString()
+        LevelFile levelFile = new() {
+            Meta = new Meta {
+                LocalId = level.localId,
+                name = level.name,
+                bpm = level.bpm,
+                audioPath = level.audioPath
+            },
+            Actions = level.actions
         };
 
-        if(jsonData["actions"] != null) {
-            newLevel.actions = JsonMapper.ToObject<List<Action>>(jsonData["actions"].ToString());
-        }
+        var path = GetLevelPath(level.localId);
+        var temp = path + ".tmp";
 
-        callback(newLevel);
+        var json = JsonSerializer.Serialize(levelFile, Options);
+        Debug.Log(json);
+        // writes to temporary files to prevent crashes mid write
+        await File.WriteAllTextAsync(temp, json);
+
+        // replaces if file exists, else just "moves" the temp file to path
+        if (File.Exists(path))
+            File.Replace(temp, path, null); // windows only (i think)
+        else
+            File.Move(temp, path);
     }
 
-    public static IEnumerator DeleteLevel() {
-        WWWForm form = new();
-        form.AddField("id", StateNameManager.Level.id);
-        UnityWebRequest wReq = UnityWebRequest.Post("http://localhost/sqlconnect/delete_level_by_id.php", form);
-
-        yield return wReq.SendWebRequest();
-
-        if(wReq.result == UnityWebRequest.Result.Success) {
-            if(wReq.downloadHandler.text == "success") 
-                Debug.Log("Level deleted successfully.");
-            else
-                Debug.LogError("Failed to delete level: " + wReq.downloadHandler.text);
-        } else {
-            Debug.LogError("Failed to delete: " + wReq.error);
+    public static async Task<Level> LoadLevel(int id) {
+        var path = GetLevelPath(id);
+        if (!File.Exists(path)) {
+            Debug.Log("Doesnt exist: " + id);
+            return null;
         }
+        try {
+            var json = await File.ReadAllTextAsync(path);
+            var levelFile = JsonSerializer.Deserialize<LevelFile>(json, Options);
+
+            return new Level {
+                localId = levelFile.Meta.LocalId,
+                name = levelFile.Meta.name,
+                bpm = levelFile.Meta.bpm,
+                audioPath = levelFile.Meta.audioPath,
+                actions = levelFile.Actions
+            };
+        }
+        catch (Exception ex) {
+            Debug.LogError($"Failed to load level {id}: {ex.Message}");
+            return null;
+        }
+    }
+
+    public static void DeleteLevel(int id) {
+        var path = GetLevelPath(id);
+        if (File.Exists(path)) {
+            File.Delete(path);
+        }
+    }
+
+    static async Task<List<Level>> LoadLevels() {
+        var levels = new List<Level>();
+
+        if (!Directory.Exists(LevelsFolder)) {
+            Debug.LogWarning("Levels folder not found");
+            return levels;
+        }
+
+        string[] files = Directory.GetFiles(LevelsFolder, "*.lvl", SearchOption.TopDirectoryOnly);
+
+        foreach (var file in files) {
+            string json = await File.ReadAllTextAsync(file);
+            var levelFile = JsonSerializer.Deserialize<LevelFile>(json, Options);
+            if (levelFile != null) {
+                levels.Add(new Level {
+                    localId = levelFile.Meta.LocalId,
+                    name = levelFile.Meta.name,
+                    bpm = levelFile.Meta.bpm,
+                    audioPath = levelFile.Meta.audioPath,
+                    actions = levelFile.Actions
+                });
+            }
+        }
+
+        return levels;
     }
 }

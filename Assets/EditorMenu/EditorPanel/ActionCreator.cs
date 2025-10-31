@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,7 +35,7 @@ public class ActionCreator : MonoBehaviour {
     /// </summary>
     void Awake() {
         // Gets the id of the level in order to later find it
-        _id = StateNameManager.Level.id;
+        _id = StateNameManager.Level.localId;
         // Spawns beatLines according to the beat amount in the level
         for(int i = 0; i < StateNameManager.BeatAmount; i++) {
             Instantiate(_beatLine, _editorPanel);
@@ -110,6 +108,7 @@ public class ActionCreator : MonoBehaviour {
     }
 
     public void AddActionToActionsList(Action a) {
+        Debug.Log("added an action: " + a.gObject);
         Actions.Add(a);
         ActionsSettings.Add((true, true, LayerPanelManager.Layer));
     }
@@ -120,10 +119,8 @@ public class ActionCreator : MonoBehaviour {
     }
     #endregion
     #region ActionOptions
-    public void saveAllActions() {
-        StartCoroutine(LevelManager.UpdateLevel(Level));
-        // Level.saveActionsList(_id, Actions);
-        // LevelSettings.SaveLevelSettings(_id, ActionsSettings);
+    public async void saveAllActions() {
+        await LevelManager.SaveLevel(Level);
     }
 
     /// <summary>
@@ -156,10 +153,10 @@ public class ActionCreator : MonoBehaviour {
     }
     
     public void DeleteLevel() {
-        StartCoroutine(LevelManager.DeleteLevel());
+        LevelManager.DeleteLevel(Level.localId);
         // Level.DeleteLevel(_id);
-        LevelCompletionsManager.DeleteLevelCompletion(_id);
-        LevelSettings.DeleteLevelSettings(_id);
+        // LevelCompletionsManager.DeleteLevelCompletion(_id);
+        // LevelSettings.DeleteLevelSettings(_id);
     }
     
     public void ShowConfirmationPanel() {

@@ -18,9 +18,11 @@ public class ActionCreator : MonoBehaviour {
     [Header("Referencing")]
     public GameObject SelectPanel;
     public GameObject SettingsPanel;
-    public InputField PositionInput;
+    public InputField PositionXInput;
+    public InputField PositionYInput;
     public InputField RotationInput;
-    public InputField ScaleInput;
+    public InputField ScaleXInput;
+    public InputField ScaleYInput;
     public LayerPanelManager LayerPanelManager;
     [Header("Global Settings (IMPORTANT)")]
     public List<Action> Actions; //important VERY 
@@ -44,16 +46,16 @@ public class ActionCreator : MonoBehaviour {
         Content.sizeDelta = new Vector2(StateNameManager.BeatAmount*50 + 5, 180);
         Level = StateNameManager.Level;
         foreach(var action in Level.actions) {
-            Debug.Log(action.beat);
-            Debug.Log(action.times);
-            Debug.Log(action.delay);
-            Debug.Log(action.gObject);
-            Debug.Log(action.position);
-            Debug.Log(action.rotation);
-            Debug.Log(action.scale);
-            Debug.Log(action.animationDuration);
-            Debug.Log(action.lifeTime);
-            foreach(var group in action.groups)
+            Debug.Log(action.Beat);
+            Debug.Log(action.Times);
+            Debug.Log(action.Delay);
+            Debug.Log(action.GObject);
+            Debug.Log(action.PositionX + "; " + action.PositionY);
+            Debug.Log(action.Rotation);
+            Debug.Log(action.ScaleX + "; " + action.ScaleY);
+            Debug.Log(action.AnimationDuration);
+            Debug.Log(action.LifeTime);
+            foreach(var group in action.Groups)
                 Debug.Log(group);
         }
         _levelSettings = LevelSettings.GetLevelSettings(_id);
@@ -73,7 +75,7 @@ public class ActionCreator : MonoBehaviour {
 
         // Spawns actionLines according to the actions list
         foreach(Action action in Actions) {
-            float x = action.beat*50 + action.delay*50;
+            float x = action.Beat*50 + action.Delay*50;
             GameObject newActionLine = Instantiate(_actionLine, new Vector3(x, 0, 0), Quaternion.identity, Content);
             newActionLine.GetComponent<ActionLineManager>().Action = action; 
         }
@@ -98,17 +100,15 @@ public class ActionCreator : MonoBehaviour {
     public void CreateActionButton() {
         GameObject newActionLine = Instantiate(_actionLine, Vector3.zero, Quaternion.identity, Content);
         newActionLine.GetComponent<ActionLineManager>().Action = new Action(newActionLine.transform.localPosition.x/50) {
-            gObject = "Explosion",
-            position = new Vector3(0, 0, 0),
-            scale = new Vector3(1, 1, 1),
-            lifeTime = 1
+            GObject = "Explosion",
+            LifeTime = 1
         };
         AddActionToActionsList(newActionLine.GetComponent<ActionLineManager>().Action);
         newActionLine.GetComponent<ActionLineManager>().SelfSelect();
     }
 
     public void AddActionToActionsList(Action a) {
-        Debug.Log("added an action: " + a.gObject);
+        Debug.Log("added an action: " + a.GObject);
         Actions.Add(a);
         ActionsSettings.Add((true, true, LayerPanelManager.Layer));
     }

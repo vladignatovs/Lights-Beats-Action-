@@ -20,18 +20,19 @@ public class SettingsPanelManager : MonoBehaviour {
     public void ChangeObject(int value) {
         ActionLineManager.changeObject(value);
     }
-
-    public void ChangePosition(string value) {
-        ActionLineManager.changePosition(value);
-    }
+    // TODO:
+    // public void ChangePosition(string value) {
+    //     ActionLineManager.changePosition(value);
+    // }
 
     public void ChangeRotation(string value) {
         ActionLineManager.changeRotation(value);
     }
 
-    public void ChangeScale(string value) {
-        ActionLineManager.changeScale(value);
-    }
+    // TODO
+    // public void ChangeScale(string value) {
+    //     ActionLineManager.changeScale(value);
+    // }
 
     public void ChangeAnimationDuration(string value) {
         ActionLineManager.changeAnimationDuration(value);
@@ -75,26 +76,37 @@ public class SettingsPanelManager : MonoBehaviour {
     /// </summary>
     /// <param name="value"></param>
     public void ChangePositionX(string value) {
-        var _value = value.Replace(";","")+ ";" + ActionLineManager.Action.position.y;
-        ActionLineManager.changePosition(_value);
+        if (float.TryParse(value, out var result)) {
+            Debug.Log(result);
+            ActionLineManager.changePosition(result, ActionLineManager.Action.PositionY);
+        } 
+        else
+            Debug.Log("Couldnt parse this value: " + value);
     }
     /// <summary>
     /// Used to only change y parameter of the position property. 
     /// </summary>
     /// <param name="value"></param>
     public void ChangePositionY(string value) {
-        var _value = ActionLineManager.Action.position.x + ";" + value.Replace(";","");
-        ActionLineManager.changePosition(_value);
+        if (float.TryParse(value, out var result))
+            ActionLineManager.changePosition(ActionLineManager.Action.PositionX, result);
+        else
+            Debug.Log("Couldnt parse this value: " + value);
     }
 
+    // TODO
     public void ChangeScaleX(string value) {
-        var _value = value.Replace(";","")+ ";" + ActionLineManager.Action.scale.y;
-        ActionLineManager.changeScale(_value);
+        if (float.TryParse(value, out var result))
+            ActionLineManager.changeScale(result, ActionLineManager.Action.ScaleY);
+        else
+            Debug.Log("Couldnt parse this value: " + value);
     }
 
     public void ChangeScaleY(string value) {
-        var _value = ActionLineManager.Action.scale.x + ";" + value.Replace(";","");
-        ActionLineManager.changeScale(_value);
+        if (float.TryParse(value, out var result))
+            ActionLineManager.changeScale(ActionLineManager.Action.ScaleX, result);
+        else
+            Debug.Log("Couldnt parse this value: " + value);
     }
 
     #endregion
@@ -104,10 +116,9 @@ public class SettingsPanelManager : MonoBehaviour {
         value = value.Replace(".", ","); ////////////////////
 
         if(float.TryParse(value.Replace(";",""), out float x)) {
-            var position = ActionLineManager.Action.position;
-            ActionLineManager.Action.position = new Vector3(x, position.y, position.z);
+            ActionLineManager.Action.PositionX = x; 
         }
-        Debug.Log(ActionLineManager.Action.position.x);
+        Debug.Log(ActionLineManager.Action.PositionX);
     } 
 
     public void ChangePositionYValue(string value) {
@@ -115,10 +126,9 @@ public class SettingsPanelManager : MonoBehaviour {
         value = value.Replace(".", ","); ////////////////////
 
         if(float.TryParse(value.Replace(";",""), out float y)) {
-            var position = ActionLineManager.Action.position;
-            ActionLineManager.Action.position = new Vector3(position.x, y, position.z);
+            ActionLineManager.Action.PositionY = y;
         }
-        Debug.Log(ActionLineManager.Action.position.y);
+        Debug.Log(ActionLineManager.Action.PositionY);
     }
 
     public void ChangeScaleXValue(string value) {
@@ -126,10 +136,9 @@ public class SettingsPanelManager : MonoBehaviour {
         value = value.Replace(".", ","); ////////////////////
 
         if(float.TryParse(value.Replace(";",""), out float x)) {
-            var position = ActionLineManager.Action.scale;
-            ActionLineManager.Action.scale = new Vector3(x, position.y, position.z);
+            ActionLineManager.Action.ScaleX = x;
         }
-        Debug.Log(ActionLineManager.Action.scale.x);
+        Debug.Log(ActionLineManager.Action.ScaleX);
     }
 
     public void ChangeScaleYValue(string value) {
@@ -137,28 +146,27 @@ public class SettingsPanelManager : MonoBehaviour {
         value = value.Replace(".", ","); ////////////////////
 
         if(float.TryParse(value.Replace(";",""), out float y)) {
-            var position = ActionLineManager.Action.scale;
-            ActionLineManager.Action.scale = new Vector3(position.x, y, position.z);
+            ActionLineManager.Action.ScaleY = y;
         }
-        Debug.Log(ActionLineManager.Action.scale.y);
+        Debug.Log(ActionLineManager.Action.ScaleY);
     }
 
     public void AddOneToScaleYValue(bool isOn) {
-        var scale = ActionLineManager.Action.scale;
+        var y = ActionLineManager.Action.ScaleY;
         /* The states should be as following :
             1. = only possible when false
             2. = only possible when true
             3. = only possible when false
             4. = only possible when true */
         var scaleY = isOn 
-            ? (scale.y == 1 ? 2 : (scale.y == 3 ? 4 : ((scale.y >= 1 && scale.y <= 4) ? scale.y : 1)))
-            : (scale.y == 2 ? 1 : (scale.y == 4 ? 3 : ((scale.y >= 1 && scale.y <= 4) ? scale.y : 1)));
-        ActionLineManager.Action.scale = new Vector3(scale.x, scaleY, scale.z);
-        Debug.Log(ActionLineManager.Action.scale.y);
+            ? (y == 1 ? 2 : (y == 3 ? 4 : ((y >= 1 && y <= 4) ? y : 1)))
+            : (y == 2 ? 1 : (y == 4 ? 3 : ((y >= 1 && y <= 4) ? y : 1)));
+        ActionLineManager.Action.ScaleY = scaleY;
+        Debug.Log(ActionLineManager.Action.ScaleY);
     }
 
     public void AddTwoToScaleYValue(bool isOn) {
-        var scale = ActionLineManager.Action.scale;
+        var y = ActionLineManager.Action.ScaleY;
         /* The states should be as following :
             1. = only possible when false
             2. = only possible when false
@@ -166,11 +174,11 @@ public class SettingsPanelManager : MonoBehaviour {
             4. = only possible when true */
 
         var scaleY = isOn 
-            ? (scale.y == 1 ? 3 : (scale.y == 2 ? 4 : ((scale.y >= 1 && scale.y <= 4) ? scale.y : 1))) 
-            : (scale.y == 3 ? 1 : (scale.y == 4 ? 2 : ((scale.y >= 1 && scale.y <= 4) ? scale.y : 1)));
-        ActionLineManager.Action.scale = new Vector3(scale.x, scaleY, scale.z);
+            ? (y == 1 ? 3 : (y == 2 ? 4 : ((y >= 1 && y <= 4) ? y : 1))) 
+            : (y == 3 ? 1 : (y == 4 ? 2 : ((y >= 1 && y <= 4) ? y : 1)));
+        ActionLineManager.Action.ScaleY = scaleY;
 
-        Debug.Log(ActionLineManager.Action.scale.y);
+        Debug.Log(ActionLineManager.Action.ScaleY);
     }
 
     public void MinusLayer() {

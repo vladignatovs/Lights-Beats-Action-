@@ -6,7 +6,7 @@ public class EditorBeatManager : BaseBeatManager {
     [SerializeField] EditorMenuManager _editorMenuManager;
     [SerializeField] SpawnPosManager _spawnPosManager;
     [SerializeField] Transform _controllerPanelTransform;
-    void Awake() { //Using awake to make Durations manager work properly in editor (also used in Visualiser Manager)
+    void Awake() { // Using awake to make Durations manager work properly in editor (also used in Visualiser Manager)
         _bpm = _actionCreator.Level.bpm;
         SecondsPerBeat = 60f / _bpm;
     }
@@ -17,8 +17,8 @@ public class EditorBeatManager : BaseBeatManager {
 
         // Filling _actionList and _levelEnd variables
         foreach(Action action in _actionCreator.Actions) {
-            _actionList.Add(action.Clone());
-            var thisActionEnd = action.delay + action.beat*action.times + action.lifeTime;
+            _actionList.Add(action);
+            var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
             if(thisActionEnd > LevelEnd) {
                 LevelEnd = thisActionEnd;
             }

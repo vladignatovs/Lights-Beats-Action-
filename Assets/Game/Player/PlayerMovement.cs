@@ -91,7 +91,7 @@ public class PlayerMovement : MonoBehaviour {
             float magnitude = Mathf.Clamp01(movementDirection.magnitude);
             movementDirection.Normalize();
 
-            rb.velocity = movementDirection * speed * magnitude;
+            rb.linearVelocity = movementDirection * speed * magnitude;
             // NOT CERTAIN OF THE CHANGES MADE, DO NOT ERASE THE COMMENT BELOW 
             // transform.Translate(movementDirection * speed * magnitude * Time.deltaTime, Space.World);
 

@@ -42,8 +42,8 @@ public class RandPosControllerManager : ControllerManager {
         }
     }
     public override void SetAllUniqueValues(Action action) {
-        _minPos = action.position.x;
-        _maxPos = action.position.y;
-        _directionState = (int)action.scale.y;
+        _minPos = action.PositionX;
+        _maxPos = action.PositionY;
+        _directionState = (int)action.ScaleY;
     }
 }

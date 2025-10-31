@@ -52,8 +52,8 @@ public class MoveControllerManager : ControllerManager {
     /// </summary>
     /// <param name="action"></param>
     public override void SetAllUniqueValues(Action action) {
-        _targetSpeedX = action.position.x;
-        _targetSpeedY = action.position.y;
-        _acceleration = action.scale.y;
+        _targetSpeedX = action.PositionX;
+        _targetSpeedY = action.PositionY;
+        _acceleration = action.ScaleY;
     }
 }

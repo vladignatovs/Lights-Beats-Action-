@@ -47,7 +47,7 @@ public class ObjDropDownManager : MonoBehaviour
         // for loop that goes through each object and if its name matches the current gameObject in action, will set the value
         // of dropdown to its index in the list of options.
         for(int i = 0; i < gObjectsLength; i++) {
-            if(gObjects[i].name.Equals(action.gObject)) { // this is weird, might change
+            if(gObjects[i].name.Equals(action.GObject)) { // this is weird, might change
                 valueChanged = true;
                 // sets the value of dropdown to the matching one
                 dropdown.value = i+1;

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using UnityEngine;
 public class LevelManager : MonoBehaviour {
@@ -10,15 +12,19 @@ public class LevelManager : MonoBehaviour {
     public static List<Level> Levels { get; private set; }
     static string LevelsFolder => Path.Combine(Application.persistentDataPath, "Levels"); // TODO: make folder account specific
 
-    static JsonSerializerOptions Options => new() {
+    static readonly JsonSerializerOptions Options = new() {
         WriteIndented = true,
-        // IncludeFields = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
     static string GetLevelPath(int id) => Path.Combine(LevelsFolder, $"{id}.lvl");
 
     static int _lastId = 0;
+
+    static LevelManager()
+    {
+        Options.Converters.Add(new FloatRoundingConverter());
+    }
 
     public static async Task Initialize() {
         Levels = await LoadLevels();
@@ -29,7 +35,7 @@ public class LevelManager : MonoBehaviour {
         _lastId++;
         return _lastId;
     }
-    
+
     public static async Task CreateNewLevel(string name, float bpm, string audioPath) {
         Level level = new() {
             localId = GetNextId(),
@@ -40,7 +46,7 @@ public class LevelManager : MonoBehaviour {
         };
         await SaveLevel(level);
     }
-    
+
     public static async Task SaveLevel(Level level) {
         if (!Directory.Exists(LevelsFolder)) {
             Directory.CreateDirectory(LevelsFolder);
@@ -127,5 +133,16 @@ public class LevelManager : MonoBehaviour {
         }
 
         return levels;
+    }
+}
+
+public class FloatRoundingConverter : JsonConverter<float> {
+    public override float Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        return reader.GetSingle();
+    }
+
+    public override void Write(Utf8JsonWriter writer, float value, JsonSerializerOptions options) {
+        decimal rounded = (decimal)Math.Round(value, 3);
+        writer.WriteNumberValue(rounded);
     }
 }

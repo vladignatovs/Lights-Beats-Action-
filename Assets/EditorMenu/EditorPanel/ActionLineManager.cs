@@ -57,7 +57,7 @@ public class ActionLineManager : MonoBehaviour {
         Layer = actionSettings.Item3;
         // UP TO CHANGE
 
-        UpdateTimesAndLifetime(Action.times);
+        UpdateTimesAndLifetime(Action.Times);
         _maxPos = (_actionCreator.Content.GetComponent<RectTransform>().rect.width-5) / 50;
 
         ActionLineManagersSingleton.Add(this);
@@ -81,20 +81,20 @@ public class ActionLineManager : MonoBehaviour {
 
         // if parsing is successful, set the max value of the beat and clamp the action.beat value between it and 0
         if(float.TryParse(value, out float beat)) {
-            var maxBeat = _maxPos - Action.delay;
+            var maxBeat = _maxPos - Action.Delay;
             
             // using Mathf.Clamp because beat shouldn't be less than 0 and larger than maxBeat
-            Action.beat = (float)Math.Round(Mathf.Clamp(beat, 0, maxBeat), 5);
-            transform.localPosition = new Vector3(Action.beat*50 + Action.delay*50, transform.localPosition.y, transform.localPosition.z);
-            UpdateTimesAndLifetime(Action.times);
+            Action.Beat = (float)Math.Round(Mathf.Clamp(beat, 0, maxBeat), 5);
+            transform.localPosition = new Vector3(Action.Beat*50 + Action.Delay*50, transform.localPosition.y, transform.localPosition.z);
+            UpdateTimesAndLifetime(Action.Times);
         }
         // if parsing is not successful dont change the value of action.beat
     }
     #endregion
     #region changeTimes
     public void changeTimes(string value) {
-        Action.times = int.Parse(value);
-        UpdateTimesAndLifetime(Action.times);
+        Action.Times = int.Parse(value);
+        UpdateTimesAndLifetime(Action.Times);
     }
     #endregion
     #region UpdateTimesAndLifetime
@@ -110,7 +110,7 @@ public class ActionLineManager : MonoBehaviour {
             for(int i = 2; i <= times; i++) {
                 GameObject timesAction = Instantiate(
                     _timesActionLine, 
-                    new Vector3(Action.beat * 50 * (i - 1), transform.position.y, transform.position.z),
+                    new Vector3(Action.Beat * 50 * (i - 1), transform.position.y, transform.position.z),
                     Quaternion.identity);
                 timesAction.transform.SetParent(transform, false);
                 UpdateLifeTimeLine(timesAction.transform);
@@ -128,8 +128,8 @@ public class ActionLineManager : MonoBehaviour {
     }
     void UpdateLifeTimeLine(Transform parentTransform) {
         var rectTransform = parentTransform.GetChild(0) as RectTransform;
-        rectTransform.sizeDelta = new Vector2(ShowLifeTime ? Action.lifeTime*50 : 0, 5);
-        rectTransform.anchoredPosition = new Vector2(0, Action.gObject != null && Action.gObject.Contains("Controller") ? -175 : 0);
+        rectTransform.sizeDelta = new Vector2(ShowLifeTime ? Action.LifeTime*50 : 0, 5);
+        rectTransform.anchoredPosition = new Vector2(0, Action.GObject != null && Action.GObject.Contains("Controller") ? -175 : 0);
         var actionLineColor = _actionLineImage.color;
         rectTransform.GetComponent<Image>().color = new Color(actionLineColor.r, actionLineColor.g, actionLineColor.b, .03f);
     }
@@ -151,13 +151,13 @@ public class ActionLineManager : MonoBehaviour {
 
         // if parsing is successful, set the max value of the beat and clamp the action.beat value between it and 0
         if(float.TryParse(value, out float delay)) {
-            var maxDelay = _maxPos - Action.beat;
-            var minDelay = -Action.beat;
+            var maxDelay = _maxPos - Action.Beat;
+            var minDelay = -Action.Beat;
 
             // Using Mathf.Clamp because delay might be negative, but shouldn't be less than negative action.beat 
             // (so that the action line wouldn't go below zero position) and shouldn't be larger than maxDelay
-            Action.delay = (float)Math.Round(Mathf.Clamp(delay, minDelay, maxDelay), 5); 
-            transform.localPosition = new Vector3(Action.beat*50 + Action.delay*50, transform.localPosition.y, transform.localPosition.z);
+            Action.Delay = (float)Math.Round(Mathf.Clamp(delay, minDelay, maxDelay), 5); 
+            transform.localPosition = new Vector3(Action.Beat*50 + Action.Delay*50, transform.localPosition.y, transform.localPosition.z);
         }
         // if parsing is not successful dont change the value of action.beat
     }
@@ -166,16 +166,16 @@ public class ActionLineManager : MonoBehaviour {
     public void changeObject(int value) {
         // used try to catch the IndexOutOfRangeException, as it can only occur when the celected option is 0
         try {
-            Action.gObject = _actionCreator.CreatableObjects[value-1].name;
+            Action.GObject = _actionCreator.CreatableObjects[value-1].name;
         } catch (System.IndexOutOfRangeException) {
-            Action.gObject = null; 
+            Action.GObject = null; 
         }
         Destroy(_visualizedGameObject);
         VisualizeAction(); // <------------- VISUALIZATION
         _visualizedGameObject.GetComponent<VisualizerManager>().ToggleSelect(Selected);
         
         // Updating the Times and LifeTime lines of each time as if the object ends up as Controller, lifetime lines should be lower than usual.
-        UpdateTimesAndLifetime(Action.times);
+        UpdateTimesAndLifetime(Action.Times);
     }
     #endregion
     #region changePosition
@@ -193,27 +193,10 @@ public class ActionLineManager : MonoBehaviour {
     /// Only works if the length of the value is greater than zero.
     /// </remarks>
     /// <param name="value"></param>
-    public void changePosition(string value) { 
-        if(value.Length > 0) {
-            float x;
-            float y;
-                
-            value = value.Replace(".", ","); ////////////////////
-            
-            int num = value.IndexOf(";");
-            if(num != -1) {
-                x = float.TryParse(value.Substring(0, num), out x) ? x : 0;
-                y = float.TryParse(value.Substring(num + 1), out y) ? y : 0;
-            } else {
-                x = float.Parse(value);
-                y = 0;
-            }
-            Action.position = new Vector3(x, y, Action.position.z);
-
-            _visualizedGameObject.transform.position = Action.position; // <------------- VISUALIZATION
-
-            Debug.Log(Action.position);
-        }
+    public void changePosition(float x, float y) {
+        Action.PositionX = x;
+        Action.PositionY = y;
+        _visualizedGameObject.transform.position = new(x, y, 0); // <------------- VISUALIZATION
     }
     #endregion
     #region changeRotation
@@ -234,36 +217,21 @@ public class ActionLineManager : MonoBehaviour {
         }
         // TryParse the string value to a float, if cannot parse, it is defaulted to 0.
         float.TryParse(value, out float angle);
-        // Sets the rotation to the value of angle, created in the TryParse func
-        Action.rotation = Quaternion.AngleAxis(angle, transform.forward);
 
-        _visualizedGameObject.transform.rotation = Action.rotation; // <------------- VISUALIZATION
-        Debug.Log(Action.rotation.z);
+        // // Sets the rotation to the value of angle, created in the TryParse func
+        // Action.Rotation = Quaternion.AngleAxis(angle, transform.forward);
+
+        Action.Rotation = angle;
+
+        _visualizedGameObject.transform.rotation = Quaternion.Euler(0,0, angle); // <------------- VISUALIZATION
+        Debug.Log(Action.Rotation);
     }
     #endregion
     #region changeScale
-    public void changeScale(string value) {
-        if(value.Length > 0) {
-            float x;
-            float y;
-
-            value = value.Replace(".", ","); ////////////////////
-            
-            int num = value.IndexOf(";");
-            if(num != -1) {
-                x = float.TryParse(value.Substring(0, num), out x) ? x : 0;
-                y = float.TryParse(value.Substring(num + 1), out y) ? y : 0;
-            } else {
-                x = float.Parse(value);
-                y = 0;
-            }
-
-            Action.scale = new Vector3(x, y, Action.scale.z); 
-
-            _visualizedGameObject.transform.localScale = Action.scale; // <------------- VISUALIZATION
-
-            Debug.Log(Action.scale);
-        }
+    public void changeScale(float x, float y) {
+        Action.ScaleX = x;
+        Action.ScaleY = y;
+        _visualizedGameObject.transform.localScale = new(x, y, 1); // <------------- VISUALIZATION
     }
     #endregion
     #region changeAnimationDuration
@@ -271,7 +239,7 @@ public class ActionLineManager : MonoBehaviour {
 
         value = value.Replace(".", ","); ////////////////////
             
-        Action.animationDuration = float.Parse(value);
+        Action.AnimationDuration = float.Parse(value);
     }
     #endregion
     #region changeLifeTime
@@ -282,9 +250,9 @@ public class ActionLineManager : MonoBehaviour {
         // checks if lifeTime can be parsed.
         if(float.TryParse(value, out float lifeTime)) {
             // Clamps the lifeTime between 0 (lifeTime can't be negative) and _maxPos - action position (_lifeTime can't be over the length of the song).
-            Action.lifeTime = Mathf.Clamp(lifeTime, 0, _maxPos - (Action.beat + Action.delay));
+            Action.LifeTime = Mathf.Clamp(lifeTime, 0, _maxPos - (Action.Beat + Action.Delay));
         }
-        UpdateTimesAndLifetime(Action.times);
+        UpdateTimesAndLifetime(Action.Times);
     }
     #endregion
     #region changeGroups
@@ -295,15 +263,15 @@ public class ActionLineManager : MonoBehaviour {
 
         if(int.TryParse(value, out int parsedValue)) {
             parsedValue = Mathf.Clamp(parsedValue, 0, 99999);
-            if (!Action.groups.Contains(parsedValue)) {
-                Action.groups.Add(parsedValue);
+            if (!Action.Groups.Contains(parsedValue)) {
+                Action.Groups.Add(parsedValue);
                 Debug.Log("added " + parsedValue);
             }
         }
     }
 
     public void deleteGroup(int value) {
-        if(value != 0 && Action.groups.Remove(value)) {
+        if(value != 0 && Action.Groups.Remove(value)) {
             Debug.Log("deleted " + value);
         }
     }
@@ -417,14 +385,14 @@ public class ActionLineManager : MonoBehaviour {
             VisualizeAction(); // <------------- VISUALIZATION]
 
             _actionLineImage.color = selectColor;
-            UpdateTimesAndLifetime(Action.times);
+            UpdateTimesAndLifetime(Action.Times);
         } else {
             Destroy(_activeSelectedActionToggle != null ? _activeSelectedActionToggle.gameObject : null);
 
             Destroy(_visualizedGameObject); // <------------- VISUALIZATION
 
             _actionLineImage.color = normalColor;
-            UpdateTimesAndLifetime(Action.times);
+            UpdateTimesAndLifetime(Action.Times);
         }
     }
     #endregion
@@ -511,15 +479,15 @@ public class ActionLineManager : MonoBehaviour {
     /// NOTE: does not check whether the activeSelectedActionToggle is null or not, might throw an exception.
     /// </remarks>
     public void VisualizeAction() {
-        var gameObj = Resources.Load<GameObject>("Hollows/" + Action.gObject);
+        var gameObj = Resources.Load<GameObject>("Hollows/" + Action.GObject);
         if(gameObj != null) {
-            _visualizedGameObject = Instantiate(gameObj, Action.position, Action.rotation, _logicTransform); //set parent to logic so that the editorBeatManager would automatically clear it when run
-            _visualizedGameObject.transform.localScale = Action.scale;
+            _visualizedGameObject = Instantiate(gameObj, new(Action.PositionX, Action.PositionY, 0), Quaternion.Euler(0, 0, Action.Rotation), _logicTransform); //set parent to logic so that the editorBeatManager would automatically clear it when run
+            _visualizedGameObject.transform.localScale = new(Action.ScaleX, Action.ScaleY, 1);
             _visualizedGameObject.GetComponent<VisualizerManager>().actionLineManager = this;
         } else {
             var Null = Resources.Load<GameObject>("Hollows/Null");
-            _visualizedGameObject = Instantiate(Null, Action.position, Action.rotation, _logicTransform);
-            _visualizedGameObject.transform.localScale = Action.scale;
+            _visualizedGameObject = Instantiate(Null, new(Action.PositionX, Action.PositionY, 0), Quaternion.Euler(0, 0, Action.Rotation), _logicTransform);
+            _visualizedGameObject.transform.localScale = new(Action.ScaleX, Action.ScaleY, 1);
             _visualizedGameObject.GetComponent<VisualizerManager>().actionLineManager = this;
         }
 
@@ -542,7 +510,7 @@ public class ActionLineManager : MonoBehaviour {
             _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
         }
 
-        UpdateTimesAndLifetime(Action.times);
+        UpdateTimesAndLifetime(Action.Times);
     }
     
     public void ShowLifeTimeLine(bool value) {
@@ -555,7 +523,7 @@ public class ActionLineManager : MonoBehaviour {
             _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
         }
 
-        UpdateTimesAndLifetime(Action.times);
+        UpdateTimesAndLifetime(Action.Times);
     }
 
 

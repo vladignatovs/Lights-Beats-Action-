@@ -25,7 +25,7 @@ public class ProjectileMovement : MonoBehaviour
 
     void FixedUpdate() {
         speed += acceleration;
-        rigidBody2d.velocity = new Vector2(rigidBody2d.velocity.x, speed);
+        rigidBody2d.linearVelocity = new Vector2(rigidBody2d.linearVelocity.x, speed);
         acceleration++;
     }
 }

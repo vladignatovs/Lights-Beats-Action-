@@ -18,7 +18,7 @@ public class GroupSettingsManager : MonoBehaviour {
 
     public void GenerateGroupPanels() {
         var settingsPanelManager = GetComponentInParent<SettingsPanelManager>();
-        var groups = settingsPanelManager.ActionLineManager.Action.groups;
+        var groups = settingsPanelManager.ActionLineManager.Action.Groups;
         ClearGroupPanels();
         foreach(var group in groups) {
             // skipping the group "0", as it is default and should not be shown/deleted
@@ -81,7 +81,7 @@ public class GroupSettingsManager : MonoBehaviour {
         var nextFreeGroup = 1;
         const int maxGroup = 99999;
 
-        while(ActionLineManager.ActionLineManagersSingleton.Any(actionLineManager => actionLineManager.Action.groups.Any(group => group == nextFreeGroup)) && nextFreeGroup < maxGroup) {
+        while(ActionLineManager.ActionLineManagersSingleton.Any(actionLineManager => actionLineManager.Action.Groups.Any(group => group == nextFreeGroup)) && nextFreeGroup < maxGroup) {
             nextFreeGroup++;
         }
         _addGroupInput.text = nextFreeGroup.ToString();

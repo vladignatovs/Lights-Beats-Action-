@@ -10,18 +10,22 @@ public class VisualizerManager : MonoBehaviour, IDragHandler, IScrollHandler {
     public Color selectedColor;
     SpriteRenderer spriteRenderer;
     public bool selected = false;
-    InputField positionInput;
+    InputField positionXInput;
+    InputField positionYInput;
     InputField rotationInput;
-    InputField scaleInput;
+    InputField scaleXInput;
+    InputField scaleYInput;
     float angle = 0;
 
     void Start() {
         actionCreator = GameObject.FindGameObjectWithTag("ActionCreator").GetComponent<ActionCreator>();
         visualizerCamera = GameObject.FindGameObjectWithTag("VisualizerCamera").GetComponent<Camera>();
-        
-        positionInput = actionCreator.PositionInput;
+
+        positionXInput = actionCreator.PositionXInput;
+        positionYInput = actionCreator.PositionYInput;
         rotationInput = actionCreator.RotationInput;
-        scaleInput = actionCreator.ScaleInput;
+        scaleXInput = actionCreator.ScaleXInput;
+        scaleYInput = actionCreator.ScaleYInput;
     }
 
     /// <summary>
@@ -61,8 +65,9 @@ public class VisualizerManager : MonoBehaviour, IDragHandler, IScrollHandler {
             var mousePos = visualizerCamera.ScreenToWorldPoint(eventData.position);
             var roundedPos = new Vector3(Mathf.Round(mousePos.x * 4) / 4, Mathf.Round (mousePos.y * 4) / 4, transform.position.z);
             transform.position = roundedPos;
-            actionLineManager.changePosition(transform.position.x + ";" + transform.position.y);
-            positionInput.GetComponent<InputFieldManager>().ReAssignInputValue();
+            actionLineManager.changePosition(transform.position.x, transform.position.y);
+            positionXInput.GetComponent<InputFieldManager>().ReAssignInputValue();
+            positionYInput.GetComponent<InputFieldManager>().ReAssignInputValue();
         }
     }
 
@@ -74,11 +79,12 @@ public class VisualizerManager : MonoBehaviour, IDragHandler, IScrollHandler {
                 actionLineManager.changeRotation(angle.ToString());
                 rotationInput.GetComponent<InputFieldManager>().ReAssignInputValue();
             } else {
-                // TODO: make an actually good way of scaling up/down the object.
+                // TODO: make an actually good way of scaling the object up/down.
                 var scroll = eventData.scrollDelta.y/10;
                 transform.localScale += new Vector3(scroll, scroll, 1);
-                actionLineManager.changeScale(transform.localScale.x + ";" + transform.localScale.y);
-                scaleInput.GetComponent<InputFieldManager>().ReAssignInputValue();
+                actionLineManager.changeScale(transform.localScale.x, transform.localScale.y);
+                scaleXInput.GetComponent<InputFieldManager>().ReAssignInputValue();
+                scaleYInput.GetComponent<InputFieldManager>().ReAssignInputValue();
             }
         }
     }

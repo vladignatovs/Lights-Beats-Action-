@@ -11,7 +11,7 @@ public class BeatManager : BaseBeatManager {
         foreach(Action action in _level.actions) {
             _actionList.Add(action.Clone());
             // setting the LevelEnd value, which is actions ending value
-            var thisActionEnd = action.delay + action.beat*action.times + action.lifeTime;
+            var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
             if(thisActionEnd > LevelEnd) {
                 LevelEnd = thisActionEnd;
             }

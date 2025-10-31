@@ -45,12 +45,12 @@ public abstract class BaseBeatManager : MonoBehaviour {
             SongPositionInBeats = _songPositionInSeconds / _secondsPerBeat;
 
             foreach(Action action in _actionList) {
-                if((action.beat + action.delay) < SongPositionInBeats && action.times > 0) {
+                if((action.Beat + action.Delay) < SongPositionInBeats && action.Times > 0) {
 
                     var (newAction, shouldContinue) = CalculateActionCall(action);
-                    action.beat = newAction.beat;
-                    action.times = newAction.times;
-                    action.timesDone = newAction.timesDone;
+                    action.Beat = newAction.Beat;
+                    action.Times = newAction.Times;
+                    action.TimesDone = newAction.TimesDone;
 
                     if (shouldContinue) continue;
 
@@ -102,33 +102,33 @@ public abstract class BaseBeatManager : MonoBehaviour {
         
         // imitates action calling, lowering the times value by 1, adding 1 to timesDone and adding firstBeat to beat value.
         void ActionCall() {
-            a.times--; 
-            a.timesDone++;
-            a.beat += a.firstBeat;
+            a.Times--; 
+            a.TimesDone++;
+            a.Beat += a.FirstBeat;
         }
 
         bool shouldContinue = false;
         // sets the value of the actualOffset, which is further used to avoid redundancy.
-        float actualOffset = _offset - a.delay; // i.e. (x + y < z) == (x < z - y)
+        float actualOffset = _offset - a.Delay; // i.e. (x + y < z) == (x < z - y)
 
         // checks if beat is less than actualOffset (i.e. 20 < 50-10, meaning that the action should've happened before the start)
-        if(a.beat < actualOffset) {
+        if(a.Beat < actualOffset) {
             // method used to check whether action should be active by comparing with actualOffset, spawning gameObject with according
             // timer value
             void CheckLifeTime() {
-                if((a.beat < actualOffset) && ((a.beat + (a.gObject.Contains("Telegraph") ? a.animationDuration*1.25 : a.lifeTime)) > actualOffset)) {
-                    SpawnGameObject(a, actualOffset - a.beat);
+                if((a.Beat < actualOffset) && ((a.Beat + (a.GObject.Contains("Telegraph") ? a.AnimationDuration*1.25 : a.LifeTime)) > actualOffset)) {
+                    SpawnGameObject(a, actualOffset - a.Beat);
                     shouldContinue = true;
                 }
             }
 
             // checks if firstBeat is not zero (can't be negative as beat can't be negative), as it won't provide any change to the beat value.
-            if(a.firstBeat != 0) {
+            if(a.FirstBeat != 0) {
                 // sets the value of amountOfTimesBeforeCall, which is basically a calculated amount of times needed before an action
                 // is able to exceed actualOffset value (i.e. (10-2)/2 = 8/2 = 4 <- times before action is called). 
-                int amountOfTimesBeforeCall = (int)Mathf.Ceil((actualOffset - a.beat) / a.firstBeat);
+                int amountOfTimesBeforeCall = (int)Mathf.Ceil((actualOffset - a.Beat) / a.FirstBeat);
                 // sets the value of amountOfTimesPossible, which is the maximum amount of times an action can repeat before making a.times value go to 0.
-                int amountOfTimesPossible = a.times;
+                int amountOfTimesPossible = a.Times;
                 // sets the value of actualTimes, which is minimal value between amountOfTimesBeforeCall and amountOfTimesPossible.
                 // (i.e Min(10,5) = 5. Can repeat 5 times)
                 // (i.e. Min(10,15) = 10. Can repeat 10 times before beat exceeds actualOffset)
@@ -140,16 +140,16 @@ public abstract class BaseBeatManager : MonoBehaviour {
                 }
                 // checks if there are no times left and beat didn't exceed the actualOffset, meaning that it wouldn't be called as after 
                 // calling the beat value will always exceed songPos with firstBeat not being zero, so will signal to continue and not spawn gameObject
-                if(a.times == 0 && a.beat <= actualOffset) {
+                if(a.Times == 0 && a.Beat <= actualOffset) {
                     shouldContinue = true;
                 }
             // else the firstBeat IS zero, so it checks for lifetime of each time, then sets times to zero, 
             // and singals to continue, as theres nothing to be changed with the repetition.
             } else { 
-                for(int i = 0; i < a.times; i++) {
+                for(int i = 0; i < a.Times; i++) {
                     CheckLifeTime();
                 }
-                a.times = 0;
+                a.Times = 0;
                 shouldContinue = true;
             }
         // else the beat value is NOT less than actualOffset, meaning that it wasn't supposed to happen before the start, 
@@ -163,38 +163,40 @@ public abstract class BaseBeatManager : MonoBehaviour {
     #endregion
     #region ObjectSpawn
     void SpawnGameObject(Action a) {
-        var gameObj = Resources.Load<GameObject>("Prefabs/" + a.gObject);
-
-        GameObject aInstance = Instantiate(gameObj, a.position, a.rotation, transform);
-        aInstance.transform.localScale = a.scale;
+        var gameObj = Resources.Load<GameObject>("Prefabs/" + a.GObject);
+        if(gameObj == null) {
+            Debug.Log("This is null" + a.GObject);
+        }
+        GameObject aInstance = Instantiate(gameObj, new(a.PositionX, a.PositionY, 0), Quaternion.Euler(0, 0, a.Rotation), transform);
+        aInstance.transform.localScale = new(a.ScaleX, a.ScaleY, 1);
         
         var durationsManager = aInstance.GetComponent<DurationsManager>();
-        durationsManager.AnimationDuration = a.animationDuration;
-        durationsManager.LifeTime = a.lifeTime;
+        durationsManager.AnimationDuration = a.AnimationDuration;
+        durationsManager.LifeTime = a.LifeTime;
 
-        aInstance.GetComponent<GroupManager>().groups.AddRange(a.groups);
+        aInstance.GetComponent<GroupManager>().groups.AddRange(a.Groups);
 
-        if(a.gObject.Contains("Controller")) {
-            aInstance.GetComponent<ControllerGroupManager>().targetGroup = (int)a.scale.x;
+        if(a.GObject.Contains("Controller")) {
+            aInstance.GetComponent<ControllerGroupManager>().targetGroup = (int)a.ScaleX;
             var controllerManager = aInstance.GetComponent<ControllerManager>();
             controllerManager.SetAllUniqueValues(a);
         }
     }
     void SpawnGameObject(Action a, float time) {
-        var gameObj = Resources.Load<GameObject>("Prefabs/" + a.gObject);
+        var gameObj = Resources.Load<GameObject>("Prefabs/" + a.GObject);
 
-        GameObject aInstance = Instantiate(gameObj, a.position, a.rotation, transform);
-        aInstance.transform.localScale = a.scale;
+        GameObject aInstance = Instantiate(gameObj, new(a.PositionX, a.PositionY, 0), Quaternion.Euler(0, 0, a.Rotation), transform);
+        aInstance.transform.localScale = new(a.ScaleX, a.ScaleY, 1);
         
         var durationsManager = aInstance.GetComponent<DurationsManager>();
-        durationsManager.AnimationDuration = a.animationDuration;
-        durationsManager.LifeTime = a.lifeTime;
+        durationsManager.AnimationDuration = a.AnimationDuration;
+        durationsManager.LifeTime = a.LifeTime;
         durationsManager.Timer = time*SecondsPerBeat;
 
-        aInstance.GetComponent<GroupManager>().groups.AddRange(a.groups);
+        aInstance.GetComponent<GroupManager>().groups.AddRange(a.Groups);
 
-        if(a.gObject.Contains("Controller")) {
-            aInstance.GetComponent<ControllerGroupManager>().targetGroup = (int)a.scale.x;
+        if(a.GObject.Contains("Controller")) {
+            aInstance.GetComponent<ControllerGroupManager>().targetGroup = (int)a.ScaleX;
             var controllerManager = aInstance.GetComponent<ControllerManager>();
             controllerManager.SetAllUniqueValues(a);
         }

@@ -28,7 +28,7 @@ public class MissleManager : MonoBehaviour {
         float angle = Mathf.Atan2(_target.y - transform.position.y, _target.x - transform.position.x) * Mathf.Rad2Deg -90f; //idk why its like that
         transform.eulerAngles = new Vector3(0, 0, Mathf.MoveTowardsAngle(transform.eulerAngles.z, angle, 160*Time.deltaTime));
         _speed += _acceleration * Time.deltaTime; // ACCELERATION
-        _rigidBody2d.velocity = transform.up * _speed;
+        _rigidBody2d.linearVelocity = transform.up * _speed;
         float timer = _durationsManager.Timer;
         if(timer >= (_lifeTime / 4)) {
             _spriteRenderer.color = Color.Lerp(_curColor, Color.white, timer / (_lifeTime / 2));

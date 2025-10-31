@@ -24,8 +24,8 @@ public class ToggleManager : MonoBehaviour {
             { "ShowTimes", () => actionLineManager.ShowTimes },
             { "ShowLifeTime", () => actionLineManager.ShowLifeTime },
             // CUSTOM KEY - VALUE PAIRS, USED FOR CONTROLLERS
-            { "vertical", () => action.scale.y % 2 == 0 && action.scale.y >= 1 && action.scale.y <= 4}, // returns true if scale is 2,4
-            { "horizontal", () => action.scale.y > 2 && action.scale.y >= 1 && action.scale.y <= 4} // returns true if scale is 3,4
+            { "vertical", () => action.ScaleY % 2 == 0 && action.ScaleY >= 1 && action.ScaleY <= 4}, // returns true if scale is 2,4
+            { "horizontal", () => action.ScaleY > 2 && action.ScaleY >= 1 && action.ScaleY <= 4} // returns true if scale is 3,4
         };
 
         foreach(var toggle in _toggles) {

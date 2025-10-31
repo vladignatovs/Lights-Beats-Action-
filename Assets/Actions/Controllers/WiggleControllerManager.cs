@@ -37,8 +37,8 @@ public class WiggleControllerManager : ControllerManager {
         }
     }
     public override void SetAllUniqueValues(Action action) {
-        _frequency = action.position.x;
-        _amplitude = action.position.y;
-        _directionState = (int)action.scale.y;
+        _frequency = action.PositionX;
+        _amplitude = action.PositionY;
+        _directionState = (int)action.ScaleY;
     }
 }

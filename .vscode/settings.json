@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Lights, Beats, Action!.sln"
+    "dotnet.defaultSolution": "Lights, Beats, Action!.slnx"
 }

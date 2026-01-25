@@ -17,7 +17,7 @@ public class CreateButtonManager : MonoBehaviour
     async void CreateLevel() {
         await LevelManager.CreateNewLevel(
             _levelNameInput.text,
-            float.Parse(_bpmInput.text.Replace(".", ",")),
+            _bpmInput.text.FloatParse(),
             "Audio/" + _audioDropdown.options[_audioDropdown.value].text
         );
         SceneManager.LoadScene("LevelSelect");

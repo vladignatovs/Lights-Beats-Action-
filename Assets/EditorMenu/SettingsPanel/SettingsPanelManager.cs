@@ -20,6 +20,7 @@ public class SettingsPanelManager : MonoBehaviour {
     public void ChangeObject(int value) {
         ActionLineManager.changeObject(value);
     }
+
     // TODO:
     // public void ChangePosition(string value) {
     //     ActionLineManager.changePosition(value);
@@ -76,7 +77,7 @@ public class SettingsPanelManager : MonoBehaviour {
     /// </summary>
     /// <param name="value"></param>
     public void ChangePositionX(string value) {
-        if (float.TryParse(value, out var result)) {
+        if (value.FloatTryParse(out var result)) {
             Debug.Log(result);
             ActionLineManager.changePosition(result, ActionLineManager.Action.PositionY);
         } 
@@ -88,7 +89,7 @@ public class SettingsPanelManager : MonoBehaviour {
     /// </summary>
     /// <param name="value"></param>
     public void ChangePositionY(string value) {
-        if (float.TryParse(value, out var result))
+        if (value.FloatTryParse(out var result))
             ActionLineManager.changePosition(ActionLineManager.Action.PositionX, result);
         else
             Debug.Log("Couldnt parse this value: " + value);
@@ -96,14 +97,14 @@ public class SettingsPanelManager : MonoBehaviour {
 
     // TODO
     public void ChangeScaleX(string value) {
-        if (float.TryParse(value, out var result))
+        if (value.FloatTryParse(out var result))
             ActionLineManager.changeScale(result, ActionLineManager.Action.ScaleY);
         else
             Debug.Log("Couldnt parse this value: " + value);
     }
 
     public void ChangeScaleY(string value) {
-        if (float.TryParse(value, out var result))
+        if (value.FloatTryParse(out var result))
             ActionLineManager.changeScale(ActionLineManager.Action.ScaleX, result);
         else
             Debug.Log("Couldnt parse this value: " + value);
@@ -113,39 +114,28 @@ public class SettingsPanelManager : MonoBehaviour {
     #region controllerMethods
     public void ChangePositionXValue(string value) {
 
-        value = value.Replace(".", ","); ////////////////////
-
-        if(float.TryParse(value.Replace(";",""), out float x)) {
+        if(value.Replace(";","").FloatTryParse(out float x)) {
             ActionLineManager.Action.PositionX = x; 
         }
         Debug.Log(ActionLineManager.Action.PositionX);
     } 
 
     public void ChangePositionYValue(string value) {
-
-        value = value.Replace(".", ","); ////////////////////
-
-        if(float.TryParse(value.Replace(";",""), out float y)) {
+        if(value.Replace(";","").FloatTryParse(out float y)) {
             ActionLineManager.Action.PositionY = y;
         }
         Debug.Log(ActionLineManager.Action.PositionY);
     }
 
     public void ChangeScaleXValue(string value) {
-
-        value = value.Replace(".", ","); ////////////////////
-
-        if(float.TryParse(value.Replace(";",""), out float x)) {
+        if(value.Replace(";","").FloatTryParse(out float x)) {
             ActionLineManager.Action.ScaleX = x;
         }
         Debug.Log(ActionLineManager.Action.ScaleX);
     }
 
     public void ChangeScaleYValue(string value) {
-
-        value = value.Replace(".", ","); ////////////////////
-
-        if(float.TryParse(value.Replace(";",""), out float y)) {
+        if(value.Replace(";","").FloatTryParse(out float y)) {
             ActionLineManager.Action.ScaleY = y;
         }
         Debug.Log(ActionLineManager.Action.ScaleY);

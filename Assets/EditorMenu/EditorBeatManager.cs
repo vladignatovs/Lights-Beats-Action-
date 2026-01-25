@@ -17,7 +17,7 @@ public class EditorBeatManager : BaseBeatManager {
 
         // Filling _actionList and _levelEnd variables
         foreach(Action action in _actionCreator.Actions) {
-            _actionList.Add(action);
+            _actionList.Add(action.Clone());
             var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
             if(thisActionEnd > LevelEnd) {
                 LevelEnd = thisActionEnd;

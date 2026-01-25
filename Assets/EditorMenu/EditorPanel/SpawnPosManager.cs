@@ -46,9 +46,7 @@ public class SpawnPosManager : MonoBehaviour {
     public void SetSpawnPos(string value) {
         var pos = rectTransform.localPosition;
 
-        value = value.Replace(".", ","); ////////////////////
-
-        float.TryParse(value, out float posx);
+        value.FloatTryParse(out float posx);
         rectTransform.localPosition = new Vector3(posx*50, pos.y, pos.z);
         inputField.text = posx.ToString();
     }

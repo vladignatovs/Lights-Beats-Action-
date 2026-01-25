@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+// TODO: find a proper place for action and level locally used classes
 [System.Serializable] public class Action {
     public float Beat { get; set; }
     public int Times { get; set; } = 1;

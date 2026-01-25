@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using System;
+
 public class ActionLineManager : MonoBehaviour {
     [Header("Action control")]
     public Action Action;
@@ -76,11 +77,8 @@ public class ActionLineManager : MonoBehaviour {
     /// </remarks>
     /// <param name="value"></param>
     public void changeBeat(string value) {
-                    
-        value = value.Replace(".", ","); ////////////////////
-
         // if parsing is successful, set the max value of the beat and clamp the action.beat value between it and 0
-        if(float.TryParse(value, out float beat)) {
+        if(value.FloatTryParse(out float beat)) {
             var maxBeat = _maxPos - Action.Delay;
             
             // using Mathf.Clamp because beat shouldn't be less than 0 and larger than maxBeat
@@ -146,11 +144,8 @@ public class ActionLineManager : MonoBehaviour {
     /// </remarks>
     /// <param name="value"></param>
     public void changeDelay(string value) {
-                    
-        value = value.Replace(".", ","); ////////////////////
-
         // if parsing is successful, set the max value of the beat and clamp the action.beat value between it and 0
-        if(float.TryParse(value, out float delay)) {
+        if(value.FloatTryParse(out float delay)) {
             var maxDelay = _maxPos - Action.Beat;
             var minDelay = -Action.Beat;
 
@@ -201,9 +196,6 @@ public class ActionLineManager : MonoBehaviour {
     #endregion
     #region changeRotation
     public void changeRotation(string value) {
-            
-        value = value.Replace(".", ","); ////////////////////
-
         // Create a dictionary, where each key is a text representation of the boolean value,
         // and each dictionary value is an angle, which will give either a 1 or 0 in quaternion.angleaxis.z
         var boolToAngleMap = new Dictionary<string, string> {
@@ -216,7 +208,7 @@ public class ActionLineManager : MonoBehaviour {
             value = angleString;
         }
         // TryParse the string value to a float, if cannot parse, it is defaulted to 0.
-        float.TryParse(value, out float angle);
+        value.FloatTryParse(out float angle);
 
         // // Sets the rotation to the value of angle, created in the TryParse func
         // Action.Rotation = Quaternion.AngleAxis(angle, transform.forward);
@@ -236,19 +228,13 @@ public class ActionLineManager : MonoBehaviour {
     #endregion
     #region changeAnimationDuration
     public void changeAnimationDuration(string value) {    
-
-        value = value.Replace(".", ","); ////////////////////
-            
-        Action.AnimationDuration = float.Parse(value);
+        Action.AnimationDuration = value.FloatParse();
     }
     #endregion
     #region changeLifeTime
     public void changeLifeTime(string value) {
-
-        value = value.Replace(".", ","); ////////////////////
-
         // checks if lifeTime can be parsed.
-        if(float.TryParse(value, out float lifeTime)) {
+        if(value.FloatTryParse(out float lifeTime)) {
             // Clamps the lifeTime between 0 (lifeTime can't be negative) and _maxPos - action position (_lifeTime can't be over the length of the song).
             Action.LifeTime = Mathf.Clamp(lifeTime, 0, _maxPos - (Action.Beat + Action.Delay));
         }

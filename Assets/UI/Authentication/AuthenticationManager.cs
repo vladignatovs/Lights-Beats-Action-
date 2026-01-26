@@ -3,7 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AuthenticationManager : MonoBehaviour {
+public class AuthenticationManager : AuthGated {
+    public override bool ShowOnAuth => false;
     [SerializeField] Button _signInButton;
     [SerializeField] Button _signUpButton;
     [SerializeField] RectTransform _emailGroup;
@@ -11,6 +12,7 @@ public class AuthenticationManager : MonoBehaviour {
     [SerializeField] RectTransform _passwordGroup;
     [SerializeField] TMP_Text _errorText;
     [SerializeField] Button _confirmButton;
+    [SerializeField] Overlay _overlay;
 
     bool _signInState = true;
 
@@ -21,6 +23,21 @@ public class AuthenticationManager : MonoBehaviour {
     RectTransform _confirmRectTransform;
     TMP_Text _signInLabel;
     TMP_Text _signUpLabel;
+
+    protected override void Start() {
+        base.Start();
+        var user = SupabaseManager.Instance.Auth;
+        user.OnAuthenticationRequired += () => _overlay.ToggleOverlay(true);
+        user.OnAuthenticated += () => _overlay.ToggleOverlay(false);
+        _overlay.ToggleOverlay(!user.IsAuthenticated);
+    }
+
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        var user = SupabaseManager.Instance.Auth;
+        user.OnAuthenticationRequired -= () => _overlay.ToggleOverlay(true);
+        user.OnAuthenticated -= () => _overlay.ToggleOverlay(false);
+    }
 
     void Awake() {
         // or get childcomponent
@@ -39,24 +56,6 @@ public class AuthenticationManager : MonoBehaviour {
         _usernameInput.onValueChanged.AddListener(_ => ValidateConfirm());
 
         ValidateConfirm();
-    }
-
-    void Start() {
-        SupabaseManager.Instance.User.OnAuthenticationRequired += () => {
-            gameObject.SetActive(true);
-        };
-        SupabaseManager.Instance.User.OnAuthenticated += () => {
-            gameObject.SetActive(false);
-        };
-    } 
-
-    void OnDestroy() {
-        SupabaseManager.Instance.User.OnAuthenticationRequired -= () => {
-            gameObject.SetActive(true);
-        };
-        SupabaseManager.Instance.User.OnAuthenticated -= () => {
-            gameObject.SetActive(false);
-        };
     }
 
     public void TogglePanel() {
@@ -84,16 +83,16 @@ public class AuthenticationManager : MonoBehaviour {
 
         try {
             if(_signInState) {
-                // TODO: safify for prod
-                var session = await SupabaseManager.Instance.User.SignIn(email, password);
+                var session = await SupabaseManager.Instance.Auth.SignIn(email, password);
                 Debug.Log("Signed in: " + session.User.Email);
             } else {
-                var session = await SupabaseManager.Instance.User.SignUp(email, username, password);
+                // TODO: its possible for sign up to silently fail and create user to run, or vice versa, must be handled
+                var session = await SupabaseManager.Instance.Auth.SignUp(email, password);
+                var user = await SupabaseManager.Instance.User.CreateUser(username);
                 // TODO: if session is valid, create a user profile with the username
                 Debug.Log("Signed up: " + session.User.Email);
             }
             CleanUp();
-            gameObject.SetActive(false);
         } catch (Exception e) {
             try {
                 _errorText.text = "Sign in failed: " + JsonUtility.FromJson<AuthError>(e.Message).msg;
@@ -102,6 +101,13 @@ public class AuthenticationManager : MonoBehaviour {
             }
             Debug.LogWarning("Sign in failed: " + e.Message);
         }
+    }
+
+    // TODO: keep guest session alive, give guest an option to authenticate later
+    public void Guest() {
+        _overlay.ToggleOverlay(false);
+        CleanUp();
+        gameObject.SetActive(false);
     }
 
     void CleanUp() {

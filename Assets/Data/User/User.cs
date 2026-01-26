@@ -5,9 +5,8 @@ using Supabase.Postgrest.Models;
 public class User: BaseModel {
     [PrimaryKey("id", false)]
     public int Id { get; set; }
+    [Column("username")]
     public string Username { get; set; }
-    public string Email { get; set; }
-    public Rights Rights { get; set; }
 }
 
 public enum Rights {

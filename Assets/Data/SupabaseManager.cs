@@ -21,7 +21,8 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
     [SerializeField] bool _autoConnectRealtime = false;
 
     // Data services
-    public AuthManager User { get; private set; }
+    public AuthManager Auth { get; private set; }
+    public UserManager User { get; private set; }
 
     private async void Awake() {
         if (Instance != null && Instance != this) {
@@ -41,10 +42,11 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
         IsInitialized = true;
 
         // Initializing all the data services
+        Auth = new(Client);
         User = new(Client);
 
         // Try to authenticate user
-        await User.TryAuthenticate();
+        await Auth.TryAuthenticate();
         Debug.Log("Connected to Supabase!");
     }
 

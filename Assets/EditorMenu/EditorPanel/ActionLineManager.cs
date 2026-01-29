@@ -51,11 +51,12 @@ public class ActionLineManager : MonoBehaviour {
         _logicTransform = GameObject.FindGameObjectWithTag("Logic").transform;
     }
     void Start() {
+        // TODO: proper saving of action metadata
         // UP TO CHANGE
-        var actionSettings = _actionCreator.ActionsSettings[_actionCreator.Actions.IndexOf(Action)];
-        ShowTimes = actionSettings.Item1;
-        ShowLifeTime = actionSettings.Item2;
-        Layer = actionSettings.Item3;
+        // var actionSettings = _actionCreator.ActionsSettings[_actionCreator.Actions.IndexOf(Action)];
+        // ShowTimes = actionSettings.Item1;
+        // ShowLifeTime = actionSettings.Item2;
+        // Layer = actionSettings.Item3;
         // UP TO CHANGE
 
         UpdateTimesAndLifetime(Action.Times);

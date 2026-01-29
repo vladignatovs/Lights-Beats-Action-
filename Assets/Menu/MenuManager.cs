@@ -1,9 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
     public void GoToScene(string name) {
         StateNameManager.LatestSceneName = SceneManager.GetActiveScene().name;
+        try {
+            var player = FindAnyObjectByType<PlayerMovement>();
+            StateNameManager.PlayerPosition = player.transform.position;
+        }
+        catch (Exception e) {
+            Debug.Log("Exception caught: " + e.Message);
+        }
         SceneManager.LoadScene(name);
     }
 

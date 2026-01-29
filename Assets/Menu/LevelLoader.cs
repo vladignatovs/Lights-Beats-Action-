@@ -1,27 +1,32 @@
-using System.Collections;
 using UnityEngine;
-using LitJson;
 using UnityEngine.UI;
-using System.IO;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 
 public class LevelLoader : MonoBehaviour {
     [SerializeField] GameObject _goToButton;
     [SerializeField] Transform _contentTransform;
     [SerializeField] GameObject _createLevelPanel;
+    [SerializeField] MainMenuManager _mainMenuManager;
 
+    // should fetch official levels on start instead of local
     async void Start() {
         await LevelManager.Initialize();
         foreach (var level in LevelManager.Levels) {
             Button levelButton = Instantiate(_goToButton, _contentTransform).GetComponent<Button>();
-            levelButton.onClick.AddListener(() => LoadSceneAsync(level));
-            levelButton.GetComponentInChildren<Text>().text = level.name;
+            levelButton.onClick.AddListener(async () => await LoadSceneAsync(level));
+            levelButton.GetComponentInChildren<TMP_Text>().text = level.name;
         }
     }
 
-    async void LoadSceneAsync(Level level) {
+    async Task LoadSceneAsync(Level level) {
+        try {
+            await _mainMenuManager.ToGame();
+        }
+        catch (System.Exception e) {
+            Debug.Log(e);
+        }
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level");
         asyncLoad.allowSceneActivation = false;
 
@@ -38,7 +43,7 @@ public class LevelLoader : MonoBehaviour {
         asyncLoad.allowSceneActivation = true;
     }
 
-    public void showPanel() {
+    public void TogglePanel() {
         _createLevelPanel.SetActive(!_createLevelPanel.activeSelf);
     }
 }

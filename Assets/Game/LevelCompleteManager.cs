@@ -34,7 +34,7 @@ public class LevelCompleteManager : MonoBehaviour {
             yield return new WaitForSeconds(1);
         }
         levelCompleteReidrectText.text = "bye";
-        menuManager.GoToScene("LevelSelect");
+        menuManager.GoToScene("MainMenu");
     }
     
     public void LevelComplete(int id) {

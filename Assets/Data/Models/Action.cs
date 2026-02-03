@@ -12,7 +12,7 @@ using System.Collections.Generic;
     public float ScaleX { get; set; } = 1;
     public float ScaleY { get; set; } = 1;
     public float AnimationDuration { get; set; }
-    public float LifeTime { get; set; }    
+    public float LifeTime { get; set; }
     public List<int> Groups { get; set; } = new() {0};
     //
     internal float FirstBeat { get; set; } // required to count times

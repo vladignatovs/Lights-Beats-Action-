@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 525, y: 225}
+  m_AnchoredPosition: {x: 500, y: 225}
   m_SizeDelta: {x: 450, y: 450}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1249682917023340661
@@ -88,9 +88,8 @@ GameObject:
   - component: {fileID: 8611724203349253838}
   - component: {fileID: 7710955278051220515}
   - component: {fileID: 8296850400016504766}
-  - component: {fileID: 8555942531496260916}
   m_Layer: 5
-  m_Name: GoToLevelButton
+  m_Name: OfficialLevelCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,8 +114,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1500, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1120, y: 560}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &8611724203349253838
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -199,20 +198,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8555942531496260916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1134274234433657047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
-  m_AspectMode: 1
-  m_AspectRatio: 2
 --- !u!1 &4935031968286336297
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,8 +232,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 52, y: 65}
+  m_AnchoredPosition: {x: -10, y: 0}
+  m_SizeDelta: {x: 105, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6227830192563833689
 CanvasRenderer:
@@ -278,7 +263,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7892747311357971483, guid: 3a3fb8880dd80a34ab1f3f7925bf0e9a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 72a831e05fb95814a871faf6092a6dd1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -323,7 +308,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 750, y: 500}
+  m_SizeDelta: {x: 500, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &414778099334418180
 CanvasRenderer:

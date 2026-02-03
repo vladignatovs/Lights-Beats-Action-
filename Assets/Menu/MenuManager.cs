@@ -1,16 +1,19 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
     public void GoToScene(string name) {
-        StateNameManager.LatestSceneName = SceneManager.GetActiveScene().name;
-        try {
+        var currentScene = SceneManager.GetActiveScene().name;
+
+        StateNameManager.LatestSceneName = currentScene;
+        if (currentScene == "Level") {
             var player = FindAnyObjectByType<PlayerMovement>();
-            StateNameManager.PlayerPosition = player.transform.position;
-        }
-        catch (Exception e) {
-            Debug.Log("Exception caught: " + e.Message);
+            if (player != null) {
+                StateNameManager.PlayerPosition = player.transform.position;
+            }
+            else {
+                Debug.LogWarning("No PlayerMovement found in current level scene.");
+            }
         }
         SceneManager.LoadScene(name);
     }

@@ -17,6 +17,8 @@ public class MainMenuManager : MonoBehaviour {
     [SerializeField] GameObject _serverMenu;
     [SerializeField] GameObject _background;
 
+    public event System.Action<MainMenuState> OnStateChanged;
+
     async void Start() {
         // sets the state that was persisted before exit
         SetState(StateNameManager.LatestMainMenuState, true);
@@ -27,6 +29,9 @@ public class MainMenuManager : MonoBehaviour {
             // play animation out of game
             GameTo();
             await MoveToCenter(0.75f);
+            // else if the last state was local and it wasnt a game, meaning it was a restart, so hardcoded play locallevelmenu
+        } else if (StateNameManager.LatestMainMenuState == MainMenuState.Local) {
+            _mainMenuAnimator.Play("LocalLevelMenu");
         }
     }
 
@@ -48,12 +53,15 @@ public class MainMenuManager : MonoBehaviour {
         if (animation == null) return;
         _mainMenuAnimator.Play(animation);
 
-        await Task.Yield();
-        var clips = _mainMenuAnimator.GetCurrentAnimatorClipInfo(0);
-        if (clips.Length > 0) {
-            float length = clips[0].clip.length;
-            await Task.Delay(Mathf.CeilToInt(length * 1000));
+        AnimatorStateInfo state;
+
+        do {
+            await Task.Yield();
+            state = _mainMenuAnimator.GetCurrentAnimatorStateInfo(0);
         }
+        while (!state.IsName(animation));
+
+        await Task.Delay(Mathf.CeilToInt(state.length * 1000));
     }
 
     // NOTE: "GAME-TO" animations are played without state to avoid 
@@ -76,6 +84,8 @@ public class MainMenuManager : MonoBehaviour {
 
         StateNameManager.LatestMainMenuState = newState;
         _mainMenuAnimator.SetInteger("MainMenuState", (int)newState);
+
+        OnStateChanged?.Invoke(newState);
 
         if (skipAnimation) _mainMenuAnimator.Update(0f);
     }

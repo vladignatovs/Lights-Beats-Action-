@@ -15,12 +15,13 @@ public class CreateButtonManager : MonoBehaviour
     }
     
     async void CreateLevel() {
-        await LevelManager.CreateNewLevel(
+        await LocalLevelManager.CreateNewLevel(
             _levelNameInput.text,
             _bpmInput.text.FloatParse(),
-            "Audio/" + _audioDropdown.options[_audioDropdown.value].text
+            _audioDropdown.options[_audioDropdown.value].text
         );
-        SceneManager.LoadScene("LevelSelect");
+        // reload the scene after creating a new level to update the list of levels
+        await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 
     public void VerifyInputs() {

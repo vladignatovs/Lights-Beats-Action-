@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "id": 2,
+    "name": "In The Tigers Den",
+    "bpm": 132,
+    "audioPath": "Schtiffles - In the Tigers Den"
+  },
+  "actions": [
+    {
+      "beat": 2,
+      "times": 10,
+      "delay": -2,
+      "gObject": "Pillar",
+      "positionX": -18,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 15,
+      "scaleY": 20,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 2,
+      "times": 10,
+      "delay": -1,
+      "gObject": "Pillar",
+      "positionX": 18,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 15,
+      "scaleY": 20,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    }
+  ]
+}

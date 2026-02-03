@@ -530,6 +530,7 @@ public class ActionLineManager : MonoBehaviour {
             Layer = layer;
 
             int actionIndex = _actionCreator.Actions.IndexOf(Action);
+
             var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
             if(actionSettings.HasValue) {
                 var newActionSettings = (actionSettings.Value.Item1, actionSettings.Value.Item2, layer);

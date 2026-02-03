@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ActionCreator : MonoBehaviour {
@@ -36,8 +38,11 @@ public class ActionCreator : MonoBehaviour {
     /// Used to manually spawn in the beatLines, set the Content size and load in the Level property.
     /// </summary>
     void Awake() {
+        // If the editor was SOMEHOW opened from a state different from local, meaning 
+        // that its trying to open a level that is not local in editor, reject
+        if(StateNameManager.LatestMainMenuState != MainMenuState.Local) SceneManager.LoadScene("MainMenu");
         // Gets the id of the level in order to later find it
-        _id = StateNameManager.Level.localId;
+        _id = StateNameManager.Level.id;
         // Spawns beatLines according to the beat amount in the level
         for(int i = 0; i < StateNameManager.BeatAmount; i++) {
             Instantiate(_beatLine, _editorPanel);
@@ -67,9 +72,10 @@ public class ActionCreator : MonoBehaviour {
     void Start() {
         // Sets the value of actions list to the value of the actions list in the saved Level, found by id
         Actions = Level.actions;
-        ActionsSettings = _levelSettings.actionsSettings;
+        // ActionsSettings = _levelSettings.actionsSettings;
+        ActionsSettings = new();
 
-        _audioLineManager.audioSource.clip = Resources.Load<AudioClip>(Level.audioPath);
+        _audioLineManager.audioSource.clip = Resources.Load<AudioClip>("Audio/" + Level.audioPath);
         _audioLineManager.bpm = Level.bpm;
         //
 
@@ -120,7 +126,7 @@ public class ActionCreator : MonoBehaviour {
     #endregion
     #region ActionOptions
     public async void saveAllActions() {
-        await LevelManager.SaveLevel(Level);
+        await LocalLevelManager.SaveLevel(Level);
     }
 
     /// <summary>
@@ -151,9 +157,16 @@ public class ActionCreator : MonoBehaviour {
             }
         }
     }
+
+
+    // TODO: heavily revamp Pause Menu
+    public async void PublishLevel() {
+        Level = await ServerLevelManager.PublishLevel(Level);
+        await LocalLevelManager.SaveLevel(Level);
+    }
     
     public void DeleteLevel() {
-        LevelManager.DeleteLevel(Level.localId);
+        LocalLevelManager.DeleteLevel(Level.id);
         // Level.DeleteLevel(_id);
         // LevelCompletionsManager.DeleteLevelCompletion(_id);
         // LevelSettings.DeleteLevelSettings(_id);

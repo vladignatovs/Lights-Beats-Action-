@@ -36,7 +36,7 @@ public class BeatManager : BaseBeatManager {
     
     public override void TryEndLevel() {
         if(SongPositionInBeats/LevelEnd >= 1) {
-            _levelCompleteManager.LevelComplete(StateNameManager.Level.localId);
+            _levelCompleteManager.LevelComplete(StateNameManager.Level.id);
         }
     }
 }

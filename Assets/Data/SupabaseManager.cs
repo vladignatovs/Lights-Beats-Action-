@@ -23,6 +23,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
     // Data services
     public AuthManager Auth { get; private set; }
     public UserManager User { get; private set; }
+    public LevelManager Level { get; private set; }
 
     private async void Awake() {
         if (Instance != null && Instance != this) {
@@ -44,6 +45,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
         // Initializing all the data services
         Auth = new(Client);
         User = new(Client);
+        Level = new(Client);
 
         // Try to authenticate user
         await Auth.TryAuthenticate();

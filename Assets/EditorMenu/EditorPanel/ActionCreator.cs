@@ -30,7 +30,8 @@ public class ActionCreator : MonoBehaviour {
     public List<Action> Actions; //important VERY 
     public GameObject[] CreatableObjects; // pretty important, could try make it static
     public Level Level;
-    LevelSettings _levelSettings;
+    // TODO: put action settings as fields of actions
+    // LevelSettings _levelSettings;
     public List<(bool,bool,int)> ActionsSettings;
     int _id;
     #region Set Up
@@ -63,7 +64,6 @@ public class ActionCreator : MonoBehaviour {
             foreach(var group in action.Groups)
                 Debug.Log(group);
         }
-        _levelSettings = LevelSettings.GetLevelSettings(_id);
     }
     /// <summary>
     /// Used to set the Actions list value, audioClip and bpm to the ones in the loaded Level property. Also spawns in actionLines

@@ -38,7 +38,8 @@ public class LevelCompleteManager : MonoBehaviour {
     }
     
     public void LevelComplete(int id) {
-        LevelCompletionsManager.CompleteLevel(id);
+        // complete server and official levels via data manager
+        // LevelCompletionsManager.CompleteLevel(id);
         timer += Time.deltaTime;
         audioSource.pitch = Mathf.Lerp(pitchStart, 0, timer / duration);
         if(timer >= duration) {

@@ -198,8 +198,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1662136407}
-        m_TargetAssemblyTypeName: CreateButtonManager, Assembly-CSharp
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
         m_MethodName: VerifyInputs
         m_Mode: 1
         m_Arguments:
@@ -2410,8 +2410,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1662136407}
-        m_TargetAssemblyTypeName: CreateButtonManager, Assembly-CSharp
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
         m_MethodName: VerifyInputs
         m_Mode: 1
         m_Arguments:
@@ -3017,8 +3017,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2040061863}
-        m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
         m_MethodName: ToggleCreateLevelPanel
         m_Mode: 1
         m_Arguments:
@@ -3444,8 +3444,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1662136407}
-        m_TargetAssemblyTypeName: CreateButtonManager, Assembly-CSharp
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
         m_MethodName: VerifyInputs
         m_Mode: 1
         m_Arguments:
@@ -4001,7 +4001,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804693777}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
@@ -4061,7 +4061,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804693777}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
@@ -4154,8 +4154,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2040061863}
-        m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
         m_MethodName: ToggleCreateLevelPanel
         m_Mode: 1
         m_Arguments:
@@ -4602,7 +4602,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4947,6 +4947,8 @@ RectTransform:
   m_Children:
   - {fileID: 2745195841486993107}
   - {fileID: 1267669203}
+  - {fileID: 1940160119}
+  - {fileID: 1820659477}
   - {fileID: 1045921792}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5773,7 +5775,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1199830938
 MonoBehaviour:
@@ -5795,7 +5797,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5248415023898783801, guid: 872042a726c433d41b835ea283a01e34, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 872042a726c433d41b835ea283a01e34, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7211,7 +7213,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -7510,7 +7512,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 85, y: 85}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1474406964
 MonoBehaviour:
@@ -7585,8 +7587,6 @@ RectTransform:
   - {fileID: 143609087}
   - {fileID: 562821949}
   - {fileID: 1154607973}
-  - {fileID: 1940160119}
-  - {fileID: 1820659477}
   m_Father: {fileID: 1356069811}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7972,7 +7972,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1435477461}
   m_HandleRect: {fileID: 1435477460}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8103,7 +8103,6 @@ GameObject:
   - component: {fileID: 1662136410}
   - component: {fileID: 1662136409}
   - component: {fileID: 1662136408}
-  - component: {fileID: 1662136407}
   m_Layer: 5
   m_Name: Button (Legacy)
   m_TagString: Untagged
@@ -8131,21 +8130,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: -80, y: 100}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &1662136407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1662136405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bea3d5c22754fb64fab2e9216427dcd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _levelNameInput: {fileID: 17129823}
-  _bpmInput: {fileID: 481976931}
-  _audioDropdown: {fileID: 619362812}
 --- !u!114 &1662136408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8189,7 +8173,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1662136409}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2040061866}
+        m_TargetAssemblyTypeName: CreateLevelManager, Assembly-CSharp
+        m_MethodName: CreateLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1662136409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8789,13 +8785,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1820659476}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 210882168}
-  m_Father: {fileID: 1493302170}
+  m_Father: {fileID: 1050988441}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9646,14 +9642,14 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940160118}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1379580817}
   - {fileID: 2039716229}
   - {fileID: 808609309}
-  m_Father: {fileID: 1493302170}
+  m_Father: {fileID: 1050988441}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9680,7 +9676,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10207,6 +10203,7 @@ GameObject:
   - component: {fileID: 2040061865}
   - component: {fileID: 2040061864}
   - component: {fileID: 2040061863}
+  - component: {fileID: 2040061866}
   m_Layer: 0
   m_Name: LevelLogic
   m_TagString: Untagged
@@ -10229,7 +10226,6 @@ MonoBehaviour:
   _officialContentTransform: {fileID: 293317599}
   _officialLevelCard: {fileID: 1134274234433657047, guid: e8cb4663ca2afb9468dfe5504f67de8c, type: 3}
   _localContentTransform: {fileID: 549919415}
-  _createLevelPanel: {fileID: 1940160118}
   _localLevelCard: {fileID: 1134274234433657047, guid: b6dbe94c340874847bdb3438b5f85c41, type: 3}
   _ownedServerLevelsPanel: {fileID: 1820659476}
   _ownedServerContentTransform: {fileID: 833203094}
@@ -10264,6 +10260,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2040061866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040061861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bea3d5c22754fb64fab2e9216427dcd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreateLevelManager
+  _createLevelPanel: {fileID: 1940160118}
+  _levelNameInput: {fileID: 17129823}
+  _bpmInput: {fileID: 481976931}
+  _audioDropdown: {fileID: 619362812}
+  _createButton: {fileID: 1662136408}
 --- !u!1 &2052114641
 GameObject:
   m_ObjectHideFlags: 0

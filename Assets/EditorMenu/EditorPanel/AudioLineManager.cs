@@ -4,6 +4,8 @@ public class AudioLineManager : MonoBehaviour {
     [Header("Variables and GameObjects needed to work")]
     public AudioSource audioSource;
     public RectTransform rectTransform;
+    [SerializeField] Camera _visualizerCamera;
+    [SerializeField] RectTransform _content;
     public float bpm;
     [Header("Parameters used to work")]
     float secondsPerBeat;
@@ -15,7 +17,13 @@ public class AudioLineManager : MonoBehaviour {
     void OnEnable() {
         dspTimeAtStart = (float) AudioSettings.dspTime;
         secondsPerBeat = 60f / bpm; // Recieves the bpm from actionCreator
-        rectTransform.position = Vector3.zero;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _content,
+            Vector2.zero,
+            _visualizerCamera,
+            out var localPos
+        );
+        rectTransform.localPosition = localPos;
         float positionOffset = rectTransform.localPosition.x / 50 * secondsPerBeat; //sets the offset of the position of the line to the(100(localpositionx)/50 = 2(beats)*secondsPerBeat~1second)
         offset = Mathf.Max(0, positionOffset);
         audioSource.time = offset; //sets audio time to that value

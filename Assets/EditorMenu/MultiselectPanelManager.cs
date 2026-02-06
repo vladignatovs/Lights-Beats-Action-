@@ -3,6 +3,7 @@ using UnityEngine;
 public class MultiselectPanelManager : MonoBehaviour {
     
     [SerializeField] GameObject multiselectPanel;
+    [SerializeField] Camera _visualizerCamera;
     RectTransform multiselectRectTransform;
     public GameObject Content;
 
@@ -70,9 +71,9 @@ public class MultiselectPanelManager : MonoBehaviour {
         var _actionLines = GameObject.FindGameObjectsWithTag("ActionLine");
         foreach(var actionLine in _actionLines) {
             // helper fields used for optimization and readability
-            var actionLineTransformPos = actionLine.transform.position;
-            var actionLineX = actionLineTransformPos.x;
-            var actionLineY = actionLineTransformPos.y;
+            Vector3 screenPos = _visualizerCamera.WorldToScreenPoint(actionLine.transform.position);
+            var actionLineX = screenPos.x;
+            var actionLineY = screenPos.y;
 
             /* Main if statement, that defines if the action gets selected or not. It works like that:
                 -- actionLineX = 1, actionLineY = 1; bottomLeftCorner = (0,2), topRightCorner = (2,4) <- defines a 2x2 square

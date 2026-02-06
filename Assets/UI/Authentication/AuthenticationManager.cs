@@ -12,7 +12,6 @@ public class AuthenticationManager : AuthGated {
     [SerializeField] RectTransform _passwordGroup;
     [SerializeField] TMP_Text _errorText;
     [SerializeField] Button _confirmButton;
-    [SerializeField] Overlay _overlay;
 
     bool _signInState = true;
 
@@ -27,16 +26,16 @@ public class AuthenticationManager : AuthGated {
     protected override void Start() {
         base.Start();
         var user = SupabaseManager.Instance.Auth;
-        user.OnAuthenticationRequired += () => _overlay.ToggleOverlay(true);
-        user.OnAuthenticated += () => _overlay.ToggleOverlay(false);
-        _overlay.ToggleOverlay(!user.IsAuthenticated);
+        user.OnAuthenticationRequired += () => Overlay.ToggleOverlay(true);
+        user.OnAuthenticated += () => Overlay.ToggleOverlay(false);
+        Overlay.ToggleOverlay(!user.IsAuthenticated);
     }
 
     protected override void OnDestroy() {
         base.OnDestroy();
         var user = SupabaseManager.Instance.Auth;
-        user.OnAuthenticationRequired -= () => _overlay.ToggleOverlay(true);
-        user.OnAuthenticated -= () => _overlay.ToggleOverlay(false);
+        user.OnAuthenticationRequired -= () => Overlay.ToggleOverlay(true);
+        user.OnAuthenticated -= () => Overlay.ToggleOverlay(false);
     }
 
     void Awake() {
@@ -105,7 +104,7 @@ public class AuthenticationManager : AuthGated {
 
     // TODO: keep guest session alive, give guest an option to authenticate later
     public void Guest() {
-        _overlay.ToggleOverlay(false);
+        Overlay.ToggleOverlay(false);
         CleanUp();
         gameObject.SetActive(false);
     }

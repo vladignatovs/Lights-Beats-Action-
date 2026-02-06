@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 
 public class LogicManager : MonoBehaviour {
@@ -19,19 +18,15 @@ public class LogicManager : MonoBehaviour {
         gameOverScreen.SetActive(true);
     }
 
-    // TODO: blur
-    public void Resume() { 
-        // Camera.main.TryGetComponent<PostProcessVolume>(out var volume);
-        // volume.enabled = false;
-
+    public virtual void Resume() { 
+        Overlay.ToggleOverlay(false);
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
     }
 
-    public void Pause() {
-        // Camera.main.TryGetComponent<PostProcessVolume>(out var volume);
-        // volume.enabled = true;
+    public virtual void Pause() {
+        Overlay.ToggleOverlay(true);
         pauseMenu.SetActive(true);
         Time.timeScale = 0;
         isPaused = true;

@@ -36,9 +36,9 @@ RectTransform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 100, y: 0}
-  m_SizeDelta: {x: 5, y: 1080}
+  m_SizeDelta: {x: 5, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &8303598732967166650
 CanvasRenderer:
@@ -92,6 +92,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 3843886105673561648}
   rectTransform: {fileID: 0}
+  _visualizerCamera: {fileID: 0}
+  _content: {fileID: 0}
   bpm: 0
   songPositionInSeconds: 0
   songPositionInBeats: 0

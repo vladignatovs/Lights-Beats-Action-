@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public class ServerLevelManager : BaseLevelManager<Guid> {
+    static LevelCreator _levelCreator = new();
+    
     public override async Task<List<LevelMetadata>> LazyLoadLevels() {
-        Debug.Log("[ServerLevelManager]: fetching levels");
         return await SupabaseManager.Instance.Level.LazyLoadLevels();
     }
 
     public async Task<List<LevelMetadata>> LazyLoadOwnedLevels() {
-        Debug.Log("[ServerLevelManager]: fetching owned levels");
         return await SupabaseManager.Instance.Level.LazyLoadOwnedLevels();
     }
 
@@ -25,5 +25,15 @@ public class ServerLevelManager : BaseLevelManager<Guid> {
             Debug.LogWarning("[ServerLevelManager] " + e);
             return null;
         }
+    }
+
+    public async Task ImportLevel(Guid? serverId) {
+        var level = await SupabaseManager.Instance.Level.LoadLevel(serverId.Value);
+        level.id = _levelCreator.GetNextId();
+        await _levelCreator.WriteLevelFile(level);
+    }
+
+    public async Task DeleteLevel(Guid? serverId) {
+        await SupabaseManager.Instance.Level.DeleteLevel(serverId.Value);
     }
 }

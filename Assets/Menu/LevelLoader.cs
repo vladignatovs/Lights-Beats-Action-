@@ -1,11 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using TMPro;
 using System;
 
-public class LevelLoader : MonoBehaviour {
+public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [Header ("OfficialLevels")]
     [SerializeField] RectTransform _officialContentTransform;
     [SerializeField] GameObject _officialLevelCard;
@@ -13,7 +11,6 @@ public class LevelLoader : MonoBehaviour {
 
     [Header ("LocalLevels")]
     [SerializeField] Transform _localContentTransform;
-    [SerializeField] GameObject _createLevelPanel;
     [SerializeField] GameObject _localLevelCard;
     [SerializeField] GameObject _ownedServerLevelsPanel;
     [SerializeField] Transform _ownedServerContentTransform;
@@ -26,6 +23,7 @@ public class LevelLoader : MonoBehaviour {
 
     [Header ("Other")]
     [SerializeField] MainMenuManager _mainMenuManager;
+    [SerializeField] ConfirmationManager _confirmationManager;
 
     private void Awake() {
         _officialLevelManager = new();
@@ -33,19 +31,9 @@ public class LevelLoader : MonoBehaviour {
         _serverLevelManager = new();
     }
 
-    void Start() {
-        // handle initial state which is needed after a player exits a level
-        HandleStateChanged(StateNameManager.LatestMainMenuState);
-    }
-
-    void OnEnable() {
-        _mainMenuManager.OnStateChanged += HandleStateChanged;
-    }
-
-    void OnDisable() {
-        _mainMenuManager.OnStateChanged -= HandleStateChanged;
-    }
-
+    void Start() => HandleStateChanged(StateNameManager.LatestMainMenuState);
+    void OnEnable() => _mainMenuManager.OnStateChanged += HandleStateChanged;
+    void OnDisable() => _mainMenuManager.OnStateChanged -= HandleStateChanged;
 
     void HandleStateChanged(MainMenuState state) {
         switch (state) {
@@ -64,74 +52,61 @@ public class LevelLoader : MonoBehaviour {
     async Task LoadOfficialLevels() {
         Clear(_officialContentTransform);
 
-        var levelMetas = await _officialLevelManager.LazyLoadLevels();
-        foreach(var levelMeta in levelMetas) {
-            Button levelButton = Instantiate(_officialLevelCard, _officialContentTransform).GetComponent<Button>();
-            levelButton.onClick.AddListener(async () => await LoadSceneAsync(levelMeta));
-            levelButton.GetComponentInChildren<TMP_Text>().text = levelMeta.name;
+        var metadatas = await _officialLevelManager.LazyLoadLevels();
+        foreach(var metadata in metadatas) {
+            var cardObject = Instantiate(_officialLevelCard, _officialContentTransform);
+            if (cardObject.TryGetComponent<ILevelCard>(out var card))
+                card.Setup(metadata, this);
         }
     }
 
     async Task LoadLocalLevels() {
         Clear(_localContentTransform);
 
-        var levelMetas = await _localLevelManager.LazyLoadLevels();
-        foreach (var levelMeta in levelMetas) {
-            Button levelButton = Instantiate(_localLevelCard, _localContentTransform).GetComponent<Button>();
-            // put each new level at the top
-            levelButton.onClick.AddListener(async () => await LoadSceneAsync(levelMeta));
-            // setting the information about the level
-            var parent = levelButton.transform;
-            SetChildText(parent, "Name", levelMeta.name);
-            var button = parent.Find("ExportButton").GetComponent<Button>();
-            button.onClick.AddListener(async() => await ExportLevel(levelMeta.id));
+        var metadatas = await _localLevelManager.LazyLoadLevels();
+        foreach (var metadata in metadatas) {
+            var cardObject = Instantiate(_localLevelCard, _localContentTransform);
+            if (cardObject.TryGetComponent<ILevelCard>(out var card))
+                card.Setup(metadata, this);
         }
     }
 
-    // TODO: apply styles to goTo buttons evenly
     async Task LoadServerLevels() {
         Clear(_serverContentTransform);
 
-        var levelMetas = await _serverLevelManager.LazyLoadLevels();
-        foreach (var levelMeta in levelMetas) {
-            Button levelButton = Instantiate(_serverLevelCard, _serverContentTransform).GetComponent<Button>();
-            levelButton.onClick.AddListener(async () => await LoadSceneAsync(levelMeta));
-            // setting the information about the level
-            var parent = levelButton.transform;
-            SetChildText(parent, "Name", levelMeta.name);
-            var creatorButton = parent.Find("CreatorButton");
-            SetChildText(creatorButton, "CreatorUsername", levelMeta.creatorUsername);
-            SetChildText(parent, "Bpm", levelMeta.bpm.ToString());
-            SetChildText(parent, "AudioName", levelMeta.audioPath);
+        var metadatas = await _serverLevelManager.LazyLoadLevels();
+        foreach (var metadata in metadatas) {
+            var cardObject = Instantiate(_serverLevelCard, _serverContentTransform);
+            if (cardObject.TryGetComponent<ILevelCard>(out var card))
+                card.Setup(metadata, this);
         }
     }
 
     async Task LoadOwnedServerLevels() {
         Clear(_ownedServerContentTransform);
 
-        var levelMetas = await _serverLevelManager.LazyLoadOwnedLevels();
-        foreach (var levelMeta in levelMetas) {
-            Button levelButton = Instantiate(_serverLevelCard, _ownedServerContentTransform).GetComponent<Button>();
-            var parent = levelButton.transform;
-            SetChildText(parent, "Name", levelMeta.name);
-            var creatorButton = parent.Find("CreatorButton");
-            SetChildText(creatorButton, "CreatorUsername", levelMeta.creatorUsername);
-            SetChildText(parent, "Bpm", levelMeta.bpm.ToString());
-            SetChildText(parent, "AudioName", levelMeta.audioPath);
+        var metadatas = await _serverLevelManager.LazyLoadOwnedLevels();
+        foreach (var metadata in metadatas) {
+            var cardObject = Instantiate(_serverLevelCard, _ownedServerContentTransform);
+            if (cardObject.TryGetComponent<ILevelCard>(out var card))
+                card.Setup(metadata, this);
         }
     }
 
-    void SetChildText(Transform parent, string childName, string text) {
-        Transform child = parent.Find(childName);
-        if (child != null) {
-            TMP_Text textComponent = child.GetComponent<TMP_Text>();
-            if (textComponent != null) {
-                textComponent.text = text;
-            }
-        }
+    public async void ToggleOwnedServerPanel() {
+        var state = !_ownedServerLevelsPanel.activeSelf;
+        if(state) 
+            await LoadOwnedServerLevels();
+        _ownedServerLevelsPanel.SetActive(state);
+        Overlay.ToggleOverlay(state);
     }
 
-    async Task LoadSceneAsync(LevelMetadata levelMeta) {
+    public async void ImportLevel() {
+        await LocalLevelManager.ImportLevel();
+        await ReloadScene();
+    }
+
+    public async Task OnPlayLevel(LevelMetadata metadata) {
         try {
             await _mainMenuManager.ToGame();
         }
@@ -140,13 +115,14 @@ public class LevelLoader : MonoBehaviour {
         }
 
         // Load the audio clip
-        AudioClip audioClip = Resources.Load<AudioClip>("Audio/" + levelMeta.audioPath);
+        AudioClip audioClip = Resources.Load<AudioClip>("Audio/" + metadata.audioPath);
         StateNameManager.LoadedAudioClip = audioClip;
 
+        // TODO: MAKE OWNED SERVER LEVELS PLAYABLE AS THE GAME TRIES TO LOAD THEM AS LOCAL BECAUSE OF THE STATE
         StateNameManager.Level = StateNameManager.LatestMainMenuState switch {
-            MainMenuState.Official => await _officialLevelManager.LoadLevel(levelMeta.id),
-            MainMenuState.Local => await _localLevelManager.LoadLevel(levelMeta.id),
-            MainMenuState.Server => await _serverLevelManager.LoadLevel((Guid)levelMeta.serverId),
+            MainMenuState.Official => await _officialLevelManager.LoadLevel(metadata.id),
+            MainMenuState.Local => await _localLevelManager.LoadLevel(metadata.id),
+            MainMenuState.Server => await _serverLevelManager.LoadLevel(metadata.serverId.Value),
             _ => null
         };
 
@@ -162,24 +138,41 @@ public class LevelLoader : MonoBehaviour {
         asyncLoad.allowSceneActivation = true;
     }
 
-    public void ToggleCreateLevelPanel() {
-        _createLevelPanel.SetActive(!_createLevelPanel.activeSelf);
+    public async Task OnExportLevel(int id) {
+        await LocalLevelManager.ExportLevel(id);
     }
 
-    public async void ToggleOwnedServerPanel() {
-        var state = !_ownedServerLevelsPanel.activeSelf;
-        if(state) 
-            await LoadOwnedServerLevels();
-        _ownedServerLevelsPanel.SetActive(state);
+    public void OnPublishLevel(int id) {
+        _confirmationManager.ShowConfirmation(async () => {
+            var level = await _localLevelManager.LoadLevel(id);
+            await ServerLevelManager.PublishLevel(level);
+        });
     }
 
-    public async Task ExportLevel(int id) {
-        await _localLevelManager.ExportLevel(id);
+    public void OnDeleteLocalLevel(int id) {
+        _confirmationManager.ShowConfirmation(
+            async () => { 
+                LocalLevelManager.DeleteLevel(id); 
+                await ReloadScene();
+            });
     }
 
-    public async void ImportLevel() {
-        await _localLevelManager.ImportLevel();
-        // reload the scene to show the newly imported level
+    public void OnDeleteServerLevel(Guid id) {
+        _confirmationManager.ShowConfirmation(
+            async () => {
+                await _serverLevelManager.DeleteLevel(id);
+                await ReloadScene();
+            }
+        );
+    }
+
+    public async Task OnImportLevel(Guid id) {
+        await _serverLevelManager.ImportLevel(id);
+        _mainMenuManager.ToLocal();
+        await ReloadScene();
+    }
+
+    async Task ReloadScene() {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 

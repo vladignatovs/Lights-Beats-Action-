@@ -7,7 +7,8 @@ using UnityEngine;
 /// handles the level creations, saving, deletion
 /// </summary>
 public class LocalLevelManager : BaseLevelManager<int> {
-    LevelCreator _levelCreator = new();
+    static LevelCreator _levelCreator = new();
+    
     public override async Task<List<LevelMetadata>> LazyLoadLevels() {
         return await _levelCreator.ReadLevelFileMetadata();
     }
@@ -23,7 +24,7 @@ public class LocalLevelManager : BaseLevelManager<int> {
 
     public static async Task CreateNewLevel(string name, float bpm, string audioPath) {
         Level level = new() {
-            id = LevelCreator.GetNextId(),
+            id = _levelCreator.GetNextId(),
             name = name,
             bpm = bpm,
             audioPath = audioPath,
@@ -33,19 +34,19 @@ public class LocalLevelManager : BaseLevelManager<int> {
     }
 
     public static async Task SaveLevel(Level level) {
-        await LevelCreator.WriteLevelFile(level);
+        await _levelCreator.WriteLevelFile(level);
     }
 
     public static void DeleteLevel(int id) {
-        LevelCreator.DeleteLevelFile(id);
+        _levelCreator.DeleteLevelFile(id);
     }
 
-    public async Task ExportLevel(int id) {
+    public static async Task ExportLevel(int id) {
         var level = await _levelCreator.ReadLevelFile(id);
         await _levelCreator.ExportLevelFile(level);
     }
 
-    public async Task ImportLevel() {
+    public static async Task ImportLevel() {
         await _levelCreator.ImportLevelFile();
     }
 }

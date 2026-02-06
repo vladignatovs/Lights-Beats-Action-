@@ -107,11 +107,10 @@ public class ActionLineManager : MonoBehaviour {
         UpdateLifeTimeLine(transform);
         if(ShowTimes) {
             for(int i = 2; i <= times; i++) {
-                GameObject timesAction = Instantiate(
-                    _timesActionLine, 
-                    new Vector3(Action.Beat * 50 * (i - 1), transform.position.y, transform.position.z),
-                    Quaternion.identity);
-                timesAction.transform.SetParent(transform, false);
+                var timesAction = Instantiate(_timesActionLine, transform); // parent set immediately
+                RectTransform rt = timesAction.GetComponent<RectTransform>();
+                // anchoredPosition relative to parent
+                rt.anchoredPosition = new Vector2(Action.Beat * 50 * (i - 1), 0);
                 UpdateLifeTimeLine(timesAction.transform);
                 var actionLineColor = _actionLineImage.color;
                 timesAction.GetComponent<Image>().color = new Color(actionLineColor.r, actionLineColor.g, actionLineColor.b, .25f);
@@ -478,6 +477,7 @@ public class ActionLineManager : MonoBehaviour {
             _visualizedGameObject.GetComponent<VisualizerManager>().actionLineManager = this;
         }
 
+        // try update toggle image
         var toggleImage = _activeSelectedActionToggle.transform.GetChild(1).GetComponent<Image>();
         if(_visualizedGameObject.TryGetComponent<SpriteRenderer>(out var visualizedSpriteRenderer)) {
             toggleImage.sprite = visualizedSpriteRenderer.sprite;
@@ -490,12 +490,12 @@ public class ActionLineManager : MonoBehaviour {
     public void ShowTimesClones(bool value) {
         ShowTimes = value;
 
-        int actionIndex = _actionCreator.Actions.IndexOf(Action);
-        var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-        if(actionSettings.HasValue) {
-            var newActionSettings = (value, actionSettings.Value.Item2, actionSettings.Value.Item3);
-            _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-        }
+        // int actionIndex = _actionCreator.Actions.IndexOf(Action);
+        // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
+        // if(actionSettings.HasValue) {
+        //     var newActionSettings = (value, actionSettings.Value.Item2, actionSettings.Value.Item3);
+        //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
+        // }
 
         UpdateTimesAndLifetime(Action.Times);
     }
@@ -503,12 +503,12 @@ public class ActionLineManager : MonoBehaviour {
     public void ShowLifeTimeLine(bool value) {
         ShowLifeTime = value;
 
-        int actionIndex = _actionCreator.Actions.IndexOf(Action);
-        var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-        if(actionSettings.HasValue) {
-            var newActionSettings = (actionSettings.Value.Item1, value, actionSettings.Value.Item3);
-            _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-        }
+        // int actionIndex = _actionCreator.Actions.IndexOf(Action);
+        // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
+        // if(actionSettings.HasValue) {
+        //     var newActionSettings = (actionSettings.Value.Item1, value, actionSettings.Value.Item3);
+        //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
+        // }
 
         UpdateTimesAndLifetime(Action.Times);
     }
@@ -529,13 +529,14 @@ public class ActionLineManager : MonoBehaviour {
         if(int.TryParse(value, out int layer)) {
             Layer = layer;
 
-            int actionIndex = _actionCreator.Actions.IndexOf(Action);
+            // TODO: handle action layers
+            // int actionIndex = _actionCreator.Actions.IndexOf(Action);
 
-            var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-            if(actionSettings.HasValue) {
-                var newActionSettings = (actionSettings.Value.Item1, actionSettings.Value.Item2, layer);
-                _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-            }
+            // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
+            // if(actionSettings.HasValue) {
+            //     var newActionSettings = (actionSettings.Value.Item1, actionSettings.Value.Item2, layer);
+            //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
+            // }
         }
     }
     #endregion

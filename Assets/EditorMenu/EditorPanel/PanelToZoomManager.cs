@@ -19,7 +19,7 @@ public class PanelToZoomManager : MonoBehaviour, IScrollHandler {
         // Variables used for convinience
         var _currentScale = rectTransform.localScale.x;
         var _initialScale = initialScale.x;
-        var _currentPosition = rectTransform.position.x;
+        var _currentPosition = rectTransform.anchoredPosition.x;
         /* point of zoom equals to:
             -- the current position of the content object (-1000) 
             -- minus the mouse position (960) == (-1960)
@@ -30,9 +30,9 @@ public class PanelToZoomManager : MonoBehaviour, IScrollHandler {
         /* point of zoom is then added to the current position with each scroll wheel input, 
         which serves as a step that content object has to make in order to stay on the needed position */
         if(deltaY > 0  && _currentScale != _initialScale * maxZoom) { //scrolled in and scale not max
-            rectTransform.position += new Vector3(pointOfZoom, 0,0);
+            rectTransform.anchoredPosition += new Vector2(pointOfZoom, 0);
         } else if(deltaY < 0 && _currentScale != _initialScale) { // scrolled out and scale not min
-            rectTransform.position -= new Vector3(pointOfZoom, 0,0);
+            rectTransform.anchoredPosition -= new Vector2(pointOfZoom, 0);
         }
         var delta = Vector3.one * (deltaY * zoomSpeed);
         var desiredScale = transform.localScale + delta; //adds the recieved input converted into vector to a localScale

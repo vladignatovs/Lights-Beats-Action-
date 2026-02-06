@@ -6,25 +6,25 @@ using UnityEngine.UI;
 /// simple confirmation of any action.
 /// </summary>
 public class ConfirmationManager : MonoBehaviour {
+    [SerializeField] Button _confirmButton;
+    [SerializeField] Button _cancelButton;
     private System.Action _onConfirm;
-    private bool _initialized;
 
+    // TODO: could also pass custom text to the confirmation?
     public void ShowConfirmation(System.Action onConfirm) {
-        if (!_initialized) {
-            transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(OnYesPressed);
-            transform.Find("NoButton").GetComponent<Button>().onClick.AddListener(OnNoPressed);
-            _initialized = true;
-        }
         _onConfirm = onConfirm;
+        Overlay.ToggleOverlay(true);
         gameObject.SetActive(true);
     }
 
-    private void OnYesPressed() {
+    public void OnConfirmPressed() {
         _onConfirm?.Invoke();
+        Overlay.ToggleOverlay(false);
         gameObject.SetActive(false);
     }
 
-    private void OnNoPressed() {
+    public void OnCancelPressed() {
+        Overlay.ToggleOverlay(false);
         gameObject.SetActive(false);
     }
 }

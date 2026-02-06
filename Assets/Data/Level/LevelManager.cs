@@ -6,8 +6,7 @@ using Newtonsoft.Json.Linq;
 using Supabase;
 using UnityEngine;
 
-// TODO: implement level import/export and check for level ownership during import, 
-// copy level with ownership from server only for owner, proper styles for level buttons (includes level edit from the gotobutton, owned server level deletion), 
+// TODO:  proper styles for level buttons (includes level edit from the gotobutton, owned server level deletion), 
 // clean-up useless scenes and Levels.json file write, show level name in pause menu
 // if everythings fine then implement level search, only then would you need to finish
 // user account and its search/browse via found level, and then pick up other side-stuff like blocks, friends and bla-bla-bla
@@ -17,7 +16,7 @@ public class LevelManager : DataManager {
     public async Task<List<LevelMetadata>> LazyLoadLevels() {
         var getResponse = await _client
             .From<ServerLevelMetadata>()
-            .Select("id,creator_username,name,audio_path,bpm")
+            .Select("id,creator_id,creator_username,name,audio_path,bpm")
             .Get();
 
         return (getResponse.Models ?? new())
@@ -46,11 +45,11 @@ public class LevelManager : DataManager {
     }
 
     public async Task<Level> LoadLevel(Guid serverId) {
-        var getResonse = await _client
+        var getResponse = await _client
             .From<ServerLevel>()
             .Where(x => x.Id == serverId)
             .Get();
-        var model = getResonse.Model;
+        var model = getResponse.Model;
         return new() {
             serverId = model.Id,
             name = model.Name,
@@ -60,6 +59,13 @@ public class LevelManager : DataManager {
                 .Select(ToLocalAction)
                 .ToList(),
         };
+    }
+
+    public async Task DeleteLevel(Guid serverId) {
+        await _client
+            .From<ServerLevel>()
+            .Where(x => x.Id == serverId)
+            .Delete();
     }
 
     /// <summary>

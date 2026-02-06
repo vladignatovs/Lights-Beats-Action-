@@ -5,7 +5,6 @@ public class AccountManager : AuthGated {
     public override bool ShowOnAuth => true;
     [SerializeField] GameObject _accountPanel;
     [SerializeField] TMP_Text _usernameText;
-    [SerializeField] Overlay _overlay;
 
     protected override void Start() {
         base.Start();
@@ -24,7 +23,7 @@ public class AccountManager : AuthGated {
         _usernameText.SetText(name);
     }
     public void ToggleAccountPanel() {
-        _overlay.ToggleOverlay(!_accountPanel.activeSelf);
+        Overlay.ToggleOverlay(!_accountPanel.activeSelf);
         _accountPanel.SetActive(!_accountPanel.activeSelf);
     }
 

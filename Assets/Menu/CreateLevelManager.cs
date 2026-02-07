@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class CreateLevelManager : MonoBehaviour{
     [SerializeField] GameObject _createLevelPanel;
     [SerializeField] InputField _levelNameInput;
     [SerializeField] InputField _bpmInput;
-    [SerializeField] Dropdown _audioDropdown;
+    [SerializeField] TMP_Dropdown _audioDropdown;
     [SerializeField] Button _createButton;
 
     public async void CreateLevel() {

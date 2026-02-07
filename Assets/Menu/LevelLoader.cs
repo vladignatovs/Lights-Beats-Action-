@@ -93,6 +93,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         }
     }
 
+    // TODO: change this to a filter for fuzzy search
     public async void ToggleOwnedServerPanel() {
         var state = !_ownedServerLevelsPanel.activeSelf;
         if(state) 
@@ -115,10 +116,10 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         }
 
         // Load the audio clip
+        Debug.Log("[LevelLoader]: " + metadata.audioPath);
         AudioClip audioClip = Resources.Load<AudioClip>("Audio/" + metadata.audioPath);
         StateNameManager.LoadedAudioClip = audioClip;
 
-        // TODO: MAKE OWNED SERVER LEVELS PLAYABLE AS THE GAME TRIES TO LOAD THEM AS LOCAL BECAUSE OF THE STATE
         StateNameManager.Level = StateNameManager.LatestMainMenuState switch {
             MainMenuState.Official => await _officialLevelManager.LoadLevel(metadata.id),
             MainMenuState.Local => await _localLevelManager.LoadLevel(metadata.id),
@@ -145,6 +146,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     public void OnPublishLevel(int id) {
         _confirmationManager.ShowConfirmation(async () => {
             var level = await _localLevelManager.LoadLevel(id);
+            Debug.Log("[LevelLoader]" + level.serverId);
             await ServerLevelManager.PublishLevel(level);
         });
     }
@@ -153,14 +155,46 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _confirmationManager.ShowConfirmation(
             async () => { 
                 LocalLevelManager.DeleteLevel(id); 
+                _mainMenuManager.ToLocal();
                 await ReloadScene();
             });
+    }
+
+    public async Task OnUpdateLevelName(int id, string value) {
+        if (string.IsNullOrWhiteSpace(value)) return;
+
+        var level = await _localLevelManager.LoadLevel(id);
+        if (level == null || level.name == value) return;
+        level.name = value;
+        await LocalLevelManager.SaveLevel(level);
+    }
+
+    public async Task OnUpdateLevelAudioPath(int id, string value) {
+        if (string.IsNullOrWhiteSpace(value)) return;
+
+        var level = await _localLevelManager.LoadLevel(id);
+        if (level == null || level.audioPath == value) return;
+        level.audioPath = value;
+        await LocalLevelManager.SaveLevel(level);
+        await ReloadScene();
+    }
+
+    public async Task OnUpdateLevelBpm(int id, string value) {
+        if (!value.FloatTryParse(out var bpm)) return;
+
+        var level = await _localLevelManager.LoadLevel(id);
+        // instead of comparing bpms directly we compare their differences to account for inconsistencies
+        if (level == null || Math.Abs(level.bpm - bpm) < 0.001f) return;
+
+        level.bpm = bpm;
+        await LocalLevelManager.SaveLevel(level);
     }
 
     public void OnDeleteServerLevel(Guid id) {
         _confirmationManager.ShowConfirmation(
             async () => {
                 await _serverLevelManager.DeleteLevel(id);
+                _mainMenuManager.ToServer();
                 await ReloadScene();
             }
         );

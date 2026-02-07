@@ -10,6 +10,9 @@ public interface ILevelCardCallbacks {
     Task OnExportLevel(int id);
     void OnPublishLevel(int id);
     void OnDeleteLocalLevel(int id);
+    Task OnUpdateLevelName(int id, string value);
+    Task OnUpdateLevelAudioPath(int id, string value);
+    Task OnUpdateLevelBpm(int id, string value);
     Task OnImportLevel(Guid id);
     void OnDeleteServerLevel(Guid id);
 }

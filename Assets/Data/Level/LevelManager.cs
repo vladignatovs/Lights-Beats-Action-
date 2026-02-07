@@ -95,6 +95,8 @@ public class LevelManager : DataManager {
             })
         };
 
+        Debug.Log("[LevelManager]: " + level.serverId.Value);
+
         // if there is a server id, try to update the connected server level, if cant, fallback and create a new level
         if(level.serverId.HasValue) {
             try {

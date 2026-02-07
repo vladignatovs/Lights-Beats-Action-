@@ -1,13 +1,18 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AudioDropdownManager : MonoBehaviour {
+    [SerializeField] TMP_Dropdown dropdown;
     AudioClip[] audioClips;
-    public Dropdown dropdown;
+    bool _isPopulated;
 
-    void Start() {
-        dropdown = GetComponent<Dropdown>();
+    void Awake() {
+        EnsurePopulated();
+    }
+
+    public void EnsurePopulated() {
+        if(_isPopulated) return;
         var options = new List<string>();
         audioClips = Resources.LoadAll<AudioClip>("Audio/");
         dropdown.ClearOptions();
@@ -16,6 +21,6 @@ public class AudioDropdownManager : MonoBehaviour {
             options.Add(clip.name);
         }
         dropdown.AddOptions(options);
-        //what
+        _isPopulated = true;
     }
 }

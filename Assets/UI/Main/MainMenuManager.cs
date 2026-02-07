@@ -29,9 +29,11 @@ public class MainMenuManager : MonoBehaviour {
             // play animation out of game
             GameTo();
             await MoveToCenter(0.75f);
-            // else if the last state was local and it wasnt a game, meaning it was a restart, so hardcoded play locallevelmenu
+            // TODO: figure out restarts with the animator states, currently hardcoded
         } else if (StateNameManager.LatestMainMenuState == MainMenuState.Local) {
             _mainMenuAnimator.Play("LocalLevelMenu");
+        } else if (StateNameManager.LatestMainMenuState == MainMenuState.Server) {
+            _mainMenuAnimator.Play("ServerLevelMenu");
         }
     }
 
@@ -79,14 +81,11 @@ public class MainMenuManager : MonoBehaviour {
     }
 
     public void SetState(MainMenuState newState, bool skipAnimation = false) {
-        // if the state is already persisted, skip
-        if (StateNameManager.LatestMainMenuState == newState) return;
-
+        bool stateChanged = StateNameManager.LatestMainMenuState != newState;
         StateNameManager.LatestMainMenuState = newState;
-        _mainMenuAnimator.SetInteger("MainMenuState", (int)newState);
-
-        OnStateChanged?.Invoke(newState);
-
+        _mainMenuAnimator.SetInteger("MainMenuState", (int)newState); // Always sync animator
+        // Only fire event if state actually changed
+        if (stateChanged) OnStateChanged?.Invoke(newState);
         if (skipAnimation) _mainMenuAnimator.Update(0f);
     }
 

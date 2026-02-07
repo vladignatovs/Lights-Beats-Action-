@@ -75,17 +75,51 @@ public class LevelCreator {
         return levelFileMetadata?.Meta;
     }
 
+    /// <summary>
+    /// Read only the level metadata of all local levels
+    /// </summary>
+    /// <returns></returns>
     public async Task<List<LevelMetadata>> ReadLevelFileMetadata() {
-        var levels = new List<LevelMetadata>();
         if (!Directory.Exists(LevelsFolder)) {
             Debug.LogWarning("Levels folder not found");
-            return levels;
+            return new();
         }
         string[] files = Directory.GetFiles(LevelsFolder, "*.lvl", SearchOption.TopDirectoryOnly);
         var tasks = files.Select(file => ReadLevelFileMetadata(file));
         var results = await Task.WhenAll(tasks);
         
         return results.Where(x => x != null).ToList();
+    }
+    
+    /// <summary>
+    /// Read only the level metadata files for a specific page (offset + limit)
+    /// Uses EnumerateFiles for lazy evaluation - only iterates through file paths once
+    /// </summary>
+    public async Task<(List<LevelMetadata> items, int totalCount)> ReadLevelFileMetadata(int offset, int limit) {
+        if (!Directory.Exists(LevelsFolder)) {
+            Debug.LogWarning("Levels folder not found");
+            return (new(), 0);
+        }
+        
+        // Use EnumerateFiles for lazy evaluation
+        var filePaths = Directory.EnumerateFiles(LevelsFolder, "*.lvl", SearchOption.TopDirectoryOnly);
+        
+        // Count total while collecting only the page we need (single pass)
+        int totalCount = 0;
+        var pagePaths = new List<string>();
+        
+        foreach (var path in filePaths) {
+            if (totalCount >= offset && totalCount < offset + limit) {
+                pagePaths.Add(path);
+            }
+            totalCount++;
+        }
+        
+        // Only read the metadata for files in this page
+        var tasks = pagePaths.Select(path => ReadLevelFileMetadata(path));
+        var results = await Task.WhenAll(tasks);
+        
+        return (results.Where(x => x != null).ToList(), totalCount);
     }
 
     public async Task WriteLevelFile(Level level, string path) {
@@ -125,7 +159,7 @@ public class LevelCreator {
 
     public async Task ExportLevelFile(Level level) {
         var path = StandaloneFileBrowser.SaveFilePanel("Open Files", "", level.name, extensions);
-        if (path == null) return;
+        if (string.IsNullOrWhiteSpace(path)) return;
         // write the level file
         await WriteLevelFile(level, path);
     }

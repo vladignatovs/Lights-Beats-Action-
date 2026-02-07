@@ -5,23 +5,35 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Supabase;
 using UnityEngine;
+using static Supabase.Postgrest.Constants;
 
-// TODO:  proper styles for level buttons (includes level edit from the gotobutton, owned server level deletion), 
-// clean-up useless scenes and Levels.json file write, show level name in pause menu
+// TODO: show level name in pause menu
 // if everythings fine then implement level search, only then would you need to finish
 // user account and its search/browse via found level, and then pick up other side-stuff like blocks, friends and bla-bla-bla
 public class LevelManager : DataManager {
     public LevelManager(Client client) : base(client) {}
 
-    public async Task<List<LevelMetadata>> LazyLoadLevels() {
-        var getResponse = await _client
-            .From<ServerLevelMetadata>()
+    /// <summary>
+    /// Load levels with server-side pagination using Range
+    /// </summary>
+    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(int offset, int limit) {
+        var table = _client.From<ServerLevelMetadata>();
+        var getTask = table
             .Select("id,creator_id,creator_username,name,audio_path,bpm")
+            .Range(offset, offset + limit - 1)
             .Get();
+        var countTask = table.Count(CountType.Exact); // TODO: might rethink this approach for scalability
+        // run both pagination and count queries in parallel
+        await Task.WhenAll(getTask, countTask);
 
-        return (getResponse.Models ?? new())
+        var response = await getTask;
+        int totalCount = await countTask;
+
+        var items = (response.Models ?? new())
             .Select(ToLocalLevelMetadata)
             .ToList();
+
+        return (items, totalCount);
     }
 
     public async Task<List<LevelMetadata>> LazyLoadOwnedLevels() {
@@ -36,7 +48,7 @@ public class LevelManager : DataManager {
         var getResponse = await _client
             .From<ServerLevelMetadata>()
             .Select("id,creator_id,creator_username,name,audio_path,bpm")
-            .Filter("creator_id", Supabase.Postgrest.Constants.Operator.Equals, userId)
+            .Filter("creator_id", Operator.Equals, userId)
             .Get();
 
         return (getResponse.Models ?? new())
@@ -94,8 +106,6 @@ public class LevelManager : DataManager {
                 Groups = new JArray(a.Groups)
             })
         };
-
-        Debug.Log("[LevelManager]: " + level.serverId.Value);
 
         // if there is a server id, try to update the connected server level, if cant, fallback and create a new level
         if(level.serverId.HasValue) {

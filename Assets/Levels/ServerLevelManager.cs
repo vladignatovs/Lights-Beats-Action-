@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ServerLevelManager : BaseLevelManager<Guid> {
+public class ServerLevelManager {
     static LevelCreator _levelCreator = new();
-    
-    public override async Task<List<LevelMetadata>> LazyLoadLevels() {
-        return await SupabaseManager.Instance.Level.LazyLoadLevels();
+
+    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(int offset, int limit) {
+        return await SupabaseManager.Instance.Level.LazyLoadLevels(offset, limit);
     }
 
     public async Task<List<LevelMetadata>> LazyLoadOwnedLevels() {
         return await SupabaseManager.Instance.Level.LazyLoadOwnedLevels();
     }
 
-    public override async Task<Level> LoadLevel(Guid serverId) {
+    public async Task<Level> LoadLevel(Guid serverId) {
         return await SupabaseManager.Instance.Level.LoadLevel(serverId);
     }
 

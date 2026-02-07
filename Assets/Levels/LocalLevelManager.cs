@@ -6,14 +6,14 @@ using UnityEngine;
 /// Handles the logic of CRUD of the Local Levels, e.g. levels created by the user and stored locally on the machine of the user
 /// handles the level creations, saving, deletion
 /// </summary>
-public class LocalLevelManager : BaseLevelManager<int> {
+public class LocalLevelManager {
     static LevelCreator _levelCreator = new();
     
-    public override async Task<List<LevelMetadata>> LazyLoadLevels() {
-        return await _levelCreator.ReadLevelFileMetadata();
+    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(int offset, int limit) {
+        return await _levelCreator.ReadLevelFileMetadata(offset, limit);
     }
 
-    public override async Task<Level> LoadLevel(int id) {
+    public async Task<Level> LoadLevel(int id) {
         try {
             return await _levelCreator.ReadLevelFile(id);
         } catch {

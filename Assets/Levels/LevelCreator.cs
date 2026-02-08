@@ -101,6 +101,8 @@ public class LevelCreator {
             return (new(), 0);
         }
         
+        // TODO: enumerate files returns files by alphabetic order, so 19.lvl comes before 2.lvl, hence the unexpected sorting of levels
+        // should be fixed to show in creation order
         // Use EnumerateFiles for lazy evaluation
         var filePaths = Directory.EnumerateFiles(LevelsFolder, "*.lvl", SearchOption.TopDirectoryOnly);
         

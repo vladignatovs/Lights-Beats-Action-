@@ -69,11 +69,7 @@ public class DashManager : MonoBehaviour {
         - fix dying in playtest mode accidentaly making you create a new action;
         - optimize editor loading. 
     */
-
     // DONT FORGET TO WRITE UP EVERYTHING ON THE WAY, MAKE PLANS AND THINK THINGS THROUGH.
-    // TODO: CONTINUE WORKING ON DATABASE INTEGRATION. Create new tables for each jsonfile (LevelSettings, LevelCompletions), 
-    // find solutions for the data saved in them. Then integrate account scene into main menu and add more functionality to the accounts, 
-    // like different rights, indepth account control. 
     
     IEnumerator dash() {
         playerHit.dashImmunity = true;

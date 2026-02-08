@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using TMPro;
+using JetBrains.Annotations;
 
 public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [Header ("OfficialLevels")]
@@ -17,191 +16,95 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [SerializeField] GameObject _localLevelCard;
     [SerializeField] GameObject _ownedServerLevelsPanel;
     [SerializeField] Transform _ownedServerContentTransform;
-    [SerializeField] Button _localPreviousButton;
-    [SerializeField] Button _localNextButton;
-    [SerializeField] TMP_InputField _localPageInput;
-    [SerializeField] TMP_Text _localPageText;
+    [SerializeField] LevelPaginationManager _localPaginationManager;
     LocalLevelManager _localLevelManager;
 
     [Header ("ServerLevels")]
     [SerializeField] Transform _serverContentTransform;
     [SerializeField] GameObject _serverLevelCard;
-    [SerializeField] Button _serverPreviousButton;
-    [SerializeField] Button _serverNextButton;
-    [SerializeField] TMP_InputField _serverPageInput;
-    [SerializeField] TMP_Text _serverPageText;
+    [SerializeField] LevelPaginationManager _serverPaginationManager;
     ServerLevelManager _serverLevelManager;
 
     [Header ("Other")]
     [SerializeField] MainMenuManager _mainMenuManager;
     [SerializeField] ConfirmationManager _confirmationManager;
-    PaginationManager _paginationManager;
 
     private void Awake() {
         _officialLevelManager = new();
         _localLevelManager = new();
         _serverLevelManager = new();
-        _paginationManager = new(
-            _localLevelManager,
-            _serverLevelManager
-        );
+
+        // Provide the pagination managers with a page provider
+        _localPaginationManager.Initialize(_localLevelManager);
+        _serverPaginationManager.Initialize(_serverLevelManager);
     }
 
-    void Start() => HandleStateChanged(StateNameManager.LatestMainMenuState);
+    async void Start() {
+        // On start, load persisted page
+        int pageToLoad = StateNameManager.LastLevelPage;
+        // TODO: might want to try and preserve the opened page on reload of the scene?
+        StateNameManager.LastLevelPage = 0; // clear persisted to account for reloading to show 0 page
+        await LoadCurrentState(pageToLoad);
+    }
     
     void OnEnable() {
         _mainMenuManager.OnStateChanged += HandleStateChanged;
         
-        // Local level pagination
-        _localPreviousButton.onClick.AddListener(OnLocalPreviousClicked);
-        _localNextButton.onClick.AddListener(OnLocalNextClicked);
-        _localPageInput.onEndEdit.AddListener(OnLocalPageInputChanged);
-        
-        // Server level pagination
-        _serverPreviousButton.onClick.AddListener(OnServerPreviousClicked);
-        _serverNextButton.onClick.AddListener(OnServerNextClicked);
-        _serverPageInput.onEndEdit.AddListener(OnServerPageInputChanged);
+        // Subscribe to pagination events
+        _localPaginationManager.OnPageLoaded += OnLocalPageLoaded;
+        _serverPaginationManager.OnPageLoaded += OnServerPageLoaded;
     }
     
     void OnDisable() {
         _mainMenuManager.OnStateChanged -= HandleStateChanged;
         
-        // Local level pagination
-        _localPreviousButton.onClick.RemoveListener(OnLocalPreviousClicked);
-        _localNextButton.onClick.RemoveListener(OnLocalNextClicked);
-        _localPageInput.onEndEdit.RemoveListener(OnLocalPageInputChanged);
-        
-        // Server level pagination
-        _serverPreviousButton.onClick.RemoveListener(OnServerPreviousClicked);
-        _serverNextButton.onClick.RemoveListener(OnServerNextClicked);
-        _serverPageInput.onEndEdit.RemoveListener(OnServerPageInputChanged);
+        // Unsubscribe from pagination events
+        _localPaginationManager.OnPageLoaded -= OnLocalPageLoaded;
+        _serverPaginationManager.OnPageLoaded -= OnServerPageLoaded;
     }
 
     async void HandleStateChanged(MainMenuState state) {
-        _paginationManager.GoToPage(0); // TODO: try to preserve the last opened page
-        await LoadAndRenderCurrentPage();
-        
-        // Update pagination UI for the current state
-        if (state == MainMenuState.Local) {
-            UpdateLocalPaginationUI();
-        } else if (state == MainMenuState.Server) {
-            UpdateServerPaginationUI();
-        }
-    }
-
-    async void OnLocalNextClicked() {
-        _paginationManager.GoToNextPage();
-        await LoadAndRenderCurrentPage();
-        UpdateLocalPaginationUI();
-    }
-
-    async void OnLocalPreviousClicked() {
-        _paginationManager.GoToPreviousPage();
-        await LoadAndRenderCurrentPage();
-        UpdateLocalPaginationUI();
+        await LoadCurrentState(0);
     }
     
-    async void OnLocalPageInputChanged(string value) {
-        if (!int.TryParse(value, out int pageNumber)) {
-            // Invalid input, reset to current page
-            UpdateLocalPaginationUI();
-            return;
-        }
-        
-        // Convert from 1-indexed (display) to 0-indexed (internal)
-        int targetPage = pageNumber - 1;
-        
-        // Clamp to valid range
-        int totalPages = _paginationManager.GetLocalTotalPages();
-        targetPage = Math.Max(0, Math.Min(targetPage, totalPages - 1));
-        
-        // Go to the page
-        _paginationManager.GoToPage(targetPage);
-        await LoadAndRenderCurrentPage();
-        UpdateLocalPaginationUI();
-    }
-    
-    void UpdateLocalPaginationUI() {
-        int totalPages = _paginationManager.GetLocalTotalPages();
-        int currentPage = _paginationManager.CurrentPage + 1; // Display as 1-indexed
-        
-        _localPageInput.text = currentPage.ToString();
-        _localPageText.text = totalPages.ToString();
-        _localPreviousButton.interactable = _paginationManager.CurrentPage > 0;
-        _localNextButton.interactable = _paginationManager.CurrentPage < totalPages - 1;
-    }
-    
-    async void OnServerNextClicked() {
-        _paginationManager.GoToNextPage();
-        await LoadAndRenderCurrentPage();
-        UpdateServerPaginationUI();
-    }
-
-    async void OnServerPreviousClicked() {
-        _paginationManager.GoToPreviousPage();
-        await LoadAndRenderCurrentPage();
-        UpdateServerPaginationUI();
-    }
-    
-    async void OnServerPageInputChanged(string value) {
-        if (!int.TryParse(value, out int pageNumber)) {
-            // Invalid input, reset to current page
-            UpdateServerPaginationUI();
-            return;
-        }
-        
-        // Convert from 1-indexed (display) to 0-indexed (internal)
-        int targetPage = pageNumber - 1;
-        
-        // Clamp to valid range
-        int totalPages = _paginationManager.GetServerTotalPages();
-        targetPage = Math.Max(0, Math.Min(targetPage, totalPages - 1));
-        
-        // Go to the page
-        _paginationManager.GoToPage(targetPage);
-        await LoadAndRenderCurrentPage();
-        UpdateServerPaginationUI();
-    }
-    
-    void UpdateServerPaginationUI() {
-        int totalPages = _paginationManager.GetServerTotalPages();
-        int currentPage = _paginationManager.CurrentPage + 1; // Display as 1-indexed
-        
-        _serverPageInput.text = currentPage.ToString();
-        _serverPageText.text = totalPages.ToString();
-        _serverPreviousButton.interactable = _paginationManager.CurrentPage > 0;
-        _serverNextButton.interactable = _paginationManager.CurrentPage < totalPages - 1;
-    }
-
-    async Task LoadAndRenderCurrentPage() {
-        List<LevelMetadata> metadatas;
-        Transform contentTransform;
-        GameObject cardPrefab;
-
+    async Task LoadCurrentState(int pageNumber) {
         switch (StateNameManager.LatestMainMenuState) {
             case MainMenuState.Official:
-                metadatas = await _officialLevelManager.LazyLoadLevels();
-                contentTransform = _officialContentTransform;
-                cardPrefab = _officialLevelCard;
+                await LoadOfficialLevels();
                 break;
-                
             case MainMenuState.Local:
-                metadatas = await _paginationManager.GetLocalLevelsPage();
-                contentTransform = _localContentTransform;
-                cardPrefab = _localLevelCard;
+                await _localPaginationManager.GoToPage(pageNumber);
                 break;
-                
             case MainMenuState.Server:
-                metadatas = await _paginationManager.GetServerLevelsPage();
-                contentTransform = _serverContentTransform;
-                cardPrefab = _serverLevelCard;
+                await _serverPaginationManager.GoToPage(pageNumber);
                 break;
-                
-            default:
-                return;
         }
+    }
 
-        Clear(contentTransform);
+    void OnLocalPageLoaded(List<LevelMetadata> metadatas) {
+        RenderLevelCards(metadatas, _localLevelCard, _localContentTransform);
+    }
+
+    void OnServerPageLoaded(List<LevelMetadata> metadatas) {
+        RenderLevelCards(metadatas, _serverLevelCard, _serverContentTransform);
+    }
+
+    async Task LoadOfficialLevels() {
+        var metadatas = await _officialLevelManager.LazyLoadLevels();
+        RenderLevelCards(metadatas, _officialLevelCard, _officialContentTransform);
+    }
+
+    async Task LoadOwnedServerLevels() {
+        var metadatas = await _serverLevelManager.LazyLoadOwnedLevels();
+        RenderLevelCards(metadatas, _serverLevelCard, _ownedServerContentTransform);
+    }
+
+    void RenderLevelCards(List<LevelMetadata> metadatas, GameObject cardPrefab, Transform contentTransform) {
+        // clear the content of previously loaded children
+        for (int i = contentTransform.childCount - 1; i >= 0; i--) {
+            Destroy(contentTransform.GetChild(i).gameObject);
+        }
+        // load in the newly fetched ones
         foreach (var metadata in metadatas) {
             var cardObject = Instantiate(cardPrefab, contentTransform);
             if (cardObject.TryGetComponent<ILevelCard>(out var card))
@@ -209,29 +112,8 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         }
     }
 
-    // async Task LoadServerLevels() {
-    //     Clear(_serverContentTransform);
-
-    //     var metadatas = await _serverLevelManager.LazyLoadLevels();
-    //     foreach (var metadata in metadatas) {
-    //         var cardObject = Instantiate(_serverLevelCard, _serverContentTransform);
-    //         if (cardObject.TryGetComponent<ILevelCard>(out var card))
-    //             card.Setup(metadata, this);
-    //     }
-    // }
-
-    async Task LoadOwnedServerLevels() {
-        Clear(_ownedServerContentTransform);
-
-        var metadatas = await _serverLevelManager.LazyLoadOwnedLevels();
-        foreach (var metadata in metadatas) {
-            var cardObject = Instantiate(_serverLevelCard, _ownedServerContentTransform);
-            if (cardObject.TryGetComponent<ILevelCard>(out var card))
-                card.Setup(metadata, this);
-        }
-    }
-
     // TODO: change this to a filter for fuzzy search
+    [UsedImplicitly]
     public async void ToggleOwnedServerPanel() {
         var state = !_ownedServerLevelsPanel.activeSelf;
         if(state) 
@@ -240,12 +122,24 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         Overlay.ToggleOverlay(state);
     }
 
+    [UsedImplicitly]
     public async void ImportLevel() {
         await LocalLevelManager.ImportLevel();
-        await ReloadScene();
+        await _localPaginationManager.ReloadPage();
     }
 
+#region Level Card Callbacks
     public async Task OnPlayLevel(LevelMetadata metadata) {
+        // Save the current page before leaving to play level
+        switch (StateNameManager.LatestMainMenuState) {
+            case MainMenuState.Local:
+                _localPaginationManager.PersistCurrentPage();
+                break;
+            case MainMenuState.Server:
+                _serverPaginationManager.PersistCurrentPage();
+                break;
+        }
+        
         try {
             await _mainMenuManager.ToGame();
         }
@@ -284,9 +178,9 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     public void OnPublishLevel(int id) {
         _confirmationManager.ShowConfirmation(async () => {
             var level = await _localLevelManager.LoadLevel(id);
-            Debug.Log("[LevelLoader]" + level.serverId);
             level = await ServerLevelManager.PublishLevel(level);
             await LocalLevelManager.SaveLevel(level); // save the level as publishlevel might strip the serverid
+            await _serverPaginationManager.ReloadPage();
         });
     }
 
@@ -294,8 +188,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _confirmationManager.ShowConfirmation(
             async () => { 
                 LocalLevelManager.DeleteLevel(id); 
-                _mainMenuManager.ToLocal();
-                await ReloadScene();
+                await _localPaginationManager.ReloadPage();
             });
     }
 
@@ -315,7 +208,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         if (level == null || level.audioPath == value) return;
         level.audioPath = value;
         await LocalLevelManager.SaveLevel(level);
-        await ReloadScene();
+        await _localPaginationManager.ReloadPage();
     }
 
     public async Task OnUpdateLevelBpm(int id, string value) {
@@ -333,8 +226,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _confirmationManager.ShowConfirmation(
             async () => {
                 await _serverLevelManager.DeleteLevel(id);
-                _mainMenuManager.ToServer();
-                await ReloadScene();
+                await _serverPaginationManager.ReloadPage();
             }
         );
     }
@@ -344,14 +236,9 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _mainMenuManager.ToLocal();
         await ReloadScene();
     }
+#endregion
 
     async Task ReloadScene() {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
-    }
-
-    void Clear(Transform transform) {
-        for (int i = transform.childCount - 1; i >= 0; i--) {
-            Destroy(transform.GetChild(i).gameObject);
-        }
     }
 }

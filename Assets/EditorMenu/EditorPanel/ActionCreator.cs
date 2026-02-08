@@ -181,7 +181,6 @@ public class ActionCreator : MonoBehaviour {
         }
     }
 
-
     // TODO: heavily revamp Pause Menu
     public async void PublishLevel() {
         Level = await ServerLevelManager.PublishLevel(Level);

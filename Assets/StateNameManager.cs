@@ -6,4 +6,5 @@ public class StateNameManager {
     public static AudioClip LoadedAudioClip;
     public static Vector2 PlayerPosition = Vector2.zero;
     public static MainMenuState LatestMainMenuState;
+    public static int LastLevelPage = 0;
 }

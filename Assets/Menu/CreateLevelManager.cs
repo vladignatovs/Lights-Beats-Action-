@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using JetBrains.Annotations;
 
 public class CreateLevelManager : MonoBehaviour{
     [SerializeField] GameObject _createLevelPanel;
@@ -10,6 +11,7 @@ public class CreateLevelManager : MonoBehaviour{
     [SerializeField] TMP_Dropdown _audioDropdown;
     [SerializeField] Button _createButton;
 
+    [UsedImplicitly]
     public async void CreateLevel() {
         await LocalLevelManager.CreateNewLevel(
             _levelNameInput.text,
@@ -20,12 +22,14 @@ public class CreateLevelManager : MonoBehaviour{
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 
+    [UsedImplicitly]
     public void ToggleCreateLevelPanel() {
         var state = !_createLevelPanel.activeSelf;
         _createLevelPanel.SetActive(state);
         Overlay.ToggleOverlay(state);
     }
 
+    [UsedImplicitly]
     public void VerifyInputs() {
         _createButton.interactable = _levelNameInput.text.Length > 0 && _bpmInput.text.Length > 0 && _audioDropdown.value != 0;
     }

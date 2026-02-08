@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ServerLevelManager {
+public class ServerLevelManager : IPageProvider<LevelMetadata> {
     static LevelCreator _levelCreator = new();
 
-    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(int offset, int limit) {
-        return await SupabaseManager.Instance.Level.LazyLoadLevels(offset, limit);
+    public async Task<(List<LevelMetadata> items, int totalCount)> LoadPage(int offset, int pageSize) {
+        return await SupabaseManager.Instance.Level.LazyLoadLevels(offset, pageSize);
     }
 
     public async Task<List<LevelMetadata>> LazyLoadOwnedLevels() {

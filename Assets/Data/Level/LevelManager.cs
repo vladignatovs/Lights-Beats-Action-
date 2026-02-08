@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Supabase;
+using Supabase.Postgrest.Interfaces;
 using UnityEngine;
 using static Supabase.Postgrest.Constants;
 
@@ -13,16 +14,32 @@ using static Supabase.Postgrest.Constants;
 public class LevelManager : DataManager {
     public LevelManager(Client client) : base(client) {}
 
-    /// <summary>
-    /// Load levels with server-side pagination using Range
-    /// </summary>
-    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(int offset, int limit) {
+    public async Task<(List<LevelMetadata> items, int totalCount)> LazyLoadLevels(
+        int offset, 
+        int limit, 
+        List<IDataFilter<ServerLevelMetadata>> filters = null
+    ) {
         var table = _client.From<ServerLevelMetadata>();
-        var getTask = table
-            .Select("id,creator_id,creator_username,name,audio_path,bpm")
-            .Range(offset, offset + limit - 1)
-            .Get();
-        var countTask = table.Count(CountType.Exact); // TODO: might rethink this approach for scalability
+        var query = table.Select("id,creator_id,creator_username,name,audio_path,bpm");
+
+        // Apply filters to the query
+        if (filters != null) {
+            foreach (var filter in filters) {
+                query = filter.Apply(query);
+            }
+        }
+
+        // Build separate count query with same filters
+        IPostgrestTable<ServerLevelMetadata> countQuery = _client.From<ServerLevelMetadata>();
+        if (filters != null) {
+            foreach (var filter in filters) {
+                countQuery = filter.Apply(countQuery);
+            }
+        }
+        
+        var getTask = query.Range(offset, offset + limit - 1).Get();
+        var countTask = countQuery.Count(CountType.Exact); // TODO: might rethink this approach for scalability
+        
         // run both pagination and count queries in parallel
         await Task.WhenAll(getTask, countTask);
 
@@ -34,26 +51,6 @@ public class LevelManager : DataManager {
             .ToList();
 
         return (items, totalCount);
-    }
-
-    public async Task<List<LevelMetadata>> LazyLoadOwnedLevels() {
-        var userId = _client.Auth.CurrentUser?.Id;
-
-        if (string.IsNullOrEmpty(userId)) {
-            Debug.LogWarning("[LevelManager] User not authenticated");
-            return new();
-        }
-
-        // Query only levels created by the current user
-        var getResponse = await _client
-            .From<ServerLevelMetadata>()
-            .Select("id,creator_id,creator_username,name,audio_path,bpm")
-            .Filter("creator_id", Operator.Equals, userId)
-            .Get();
-
-        return (getResponse.Models ?? new())
-            .Select(ToLocalLevelMetadata)
-            .ToList();
     }
 
     public async Task<Level> LoadLevel(Guid serverId) {

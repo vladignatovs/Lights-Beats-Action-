@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 /// </summary>
 /// <typeparam name="T">Type of data to be provided to the pagination</typeparam>
 public interface IPageProvider<T> {
-    Task<(List<T> items, int totalCount)> LoadPage(int offset, int pageSize);
+    Task<(List<T> items, int totalCount)> LoadPage(int offset, int pageSize, List<IFilter> filters = null);
 }

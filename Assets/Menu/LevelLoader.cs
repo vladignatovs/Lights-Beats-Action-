@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TMPro;
+using System.Linq;
+using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [Header ("OfficialLevels")]
@@ -14,8 +17,6 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [Header ("LocalLevels")]
     [SerializeField] Transform _localContentTransform;
     [SerializeField] GameObject _localLevelCard;
-    [SerializeField] GameObject _ownedServerLevelsPanel;
-    [SerializeField] Transform _ownedServerContentTransform;
     [SerializeField] LevelPaginationManager _localPaginationManager;
     LocalLevelManager _localLevelManager;
 
@@ -23,6 +24,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [SerializeField] Transform _serverContentTransform;
     [SerializeField] GameObject _serverLevelCard;
     [SerializeField] LevelPaginationManager _serverPaginationManager;
+    [SerializeField] ServerLevelFilterPanel _serverFilterPanel;
     ServerLevelManager _serverLevelManager;
 
     [Header ("Other")]
@@ -37,6 +39,9 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         // Provide the pagination managers with a page provider
         _localPaginationManager.Initialize(_localLevelManager);
         _serverPaginationManager.Initialize(_serverLevelManager);
+
+        // Initialize filter panel with pagination manager
+        _serverFilterPanel.Initialize(_serverPaginationManager);
     }
 
     async void Start() {
@@ -94,11 +99,6 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         RenderLevelCards(metadatas, _officialLevelCard, _officialContentTransform);
     }
 
-    async Task LoadOwnedServerLevels() {
-        var metadatas = await _serverLevelManager.LazyLoadOwnedLevels();
-        RenderLevelCards(metadatas, _serverLevelCard, _ownedServerContentTransform);
-    }
-
     void RenderLevelCards(List<LevelMetadata> metadatas, GameObject cardPrefab, Transform contentTransform) {
         // clear the content of previously loaded children
         for (int i = contentTransform.childCount - 1; i >= 0; i--) {
@@ -110,16 +110,6 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
             if (cardObject.TryGetComponent<ILevelCard>(out var card))
                 card.Setup(metadata, this);
         }
-    }
-
-    // TODO: change this to a filter for fuzzy search
-    [UsedImplicitly]
-    public async void ToggleOwnedServerPanel() {
-        var state = !_ownedServerLevelsPanel.activeSelf;
-        if(state) 
-            await LoadOwnedServerLevels();
-        _ownedServerLevelsPanel.SetActive(state);
-        Overlay.ToggleOverlay(state);
     }
 
     [UsedImplicitly]

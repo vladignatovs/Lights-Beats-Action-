@@ -15,12 +15,13 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     [SerializeField] Button _nextPageButton;
     [SerializeField] TMP_InputField _pageInput;
     [SerializeField] TMP_Text _pageCountText;
-    int _pageSize = 1; // TODO: make configurable via settings
+    int _pageSize = 10; // TODO: make configurable via settings
 
     protected int _currentPage = 0;
     Dictionary<int, List<T>> _cache = new();
     int _totalCount = 0;
     IPageProvider<T> _pageProvider;
+    List<IFilter> _currentFilters;
 
     public event Action<List<T>> OnPageLoaded;
     public event Action<int, int> OnPageChanged; // currentPage / totalPages
@@ -55,6 +56,16 @@ public abstract class PaginationManager<T> : MonoBehaviour {
         _cache.Clear();
         _totalCount = 0;
         await RefreshCurrentPage();
+    }
+
+    /// <summary>
+    /// Apply filters and reset to page 0
+    /// </summary>
+    public async Task ApplyFilters(List<IFilter> filters) {
+        _currentFilters = filters;
+        _cache.Clear();
+        _totalCount = 0;
+        await GoToPage(0);
     }
 
     /// <summary>
@@ -99,9 +110,9 @@ public abstract class PaginationManager<T> : MonoBehaviour {
             return _cache[_currentPage];
         }
         
-        // Fetch from data provider
+        // Fetch from data provider with filters
         int offset = _currentPage * _pageSize;
-        var (pageData, totalCount) = await _pageProvider.LoadPage(offset, _pageSize);
+        var (pageData, totalCount) = await _pageProvider.LoadPage(offset, _pageSize, _currentFilters);
         _totalCount = totalCount;
         _cache[_currentPage] = pageData;
         

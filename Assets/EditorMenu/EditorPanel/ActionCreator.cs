@@ -74,7 +74,8 @@ public class ActionCreator : MonoBehaviour {
         Actions = Level.actions;
         // ActionsSettings = _levelSettings.actionsSettings;
 
-        _audioLineManager.audioSource.clip = Resources.Load<AudioClip>("Audio/" + Level.audioPath);
+        // Use the statically preserved audio clip from StateNameManager instead of reloading
+        _audioLineManager.audioSource.clip = StateNameManager.LoadedAudioClip;
         _audioLineManager.bpm = Level.bpm;
         //
 

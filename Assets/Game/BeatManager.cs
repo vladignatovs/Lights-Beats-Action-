@@ -30,8 +30,6 @@ public class BeatManager : BaseBeatManager {
         _firstUpdate = true;
         _audioSource.time = _offset * SecondsPerBeat;
         _audioSource.Play();
-        //sets the static value of beatAmount to the value set in the song of the level
-        StateNameManager.BeatAmount = (int) (_audioSource.clip.length/SecondsPerBeat);
     }
     
     public override void TryEndLevel() {

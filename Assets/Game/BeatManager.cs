@@ -18,6 +18,10 @@ public class BeatManager : BaseBeatManager {
         }
         // adding 5 to levelend to make the ending feel a bit more natural
         LevelEnd += 5;
+        
+        // Ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
+        LevelEnd = Mathf.Max(LevelEnd, _level.startOffset + 5);
+        
         // finds the seconds per beat, used in Awake() method to 
         // further make this value avaliable for DurationManager
         SecondsPerBeat = 60f / _bpm;
@@ -28,12 +32,14 @@ public class BeatManager : BaseBeatManager {
     void Start() {
         // used to make sure that the firstUpdate bool is true on the next retry
         _firstUpdate = true;
+        // respect the level's start offset
+        _offset = _level.startOffset;
         _audioSource.time = _offset * SecondsPerBeat;
         _audioSource.Play();
     }
     
     public override void TryEndLevel() {
-        if(SongPositionInBeats/LevelEnd >= 1) {
+        if(SongPositionInBeats >= LevelEnd) {
             _levelCompleteManager.LevelComplete(StateNameManager.Level.id);
         }
     }

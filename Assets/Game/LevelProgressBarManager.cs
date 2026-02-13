@@ -19,7 +19,12 @@ public class LevelProgressBarManager : MonoBehaviour {
         }
         Color playerColor = _player.color;
         _fill.color = playerColor;
-        _slider.value = _beatManager.SongPositionInBeats/_beatManager.LevelEnd;
+        
+        // Calculate progress accounting for start offset
+        // Progress should be from startOffset to LevelEnd, not from 0 to LevelEnd
+        float actualDuration = _beatManager.LevelEnd - _beatManager.Offset;
+        float progressFromOffset = _beatManager.SongPositionInBeats - _beatManager.Offset;
+        _slider.value = Mathf.Clamp01(progressFromOffset / actualDuration);
 
         // Get the player position according to the screen
         Vector3 playerScreenPosition = Camera.main.WorldToScreenPoint(_player.transform.position);

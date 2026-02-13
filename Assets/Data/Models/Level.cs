@@ -9,6 +9,7 @@ public class LevelMetadata {
     public string name { get; set; }
     public float bpm { get; set; }
     public string audioPath { get; set; }
+    public float startOffset { get; set; }
 }
 
 public class Level {
@@ -18,13 +19,15 @@ public class Level {
     public List<Action> actions;
     public float bpm;
     public string audioPath;
+    public float startOffset;
     public Level() { }
-    public Level(int id, string name, List<Action> actions, float bpm, string audioPath)
+    public Level(int id, string name, List<Action> actions, float bpm, string audioPath, float startOffset = 0f)
     {
         this.id = id;
         this.name = name;
         this.actions = actions;
         this.bpm = bpm;
         this.audioPath = audioPath;
+        this.startOffset = startOffset;
     }
 }

@@ -196,6 +196,7 @@ public class LevelFile {
             serverId = Meta.serverId,
             name = Meta.name,
             bpm = Meta.bpm,
+            startOffset = Meta.startOffset,
             audioPath = Meta.audioPath,
             actions = Actions
         };
@@ -214,6 +215,7 @@ public static class Utils {
                 serverId = level.serverId,
                 name = level.name,
                 bpm = level.bpm,
+                startOffset = level.startOffset,
                 audioPath = level.audioPath
             },
             Actions = level.actions

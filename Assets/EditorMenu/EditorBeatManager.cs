@@ -4,7 +4,7 @@ public class EditorBeatManager : BaseBeatManager {
     [SerializeField] ActionCreator _actionCreator;
     [SerializeField] AudioLineManager _audioLineManager;
     [SerializeField] EditorMenuManager _editorMenuManager;
-    [SerializeField] SpawnPosManager _spawnPosManager;
+    [SerializeField] StartOffsetManager _startOffsetManager;
     [SerializeField] Transform _controllerPanelTransform;
     void Awake() { // Using awake to make Durations manager work properly in editor (also used in Visualiser Manager)
         _bpm = _actionCreator.Level.bpm;
@@ -24,11 +24,14 @@ public class EditorBeatManager : BaseBeatManager {
             }
         }
         LevelEnd += 5;
+        
+        // Ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
+        LevelEnd = Mathf.Max(LevelEnd, _startOffsetManager.StartOffset + 5);
 
         _audioSource.clip = _audioLineManager.audioSource.clip;
 
         _firstUpdate = true;
-        _offset = _spawnPosManager.offset; //sets the offset of the spawn of the player to the position of the audioLine
+        _offset = _startOffsetManager.StartOffset; //sets the offset of the spawn of the player to the position of the audioLine
         _audioSource.time = _offset * SecondsPerBeat;
         _audioSource.Play();
         ClearChildren();
@@ -40,7 +43,7 @@ public class EditorBeatManager : BaseBeatManager {
     }
 
     public override void TryEndLevel() {
-        if(SongPositionInBeats/LevelEnd >= 1) {
+        if(SongPositionInBeats >= LevelEnd) {
             _editorMenuManager.TogglePlayTest(false); // false value means that it should toggle playtest off.
         }
     }

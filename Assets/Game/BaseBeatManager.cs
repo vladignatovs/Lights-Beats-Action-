@@ -20,6 +20,9 @@ public abstract class BaseBeatManager : MonoBehaviour {
         set { _songPositionInBeats = value; }
     }
     [SerializeField] protected float _offset;
+    public float Offset {
+        get { return _offset; }
+    }
     [Header ("                BEAT SETTINGS")]
     [SerializeField] protected AudioSource _audioSource;
     protected float _bpm;

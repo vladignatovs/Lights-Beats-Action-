@@ -14,9 +14,11 @@ public class ActionCreator : MonoBehaviour {
         private set { _content = value; }
     }
     [SerializeField] RectTransform _editorPanel;
+    [SerializeField] ScrollRect _editorScrollRect;
     [SerializeField] AudioLineManager _audioLineManager;
     [SerializeField] GameObject _confirmationPanel;
     [SerializeField] Camera _visualizerCamera;
+    [SerializeField] StartOffsetManager _startOffsetManager;
     [Header("Referencing")]
     public GameObject SelectPanel;
     public GameObject SettingsPanel;
@@ -77,7 +79,24 @@ public class ActionCreator : MonoBehaviour {
         // Use the statically preserved audio clip from StateNameManager instead of reloading
         _audioLineManager.audioSource.clip = StateNameManager.LoadedAudioClip;
         _audioLineManager.bpm = Level.bpm;
-        //
+
+        _startOffsetManager.SetStartOffset(Level.startOffset);
+
+        // Scroll the editor panel to show the startOffset at the left edge
+        if (Level.startOffset > 0) {
+            // Calculate the normalized scroll position
+            // Content width is in units (50 per beat), viewport shows a portion of it
+            float contentWidth = _content.rect.width;
+            float viewportWidth = _editorScrollRect.viewport.rect.width;
+            float offsetPosition = Level.startOffset * 50f; // Convert beat to units
+            
+            // Calculate normalized position (0 = left, 1 = right)
+            // We want to scroll so that offsetPosition is at the left edge of viewport
+            float maxScrollableWidth = contentWidth - viewportWidth;
+            if (maxScrollableWidth > 0) {
+                _editorScrollRect.horizontalNormalizedPosition = offsetPosition / maxScrollableWidth;
+            }
+        }
 
         // Spawns actionLines according to the actions list
         foreach(Action action in Actions) {
@@ -150,6 +169,8 @@ public class ActionCreator : MonoBehaviour {
     #endregion
     #region ActionOptions
     public async void saveAllActions() {
+        // Sync the startOffset from the StartOffsetManager to the Level before saving
+        Level.startOffset = _startOffsetManager.StartOffset;
         await LocalLevelManager.SaveLevel(Level);
     }
 

@@ -3932,9 +3932,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 828189642}
-        m_TargetAssemblyTypeName: SpawnPosManager, Assembly-CSharp
-        m_MethodName: ShowSPSettings
+      - m_Target: {fileID: 828189644}
+        m_TargetAssemblyTypeName: StartOffsetManager, Assembly-CSharp
+        m_MethodName: ShowStartOffsetSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5683,7 +5683,7 @@ GameObject:
   - component: {fileID: 399314736}
   - component: {fileID: 399314735}
   m_Layer: 5
-  m_Name: SPPositionInput
+  m_Name: StartOffsetPositionInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5763,10 +5763,13 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnSubmit:
     m_PersistentCalls:
+      m_Calls: []
+  m_OnDidEndEdit:
+    m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 828189642}
-        m_TargetAssemblyTypeName: SpawnPosManager, Assembly-CSharp
-        m_MethodName: SetSpawnPos
+      - m_Target: {fileID: 828189644}
+        m_TargetAssemblyTypeName: StartOffsetManager, Assembly-CSharp
+        m_MethodName: OnInputFieldChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5776,9 +5779,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_OnDidEndEdit:
-    m_PersistentCalls:
-      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6464,7 +6464,7 @@ GameObject:
   - component: {fileID: 464943715}
   - component: {fileID: 464943714}
   m_Layer: 5
-  m_Name: SPLockButton
+  m_Name: StartOffsetLockButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6534,9 +6534,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 828189642}
-        m_TargetAssemblyTypeName: SpawnPosManager, Assembly-CSharp
-        m_MethodName: LockPosition
+      - m_Target: {fileID: 828189644}
+        m_TargetAssemblyTypeName: StartOffsetManager, Assembly-CSharp
+        m_MethodName: ToggleLock
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6704,9 +6704,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 828189642}
-        m_TargetAssemblyTypeName: SpawnPosManager, Assembly-CSharp
-        m_MethodName: ShowSPSettings
+      - m_Target: {fileID: 828189644}
+        m_TargetAssemblyTypeName: StartOffsetManager, Assembly-CSharp
+        m_MethodName: ShowStartOffsetSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7376,9 +7376,11 @@ MonoBehaviour:
   _actionLine: {fileID: 1899284985681800331, guid: 10ea3f52a7aea8a47baff292ec694a54, type: 3}
   _content: {fileID: 1755693268}
   _editorPanel: {fileID: 183637883}
+  _editorScrollRect: {fileID: 406848655}
   _audioLineManager: {fileID: 1070647622}
   _confirmationPanel: {fileID: 1217269228}
   _visualizerCamera: {fileID: 586247484}
+  _startOffsetManager: {fileID: 828189644}
   SelectPanel: {fileID: 248572759}
   SettingsPanel: {fileID: 1045349494}
   PositionXInput: {fileID: 1481829746}
@@ -9417,7 +9419,7 @@ MonoBehaviour:
   _actionCreator: {fileID: 498276370}
   _audioLineManager: {fileID: 1070647622}
   _editorMenuManager: {fileID: 689026086}
-  _spawnPosManager: {fileID: 828189642}
+  _startOffsetManager: {fileID: 828189644}
   _controllerPanelTransform: {fileID: 1243188525}
 --- !u!114 &689026091
 MonoBehaviour:
@@ -10936,9 +10938,9 @@ GameObject:
   m_Component:
   - component: {fileID: 828189641}
   - component: {fileID: 828189643}
-  - component: {fileID: 828189642}
+  - component: {fileID: 828189644}
   m_Layer: 5
-  m_Name: SpawnPos
+  m_Name: StartOffset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10966,22 +10968,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &828189642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 828189640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d9291903748094a8bf08e362163eba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioLine: {fileID: 1070647614}
-  inputField: {fileID: 399314735}
-  spSettings: {fileID: 1817686209}
-  offset: 0
 --- !u!114 &828189643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11002,6 +10988,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &828189644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828189640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f733fc9a5510d6748812d34651478bc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StartOffsetManager
+  _audioLine: {fileID: 1070647614}
+  _inputField: {fileID: 399314735}
+  _startOffsetSettings: {fileID: 1817686209}
+  _rectTransform: {fileID: 828189641}
 --- !u!1 &852896246
 GameObject:
   m_ObjectHideFlags: 0
@@ -19227,7 +19229,7 @@ GameObject:
   - component: {fileID: 1567863078}
   - component: {fileID: 1567863077}
   m_Layer: 5
-  m_Name: SPRemoveButton
+  m_Name: StartOffsetRemoveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19297,9 +19299,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 828189642}
-        m_TargetAssemblyTypeName: SpawnPosManager, Assembly-CSharp
-        m_MethodName: RemoveSpawnPos
+      - m_Target: {fileID: 828189644}
+        m_TargetAssemblyTypeName: StartOffsetManager, Assembly-CSharp
+        m_MethodName: ClearStartOffset
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21721,7 +21723,7 @@ GameObject:
   - component: {fileID: 1817686212}
   - component: {fileID: 1817686211}
   m_Layer: 5
-  m_Name: SPSettings
+  m_Name: StartOffsetSettings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

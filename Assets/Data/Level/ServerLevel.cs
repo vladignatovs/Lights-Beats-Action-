@@ -14,6 +14,8 @@ public class ServerLevel : BaseModel {
     public string AudioPath { get; set; }
     [Column("bpm")]
     public float Bpm { get; set; }
+    [Column("start_offset")]
+    public float StartOffset { get; set; }
     [Column("actions")]
     public List<ServerAction> Actions { get; set; }
 }
@@ -32,6 +34,8 @@ public class ServerLevelMetadata : BaseModel {
     public string AudioPath { get; set; }
     [Column("bpm")]
     public float Bpm { get; set; }
+    [Column("start_offset")] // TODO: might not need to fetch start offset for metadata
+    public float StartOffset { get; set; }
 }
 
 [System.Serializable]

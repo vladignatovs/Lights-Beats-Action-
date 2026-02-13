@@ -20,7 +20,7 @@ public class LevelManager : DataManager {
         List<IDataFilter<ServerLevelMetadata>> filters = null
     ) {
         var table = _client.From<ServerLevelMetadata>();
-        var query = table.Select("id,creator_id,creator_username,name,audio_path,bpm");
+        var query = table.Select("id,creator_id,creator_username,name,audio_path,bpm,start_offset");
 
         // Apply filters to the query
         if (filters != null) {
@@ -63,6 +63,7 @@ public class LevelManager : DataManager {
             serverId = model.Id,
             name = model.Name,
             bpm = model.Bpm,
+            startOffset = model.StartOffset,
             audioPath = model.AudioPath,
             actions = (model.Actions ?? new List<ServerAction>())
                 .Select(ToLocalAction)
@@ -86,6 +87,7 @@ public class LevelManager : DataManager {
         {
             Name = level.name,
             Bpm = level.bpm,
+            StartOffset = level.startOffset,
             AudioPath = level.audioPath,
             Actions = level.actions.ConvertAll(a => new ServerAction
             {
@@ -114,6 +116,7 @@ public class LevelManager : DataManager {
                     .Set(x => x.Name, serverLevel.Name)
                     .Set(x => x.AudioPath, serverLevel.AudioPath)
                     .Set(x => x.Bpm, serverLevel.Bpm)
+                    .Set(x => x.StartOffset, serverLevel.StartOffset)
                     .Set(x => x.Actions, serverLevel.Actions)
                     .Update();
 
@@ -163,6 +166,7 @@ public class LevelManager : DataManager {
             creatorUsername = slm.CreatorUsername,
             name = slm.Name,
             bpm = slm.Bpm,
+            startOffset = slm.StartOffset,
             audioPath = slm.AudioPath,
         };
     }

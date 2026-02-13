@@ -3,7 +3,7 @@ using UnityEngine;
 public class EditorMenuManager : MonoBehaviour {
     public GameObject editorMenu;
     public GameObject pauseMenu;
-    public EditorBeatManager editorBeatManager;
+    [SerializeField] EditorBeatManager editorBeatManager;
     public GameObject audioLine;
     public GameObject player;
     public GameObject dashRadius;
@@ -32,6 +32,7 @@ public class EditorMenuManager : MonoBehaviour {
             EndPlayTest();
         }  
     }
+
     void PlayTest() {
         mainCamera.enabled = true;
         visualiserCamera.enabled = false;

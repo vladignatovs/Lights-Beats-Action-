@@ -143,27 +143,19 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
                 MainMenuState.Official => _officialLevelManager.LoadLevel(metadata.id),
                 MainMenuState.Local => _localLevelManager.LoadLevel(metadata.id),
                 MainMenuState.Server => _serverLevelManager.LoadLevel(metadata.serverId.Value),
-                _ => Task.FromResult<Level>(null)
+                _ => null
             })
         );
 
         // start loading the scene AFTER THE AUDIO CLIP and LEVEL, as it might start the mono behaviour scripts beforehand
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level");
-        asyncLoad.allowSceneActivation = false;
-
-        // Wait until the scene is fully loaded
-        while (asyncLoad.progress < 0.9f) {
-            await Task.Yield();
-        }
-
-        asyncLoad.allowSceneActivation = true;
+        await SceneStateManager.LoadGame();
     }
 
     public async Task OnOpenEditor(LevelMetadata metadata) {
         // load the level and initialize it before going to the editor
         Level level = await _localLevelManager.LoadLevel(metadata.id);
         LevelInitializer.InitializeLevel(level);
-        SceneManager.LoadScene("Editor");
+        await SceneStateManager.LoadEditor();
     }
 
     public async Task OnExportLevel(int id) {
@@ -229,11 +221,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     public async Task OnImportLevel(Guid id) {
         await _serverLevelManager.ImportLevel(id);
         _mainMenuManager.ToLocal();
-        await ReloadScene();
+        await SceneStateManager.Reload();
     }
 #endregion
-
-    async Task ReloadScene() {
-        await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
-    }
 }

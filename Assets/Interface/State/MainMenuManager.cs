@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public enum MainMenuState {
@@ -9,12 +10,11 @@ public enum MainMenuState {
     Server
 }
 
+/// <summary>
+/// Class reliable for all the Main Menu animations and state management.
+/// </summary>
 public class MainMenuManager : MonoBehaviour {
     [SerializeField] Animator _mainMenuAnimator;
-    [SerializeField] GameObject _mainMenu;
-    [SerializeField] GameObject _officialMenu;
-    [SerializeField] GameObject _localMenu;
-    [SerializeField] GameObject _serverMenu;
     [SerializeField] GameObject _background;
 
     public event System.Action<MainMenuState> OnStateChanged;
@@ -24,7 +24,7 @@ public class MainMenuManager : MonoBehaviour {
         SetState(StateNameManager.LatestMainMenuState, true);
         // Time.timeScale = 1;
         // if was just in a game
-        if(StateNameManager.LatestSceneName == "Level") {
+        if(SceneStateManager.PreviousScene == Scene.Game) {
             _background.transform.position = StateNameManager.PlayerPosition;
             // play animation out of game
             GameTo();
@@ -36,10 +36,14 @@ public class MainMenuManager : MonoBehaviour {
             _mainMenuAnimator.Play("ServerLevelMenu");
         }
     }
-
+    
+    [UsedImplicitly]
     public void ToOfficial() => SetState(MainMenuState.Official);
+    [UsedImplicitly]
     public void ToMain() => SetState(MainMenuState.Main);
+    [UsedImplicitly]
     public void ToLocal() => SetState(MainMenuState.Local);
+    [UsedImplicitly]
     public void ToServer() => SetState(MainMenuState.Server);
 
     // NOTE: "TO-GAME" animations must be played without state as it 
@@ -68,7 +72,7 @@ public class MainMenuManager : MonoBehaviour {
 
     // NOTE: "GAME-TO" animations are played without state to avoid 
     // issues with animator evaluating default state faster
-    public void GameTo() {
+    void GameTo() {
         var animation = StateNameManager.LatestMainMenuState switch {
             MainMenuState.Official => "GameToOfficial",
             MainMenuState.Local => "GameToLocal",
@@ -80,7 +84,7 @@ public class MainMenuManager : MonoBehaviour {
         _mainMenuAnimator.Play(animation);
     }
 
-    public void SetState(MainMenuState newState, bool skipAnimation = false) {
+    void SetState(MainMenuState newState, bool skipAnimation = false) {
         bool stateChanged = StateNameManager.LatestMainMenuState != newState;
         StateNameManager.LatestMainMenuState = newState;
         _mainMenuAnimator.SetInteger("MainMenuState", (int)newState); // Always sync animator
@@ -89,7 +93,7 @@ public class MainMenuManager : MonoBehaviour {
         if (skipAnimation) _mainMenuAnimator.Update(0f);
     }
 
-    private async Task MoveToCenter(float duration) {
+    async Task MoveToCenter(float duration) {
         Vector3 start = _background.transform.position;
         Vector3 target = Vector3.zero;
         float elapsed = 0f;

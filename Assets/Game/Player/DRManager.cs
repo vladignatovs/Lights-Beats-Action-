@@ -22,7 +22,7 @@ public class DRManager : MonoBehaviour
     void Update()
     {
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
-        if(!LogicManager.isPaused && PlayerHit.playerIsAlive) {
+        if(GameStateManager.IsRunning && PlayerHit.playerIsAlive) {
             if(isHovered) {
                 sr.color = onHoverColor;
             } else {

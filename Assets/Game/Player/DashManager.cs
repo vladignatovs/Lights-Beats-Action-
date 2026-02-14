@@ -33,7 +33,7 @@ public class DashManager : MonoBehaviour {
         && drManager.isHovered 
         && PlayerHit.playerIsAlive
         && !onCooldown
-        && !LogicManager.isPaused ) {
+        && GameStateManager.IsRunning ) {
             target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             target.z = transform.position.z;
             StartCoroutine(dash());

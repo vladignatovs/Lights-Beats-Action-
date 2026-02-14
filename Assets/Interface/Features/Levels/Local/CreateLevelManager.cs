@@ -20,7 +20,7 @@ public class CreateLevelManager : MonoBehaviour{
         );
         // reload the scene after creating a new level to update the list of levels
         // TODO: a MUCH better result would be if i reloaded the current page
-        await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        await SceneStateManager.Reload();
     }
 
     [UsedImplicitly]

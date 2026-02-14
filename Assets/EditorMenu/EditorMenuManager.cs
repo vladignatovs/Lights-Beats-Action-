@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class EditorMenuManager : MonoBehaviour {
     public GameObject editorMenu;
-    public GameObject pauseMenu;
     [SerializeField] EditorBeatManager editorBeatManager;
     public GameObject audioLine;
     public GameObject player;
@@ -12,25 +11,27 @@ public class EditorMenuManager : MonoBehaviour {
     public GameObject actionCreator;
     GameObject activePlayer;
     GameObject activeDR;
-    // Start is called before the first frame update
-    void Start()
-    {
+ 
+    void Start() {
+        GameStateManager.ToggleEditor(true);
         Time.timeScale = 0;
     }
 
-    // Update is called once per frame
     void Update() {
-        if(!pauseMenu.activeSelf && Input.GetKeyDown(KeyCode.Tab)) {
+        if(!PauseManager.IsPaused && Input.GetKeyDown(KeyCode.Tab)) {
             TogglePlayTest(editorMenu.activeSelf);
         }
     }
 
+    // handle exiting editor
+    void OnDestroy() {
+        GameStateManager.ToggleEditor(false);
+        Time.timeScale = 1;
+    }
+
     public void TogglePlayTest(bool value) {
-        if(value) {
-            PlayTest();
-        } else {
-            EndPlayTest();
-        }  
+        if(value) PlayTest();
+        else EndPlayTest();
     }
 
     void PlayTest() {
@@ -39,7 +40,7 @@ public class EditorMenuManager : MonoBehaviour {
 
         audioLine.SetActive(false);
 
-        LogicManager.isPaused = false;
+        GameStateManager.ToggleEditor(false);
         Time.timeScale = 1;
         editorBeatManager.enabled = true;
         editorMenu.SetActive(false);
@@ -55,7 +56,7 @@ public class EditorMenuManager : MonoBehaviour {
         mainCamera.enabled = false;
         visualiserCamera.enabled = true;
 
-        LogicManager.isPaused = true;
+        GameStateManager.ToggleEditor(true);
         Time.timeScale = 0;
         editorBeatManager.enabled = false;
         editorMenu.SetActive(true);

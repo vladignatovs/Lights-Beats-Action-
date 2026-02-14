@@ -8,9 +8,6 @@ using Supabase.Postgrest.Interfaces;
 using UnityEngine;
 using static Supabase.Postgrest.Constants;
 
-// TODO: show level name in pause menu
-// if everythings fine then implement level search, only then would you need to finish
-// user account and its search/browse via found level, and then pick up other side-stuff like blocks, friends and bla-bla-bla
 public class LevelManager : DataManager {
     public LevelManager(Client client) : base(client) {}
 

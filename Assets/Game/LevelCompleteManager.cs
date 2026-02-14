@@ -6,7 +6,7 @@ public class LevelCompleteManager : MonoBehaviour {
     [Header("Level-Complete-Panel Management")]
     public AudioSource audioSource;
     public GameObject levelCompletePanel;
-    public MenuManager menuManager;
+    public LevelPauseManager _levelPauseManager;
     Text levelCompleteReidrectText;
     bool redirectCountdownStarted = false;
 
@@ -24,6 +24,7 @@ public class LevelCompleteManager : MonoBehaviour {
     void Update() {
         if(levelCompletePanel.activeSelf && !redirectCountdownStarted) {
             redirectCountdownStarted = true;
+            PauseManager.CanPause = false;
             StartCoroutine(RedirectCountdown());
         }
     }
@@ -34,7 +35,8 @@ public class LevelCompleteManager : MonoBehaviour {
             yield return new WaitForSeconds(1);
         }
         levelCompleteReidrectText.text = "bye";
-        menuManager.GoToScene("MainMenu");
+        _levelPauseManager.GoToMenu();
+        PauseManager.CanPause = true;
     }
     
     public void LevelComplete(int id) {

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Script manager for the ConfirmationPanel prefab that is built to be reusable alongside the panel for a 
 /// simple confirmation of any action.
-/// </summary> // TODO: use this in the level editor after revamping the pause
+/// </summary>
 public class ConfirmationManager : MonoBehaviour {
     [SerializeField] Button _confirmButton;
     [SerializeField] Button _cancelButton;

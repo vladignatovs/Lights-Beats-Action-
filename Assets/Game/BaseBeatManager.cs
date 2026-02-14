@@ -41,7 +41,7 @@ public abstract class BaseBeatManager : MonoBehaviour {
 
         SyncAudioAndTimeWithPause();
 
-        if(!LogicManager.isPaused) {
+        if(GameStateManager.IsRunning) {
             // this gets the position in the song without considering the last attempts
             _songPositionInSeconds = (float) AudioSettings.dspTime - _dspTimeAtStart - (_dspTimeAtResume - _dspTimeAtPause) + (_offset * _secondsPerBeat);
             // gets the position in beats of the song
@@ -83,10 +83,10 @@ public abstract class BaseBeatManager : MonoBehaviour {
     /// This method is used to make sure that the audio and _dspTimeAtPause/Resume are all synced with the paused state of the game.
     /// </summary>
     void SyncAudioAndTimeWithPause() {
-        if(LogicManager.isPaused && _audioSource.isPlaying) {
+        if(!GameStateManager.IsRunning && _audioSource.isPlaying) {
             _audioSource.Pause();
             _dspTimeAtPause += (float) AudioSettings.dspTime;
-        } else if(!LogicManager.isPaused && !_audioSource.isPlaying) {
+        } else if(GameStateManager.IsRunning && !_audioSource.isPlaying) {
             _audioSource.Play();
             _dspTimeAtResume += (float) AudioSettings.dspTime;
         }

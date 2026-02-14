@@ -1,48 +1,26 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LogicManager : MonoBehaviour {
-    public static bool isPaused = false;
     public GameObject gameOverScreen;
-    public GameObject pauseMenu;
 
-    public void restartGame() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        isPaused = false;
+    // TODO: Proper DeathScreen handle
+    void Start() {
+        GameStateManager.IsGameOver = false;
+        PauseManager.CanPause = true;
+        Time.timeScale = 1;
+    }
+
+    public async void restartGame() {
+        await SceneStateManager.Reload();
+        GameStateManager.IsGameOver = false;
+        PauseManager.CanPause = true;
         Time.timeScale = 1;
     }
 
     public virtual void gameOver() {
         Time.timeScale = 0;
-        isPaused = true;
+        GameStateManager.IsGameOver = true;
+        PauseManager.CanPause = false;
         gameOverScreen.SetActive(true);
-    }
-
-    public virtual void Resume() { 
-        Overlay.ToggleOverlay(false);
-        pauseMenu.SetActive(false);
-        Time.timeScale = 1;
-        isPaused = false;
-    }
-
-    public virtual void Pause() {
-        Overlay.ToggleOverlay(true);
-        pauseMenu.SetActive(true);
-        Time.timeScale = 0;
-        isPaused = true;
-    }
-
-    void Start() {
-        Time.timeScale = 1;
-        isPaused = false;
-    }
-
-    protected void Update() {
-        if(!gameOverScreen.activeSelf && Input.GetKeyDown(KeyCode.Escape)) {
-            if(pauseMenu.activeSelf) 
-                Resume();
-            else 
-                Pause();
-        }
     }
 }

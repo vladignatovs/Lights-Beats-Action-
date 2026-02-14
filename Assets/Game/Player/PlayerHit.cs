@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHit : MonoBehaviour
-{
+public class PlayerHit : MonoBehaviour {
     [Header ("Death SETTINGS ---------------")]
     public LogicManager logic;
     public static bool playerIsAlive = true;
@@ -13,17 +10,13 @@ public class PlayerHit : MonoBehaviour
     public bool dashImmunity = false;
     public float cooldownBoost = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         playerIsAlive = true;
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicManager>();
         dashManager = GetComponent<DashManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if(!dashManager.onCooldown) {
             cooldownBoost = 1;
         }

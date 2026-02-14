@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ActionCreator : MonoBehaviour {
@@ -16,7 +17,6 @@ public class ActionCreator : MonoBehaviour {
     [SerializeField] RectTransform _editorPanel;
     [SerializeField] ScrollRect _editorScrollRect;
     [SerializeField] AudioLineManager _audioLineManager;
-    [SerializeField] GameObject _confirmationPanel;
     [SerializeField] Camera _visualizerCamera;
     [SerializeField] StartOffsetManager _startOffsetManager;
     [Header("Referencing")]
@@ -35,17 +35,15 @@ public class ActionCreator : MonoBehaviour {
     // TODO: put action settings as fields of actions
     // LevelSettings _levelSettings;
     // public List<(bool,bool,int)> ActionsSettings;
-    int _id;
     #region Set Up
     /// <summary>
     /// Used to manually spawn in the beatLines, set the Content size and load in the Level property.
     /// </summary>
-    void Awake() {
+    async void Awake() {
         // If the editor was SOMEHOW opened from a state different from local, meaning 
         // that its trying to open a level that is not local in editor, reject
-        if(StateNameManager.LatestMainMenuState != MainMenuState.Local) SceneManager.LoadScene("MainMenu");
+        if(StateNameManager.LatestMainMenuState != MainMenuState.Local) await SceneStateManager.LoadMain();
         // Gets the id of the level in order to later find it
-        _id = StateNameManager.Level.id;
         // Spawns beatLines according to the beat amount in the level
         for(int i = 0; i < StateNameManager.BeatAmount; i++) {
             Instantiate(_beatLine, _editorPanel);
@@ -83,18 +81,12 @@ public class ActionCreator : MonoBehaviour {
         _startOffsetManager.SetStartOffset(Level.startOffset);
 
         // Scroll the editor panel to show the startOffset at the left edge
-        if (Level.startOffset > 0) {
-            // Calculate the normalized scroll position
-            // Content width is in units (50 per beat), viewport shows a portion of it
-            float contentWidth = _content.rect.width;
-            float viewportWidth = _editorScrollRect.viewport.rect.width;
-            float offsetPosition = Level.startOffset * 50f; // Convert beat to units
-            
+        if (Level.startOffset > 0) {            
             // Calculate normalized position (0 = left, 1 = right)
             // We want to scroll so that offsetPosition is at the left edge of viewport
-            float maxScrollableWidth = contentWidth - viewportWidth;
+            float maxScrollableWidth = _content.rect.width - _editorScrollRect.viewport.rect.width;
             if (maxScrollableWidth > 0) {
-                _editorScrollRect.horizontalNormalizedPosition = offsetPosition / maxScrollableWidth;
+                _editorScrollRect.horizontalNormalizedPosition = Level.startOffset * 50f / maxScrollableWidth;
             }
         }
 
@@ -115,7 +107,9 @@ public class ActionCreator : MonoBehaviour {
     /// the actionLine beneath it. Also manually instantiates actionLine object, as well as creates new <c>Action</c> object and adds it to the list 
     /// of actions of actionCreator.
     /// </summary>
+    [UsedImplicitly]
     public void createNewAction() {
+        Debug.Log("created an action");
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             Content,
             Input.mousePosition,
@@ -125,13 +119,14 @@ public class ActionCreator : MonoBehaviour {
 
         var newActionLine = CreateActionLineAt(new(localPos.x,0));
         newActionLine.GetComponent<ActionLineManager>().Action =
-            new Action(newActionLine.GetComponent<RectTransform>().anchoredPosition.x / 50);
+        new Action(newActionLine.GetComponent<RectTransform>().anchoredPosition.x / 50);
         AddActionToActionsList(newActionLine.GetComponent<ActionLineManager>().Action);
     }
     /// <summary>
     /// Used to create new action. Alternate method of creating new action, which also uses a "template" action. Places the actionLine
     /// in the far left corner of the screen, and also uses <c>SelfSelect()</c> method. 
     /// </summary>
+    [UsedImplicitly]
     public void CreateActionButton() {
         // convert to canvas-local coordinates
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -168,10 +163,20 @@ public class ActionCreator : MonoBehaviour {
     }
     #endregion
     #region ActionOptions
-    public async void saveAllActions() {
+    public async Task SaveAllActions() {
         // Sync the startOffset from the StartOffsetManager to the Level before saving
         Level.startOffset = _startOffsetManager.StartOffset;
         await LocalLevelManager.SaveLevel(Level);
+    }
+
+    public async Task PublishLevel() {
+        Level.startOffset = _startOffsetManager.StartOffset;
+        Level = await ServerLevelManager.PublishLevel(Level);
+        await LocalLevelManager.SaveLevel(Level);
+    }
+
+    public void DeleteLevel() {
+        LocalLevelManager.DeleteLevel(Level.id);
     }
 
     /// <summary>
@@ -179,6 +184,7 @@ public class ActionCreator : MonoBehaviour {
     /// compares with layer. If comparing returns true, selects without forcing appearance of SettingsPanel. Also toggles 
     /// the SelectPanel to <c>true</c>.
     /// </summary>
+    [UsedImplicitly]
     public void SelectAllActions() { 
         var actionLineManagers = ActionLineManager.ActionLineManagersSingleton;
         
@@ -194,33 +200,13 @@ public class ActionCreator : MonoBehaviour {
     /// Used to deselect all actions on a selected layer. Goes through all ActionLineManager instances, and compares with layer. If comparing returns
     /// true, self deselects. Also toggles the SelectPanel to <c>false</c>.
     /// </summary>
+    [UsedImplicitly]
     public void DeselectAllActions() {
         var actionLineManagers = ActionLineManager.ActionLineManagersSingleton;
         foreach(var actionLineManager in actionLineManagers) {
             if(actionLineManager.CompareWithLayer()) {
                 actionLineManager.SelfDeselect();
             }
-        }
-    }
-
-    // TODO: heavily revamp Pause Menu
-    public async void PublishLevel() {
-        Level = await ServerLevelManager.PublishLevel(Level);
-        await LocalLevelManager.SaveLevel(Level);
-    }
-    
-    public void DeleteLevel() {
-        LocalLevelManager.DeleteLevel(Level.id);
-        // Level.DeleteLevel(_id);
-        // LevelCompletionsManager.DeleteLevelCompletion(_id);
-        // LevelSettings.DeleteLevelSettings(_id);
-    }
-    
-    public void ShowConfirmationPanel() {
-        if(_confirmationPanel.activeSelf) {
-            _confirmationPanel.SetActive(false);
-        } else {
-            _confirmationPanel.SetActive(true);
         }
     }
 

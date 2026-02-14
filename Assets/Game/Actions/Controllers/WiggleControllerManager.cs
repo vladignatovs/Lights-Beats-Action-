@@ -12,7 +12,7 @@ public class WiggleControllerManager : ControllerManager {
     }
 
     void Update() {
-        if(!LogicManager.isPaused) {
+        if(GameStateManager.IsRunning) {
             // Gets all the keys from the dictionary. Keys are GameObjects.
             var keys = new List<GameObject>(_controllerGroupManager.ObjectsAndSettings.Keys);
             // Loops through all the gameObjects, with the goal of updating the values of the key-value pairs, 

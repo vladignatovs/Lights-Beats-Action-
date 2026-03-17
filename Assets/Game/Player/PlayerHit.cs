@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHit : MonoBehaviour {
     [Header ("Death SETTINGS ---------------")]
-    public LogicManager logic;
+    public AttemptManager logic;
     public static bool playerIsAlive = true;
 
     [Header ("Dash SETTINGS ---------------")]
@@ -12,7 +12,7 @@ public class PlayerHit : MonoBehaviour {
 
     void Start() {
         playerIsAlive = true;
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicManager>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<AttemptManager>();
         dashManager = GetComponent<DashManager>();
     }
 

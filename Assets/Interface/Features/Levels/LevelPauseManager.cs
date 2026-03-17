@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
@@ -11,6 +13,7 @@ public class LevelPauseManager : MonoBehaviour {
     [SerializeField] TMP_Text _levelName;
     [SerializeField] PauseManager _pauseManager;
     [SerializeField] GameObject _editorButton;
+    [SerializeField] AttemptManager attemptManager;
     Level _level;
 
     void Start() {
@@ -28,6 +31,8 @@ public class LevelPauseManager : MonoBehaviour {
 
     [UsedImplicitly]
     public async void GoToMenu() {
+        await TryPersistServerLevelCompletion();
+
         var player = FindAnyObjectByType<PlayerMovement>();
         if (player != null) 
             StateNameManager.PlayerPosition = player.transform.position;
@@ -37,8 +42,23 @@ public class LevelPauseManager : MonoBehaviour {
         _pauseManager.Resume();
     }
 
+    async Task TryPersistServerLevelCompletion() {
+        Debug.Log("[LevelPauseManager]" + StateNameManager.LatestMainMenuState);
+        if (StateNameManager.LatestMainMenuState != MainMenuState.Server) return;
+
+        var completion = StateNameManager.LoadedLevelCompletion ?? new Completion();
+        completion.percentage = Mathf.Max(completion.percentage, attemptManager.CompletionPercent);
+        completion.accuracy = Mathf.Max(completion.accuracy, attemptManager.AccuracyPercent);
+        completion.attempts = Mathf.Max(completion.attempts, attemptManager.AttemptCount);
+
+        StateNameManager.LoadedLevelCompletion = completion;
+
+        await SupabaseManager.Instance.Completion.CompleteLevel(StateNameManager.Level.serverId.Value, completion);
+    }
+
     [UsedImplicitly]
     public async void Replay() {
+        attemptManager.PersistAttemptForRetry();
         // TODO: might avoid reloading the scene here all together and instead re-initialize the beat-manager
         await SceneStateManager.Reload();
         _pauseManager.Resume();

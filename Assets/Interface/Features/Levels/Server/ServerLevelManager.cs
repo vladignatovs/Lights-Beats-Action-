@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class ServerLevelManager : IPageProvider<LevelMetadata> {
     static LevelCreator _levelCreator = new();
+
+    public static Dictionary<Guid, Completion> CompletionsByLevelId { get; private set; } = new();
 
     public async Task<(List<LevelMetadata> items, int totalCount)> LoadPage(int offset, int pageSize, List<IFilter> filters = null) {
         // Convert generic IFilter<LevelMetadata> to data layer IDataFilter<ServerLevelMetadata>
@@ -18,7 +21,17 @@ public class ServerLevelManager : IPageProvider<LevelMetadata> {
             }
         }
         
-        return await SupabaseManager.Instance.Level.LazyLoadLevels(offset, pageSize, dataFilters);
+        var page = await SupabaseManager.Instance.Level.LazyLoadLevels(offset, pageSize, dataFilters);
+
+        var levelIds = page.items
+            .Where(item => item.serverId.HasValue)
+            .Select(item => item.serverId.Value)
+            .Distinct()
+            .ToList();
+
+        CompletionsByLevelId = await SupabaseManager.Instance.Completion.GetCompletionsByLevelIds(levelIds);
+
+        return page;
     }
 
     public async Task<Level> LoadLevel(Guid serverId) {

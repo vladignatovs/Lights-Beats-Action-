@@ -80,8 +80,7 @@ public class LevelManager : DataManager {
     /// </summary>
     /// <param name="level"></param>
     public async Task<Level> PublishLevel(Level level) {
-        var serverLevel = new ServerLevel
-        {
+        var serverLevel = new ServerLevel {
             Name = level.name,
             Bpm = level.bpm,
             StartOffset = level.startOffset,

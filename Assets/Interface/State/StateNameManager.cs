@@ -1,6 +1,7 @@
 using UnityEngine;
 public class StateNameManager {
     public static Level Level = new();
+    public static Completion LoadedLevelCompletion;
     public static float BeatAmount = 100;
     public static AudioClip LoadedAudioClip;
     public static Vector2 PlayerPosition = Vector2.zero;

@@ -11,7 +11,7 @@ public class OfficialLevelCard : MonoBehaviour, ILevelCard {
     [SerializeField] TMP_Text _audioText;
     [SerializeField] TMP_Text _bpmText;
 
-    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks) {
+    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks, Completion completion = null) {
         _playButton.onClick.AddListener(async () => await callbacks.OnPlayLevel(metadata));
         _nameText.text = metadata.name;
         _audioText.text = metadata.audioPath;

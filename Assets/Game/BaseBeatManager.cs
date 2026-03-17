@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The base functionality of a level, turns a list of actions into a proper gameplay flow
+/// with the time and beat tracking. Exposes levels Completion state.
+/// </summary>
 public abstract class BaseBeatManager : MonoBehaviour {
-    [Header ("                BEAT INFO")]
+    public float CompletionPercent { get; private set; }
+    public float ProgressFromOffsetBeats { get; private set; }
+    [Header ("BEAT INFO")]
     [SerializeField] float _secondsPerBeat;
     public float SecondsPerBeat {
         get { return _secondsPerBeat; }
@@ -11,29 +17,17 @@ public abstract class BaseBeatManager : MonoBehaviour {
     [SerializeField] float _dspTimeAtStart;
     float _dspTimeAtPause;
     float _dspTimeAtResume;
-    [Header ("                BEAT PLAYING")]
-    [SerializeField] float _songPositionInSeconds;
-
-    [SerializeField] float _songPositionInBeats;
-    public float SongPositionInBeats {
-        get { return _songPositionInBeats; }
-        set { _songPositionInBeats = value; }
-    }
+    [Header ("BEAT PLAYING")]
+    [SerializeField] internal float _songPositionInSeconds;
+    [SerializeField] protected float _songPositionInBeats;
     [SerializeField] protected float _offset;
-    public float Offset {
-        get { return _offset; }
-    }
-    [Header ("                BEAT SETTINGS")]
+    [Header ("BEAT SETTINGS")]
     [SerializeField] protected AudioSource _audioSource;
     protected float _bpm;
     [SerializeField] protected List<Action> _actionList;
     protected bool _firstUpdate = true;
-    [Header("                LOADED LEVEL")]
-    private float _levelEnd;
-    public float LevelEnd {
-        get { return _levelEnd; }
-        protected set { _levelEnd = value;}
-    }
+    [Header("LOADED LEVEL")]
+    protected float _levelEnd;
 
     #region Update
     void Update() {
@@ -45,10 +39,10 @@ public abstract class BaseBeatManager : MonoBehaviour {
             // this gets the position in the song without considering the last attempts
             _songPositionInSeconds = (float) AudioSettings.dspTime - _dspTimeAtStart - (_dspTimeAtResume - _dspTimeAtPause) + (_offset * _secondsPerBeat);
             // gets the position in beats of the song
-            SongPositionInBeats = _songPositionInSeconds / _secondsPerBeat;
+            _songPositionInBeats = _songPositionInSeconds / _secondsPerBeat;
 
             foreach(Action action in _actionList) {
-                if((action.Beat + action.Delay) < SongPositionInBeats && action.Times > 0) {
+                if((action.Beat + action.Delay) < _songPositionInBeats && action.Times > 0) {
 
                     var (newAction, shouldContinue) = CalculateActionCall(action);
                     action.Beat = newAction.Beat;
@@ -61,8 +55,7 @@ public abstract class BaseBeatManager : MonoBehaviour {
                 }
             }
         }
-
-        TryEndLevel();
+        UpdateCompletionPercent();
     }
     #endregion
     #region FirstUpdate
@@ -205,7 +198,14 @@ public abstract class BaseBeatManager : MonoBehaviour {
         }
     }
     #endregion
-    #region LevelEnd
-    public abstract void TryEndLevel();
-    #endregion
+
+    void UpdateCompletionPercent() {
+        if (_levelEnd <= _offset) {
+            CompletionPercent = 0f;
+            return;
+        }
+        float actualDuration = _levelEnd - _offset;
+        ProgressFromOffsetBeats = _songPositionInBeats - _offset;
+        CompletionPercent = Mathf.Clamp01(ProgressFromOffsetBeats / actualDuration);
+    }
 }

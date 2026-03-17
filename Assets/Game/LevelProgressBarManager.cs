@@ -1,31 +1,34 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelProgressBarManager : MonoBehaviour {
     [Header("Progress Bar functionality")]
-    [SerializeField] Slider _slider;
-    [SerializeField] BeatManager _beatManager;
+    [SerializeField] Slider _baseSlider;
+    [SerializeField] Slider _completionSlider;
+    [SerializeField] AttemptManager _attemptManager;
     [Header("Progress Bar visuals")]
     [SerializeField] SpriteRenderer _player;
-    [SerializeField] Image _fill;
-    [SerializeField] Image _background;
+    [SerializeField] Image _completionFill;
+    [SerializeField] Image _accuracyFill;
+    [SerializeField] CanvasGroup _progressBarCanvasGroup;
     readonly float _fadeDistance = 200;
 
     void Update() {
-        if (_beatManager.LevelEnd == 0) {
-            Debug.LogError("levelEnd is zero! Avoiding division by zero.");
-            return;
-        }
-        Color playerColor = _player.color;
-        _fill.color = playerColor;
-        
-        // Calculate progress accounting for start offset
-        // Progress should be from startOffset to LevelEnd, not from 0 to LevelEnd
-        float actualDuration = _beatManager.LevelEnd - _beatManager.Offset;
-        float progressFromOffset = _beatManager.SongPositionInBeats - _beatManager.Offset;
-        _slider.value = Mathf.Clamp01(progressFromOffset / actualDuration);
+        UpdateProgressFromAttemptManager();
+        UpdateBarFadeFromPlayerDistance();
+    }
 
+    void UpdateProgressFromAttemptManager() {
+        float completionPercent = Mathf.Clamp01(_attemptManager.CompletionPercent);
+        float accuracyPercent = Mathf.Clamp01(_attemptManager.AccuracyPercent);
+
+        _baseSlider.value = completionPercent;
+        _completionFill.fillAmount = completionPercent;
+        _completionSlider.value = accuracyPercent;
+        _accuracyFill.fillAmount = accuracyPercent;
+    }
+
+    void UpdateBarFadeFromPlayerDistance() {
         // Get the player position according to the screen
         Vector3 playerScreenPosition = Camera.main.WorldToScreenPoint(_player.transform.position);
 
@@ -35,20 +38,16 @@ public class LevelProgressBarManager : MonoBehaviour {
             corner 2 -- top left
             corner 3 -- bottom right */
         Vector3[] corners = new Vector3[4];
-        _slider.GetComponent<RectTransform>().GetWorldCorners(corners);
+        _baseSlider.GetComponent<RectTransform>().GetWorldCorners(corners);
 
         // Using a complicated function that returns the closest point on the slider to the playerScreenPosition
         Vector3 closestPoint = GetClosestPointOnLineSegment(corners[0], corners[3], playerScreenPosition);
         // Gets the distance between the player and closest point 
         float distance = Vector3.Distance(playerScreenPosition, closestPoint);
 
-        if(distance <= _fadeDistance) {
-            playerColor.a = distance/_fadeDistance;
-            _fill.color = playerColor;
-            Color backgroundColor = _background.color;
-            backgroundColor.a = distance/_fadeDistance/2;
-            _background.color = backgroundColor;
-        }
+        float fadeMultiplier = distance <= _fadeDistance ? distance / _fadeDistance : 1f;
+
+        _progressBarCanvasGroup.alpha = fadeMultiplier;
     }
 
     // Method that returns the closest point of the given vector ab to a point "point".

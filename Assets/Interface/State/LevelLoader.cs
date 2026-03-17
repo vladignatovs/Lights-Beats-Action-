@@ -75,9 +75,11 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     async Task LoadCurrentState(int pageNumber) {
         switch (StateNameManager.LatestMainMenuState) {
             case MainMenuState.Official:
+                StateNameManager.LoadedLevelCompletion = null;
                 await LoadOfficialLevels();
                 break;
             case MainMenuState.Local:
+                StateNameManager.LoadedLevelCompletion = null;
                 await _localPaginationManager.GoToPage(pageNumber);
                 break;
             case MainMenuState.Server:
@@ -91,7 +93,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     }
 
     void OnServerPageLoaded(List<LevelMetadata> metadatas) {
-        RenderLevelCards(metadatas, _serverLevelCard, _serverContentTransform);
+        RenderServerLevelCards(metadatas);
     }
 
     async Task LoadOfficialLevels() {
@@ -109,6 +111,24 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
             var cardObject = Instantiate(cardPrefab, contentTransform);
             if (cardObject.TryGetComponent<ILevelCard>(out var card))
                 card.Setup(metadata, this);
+        }
+    }
+
+    void RenderServerLevelCards(List<LevelMetadata> metadatas) {
+        for (int i = _serverContentTransform.childCount - 1; i >= 0; i--) {
+            Destroy(_serverContentTransform.GetChild(i).gameObject);
+        }
+
+        foreach (var metadata in metadatas) {
+            var cardObject = Instantiate(_serverLevelCard, _serverContentTransform);
+            if (!cardObject.TryGetComponent<ILevelCard>(out var card)) continue;
+
+            Completion completion = null;
+            if (metadata.serverId.HasValue) {
+                ServerLevelManager.CompletionsByLevelId.TryGetValue(metadata.serverId.Value, out completion);
+            }
+
+            card.Setup(metadata, this, completion);
         }
     }
 
@@ -135,6 +155,12 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         }
         catch (Exception e) {
             Debug.Log(e);
+        }
+
+        StateNameManager.LoadedLevelCompletion = null;
+        if (StateNameManager.LatestMainMenuState == MainMenuState.Server && metadata.serverId.HasValue) {
+            ServerLevelManager.CompletionsByLevelId.TryGetValue(metadata.serverId.Value, out var completion);
+            StateNameManager.LoadedLevelCompletion = completion;
         }
 
         // Initialize all static level data

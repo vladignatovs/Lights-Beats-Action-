@@ -16,7 +16,7 @@ public class LocalLevelCard : MonoBehaviour, ILevelCard {
     [SerializeField] Button _exportButton;
     [SerializeField] Button _deleteButton;
 
-    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks) {
+    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks, Completion completion = null) {
         var id = metadata.id;
         _playButton.onClick.AddListener(async () => await callbacks.OnPlayLevel(metadata));
         _editorButton.onClick.AddListener(async () => await callbacks.OnOpenEditor(metadata));

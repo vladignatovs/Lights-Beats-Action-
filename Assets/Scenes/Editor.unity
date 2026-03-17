@@ -9419,7 +9419,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f4244dce0b0c3e41849c5bc7f61f7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameOverScreen: {fileID: 1073845806}
+  _baseBeatManager: {fileID: 689026090}
+  _dashRadiusManager: {fileID: 0}
+  _attemptsText: {fileID: 0}
+  _accuracyText: {fileID: 0}
+  _completionText: {fileID: 0}
   editorMenuManager: {fileID: 689026086}
 --- !u!82 &689026094 stripped
 AudioSource:
@@ -22568,10 +22572,20 @@ PrefabInstance:
       propertyPath: gameOverScreen
       value: 
       objectReference: {fileID: 1073845806}
+    - target: {fileID: 5175771157967862338, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
+      propertyPath: _attemptManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6629861775832308514, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1884687588483255554, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
     - {fileID: 460498424078285099, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
     - {fileID: 2317917652231877986, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
+    - {fileID: 6629861775832308514, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
+    - {fileID: 5175771157967862338, guid: ec87745f151babd4ea55d36672ebbfd5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

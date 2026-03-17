@@ -1,6 +1,6 @@
 using UnityEngine;
 public class EditorBeatManager : BaseBeatManager {
-    [Header("                UNIQUE EDITOR REFS")]
+    [Header("UNIQUE EDITOR REFS")]
     [SerializeField] ActionCreator _actionCreator;
     [SerializeField] AudioLineManager _audioLineManager;
     [SerializeField] EditorMenuManager _editorMenuManager;
@@ -13,20 +13,20 @@ public class EditorBeatManager : BaseBeatManager {
     void OnEnable() {
         // Clearing leftover data from previous playtest; not required in main game as each attempt is a unique run of a scene
         _actionList.Clear();
-        LevelEnd = 0;
+        _levelEnd = 0;
 
         // Filling _actionList and _levelEnd variables
         foreach(Action action in _actionCreator.Actions) {
             _actionList.Add(action.Clone());
             var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
-            if(thisActionEnd > LevelEnd) {
-                LevelEnd = thisActionEnd;
+            if(thisActionEnd > _levelEnd) {
+                _levelEnd = thisActionEnd;
             }
         }
-        LevelEnd += 5;
+        _levelEnd += 5;
         
         // Ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
-        LevelEnd = Mathf.Max(LevelEnd, _startOffsetManager.StartOffset + 5);
+        _levelEnd = Mathf.Max(_levelEnd, _startOffsetManager.StartOffset + 5);
 
         _audioSource.clip = _audioLineManager.audioSource.clip;
 
@@ -40,12 +40,6 @@ public class EditorBeatManager : BaseBeatManager {
     void OnDisable() {
         _audioSource.Stop();
         ClearChildren();
-    }
-
-    public override void TryEndLevel() {
-        if(SongPositionInBeats >= LevelEnd) {
-            _editorMenuManager.TogglePlayTest(false); // false value means that it should toggle playtest off.
-        }
     }
 
     #region ChildrenClear

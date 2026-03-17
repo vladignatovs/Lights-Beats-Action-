@@ -1,7 +1,6 @@
 using UnityEngine;
 public class BeatManager : BaseBeatManager {
-    [Header("                LOADED LEVEL")]
-    [SerializeField] LevelCompleteManager _levelCompleteManager;
+    [Header("LOADED LEVEL")]
     Level _level;
     void Awake() {
         // finds the level object with the same id
@@ -12,15 +11,15 @@ public class BeatManager : BaseBeatManager {
             _actionList.Add(action.Clone());
             // setting the LevelEnd value, which is actions ending value
             var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
-            if(thisActionEnd > LevelEnd) {
-                LevelEnd = thisActionEnd;
+            if(thisActionEnd > _levelEnd) {
+                _levelEnd = thisActionEnd;
             }
         }
         // adding 5 to levelend to make the ending feel a bit more natural
-        LevelEnd += 5;
+        _levelEnd += 5;
         
         // Ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
-        LevelEnd = Mathf.Max(LevelEnd, _level.startOffset + 5);
+        _levelEnd = Mathf.Max(_levelEnd, _level.startOffset + 5);
         
         // finds the seconds per beat, used in Awake() method to 
         // further make this value avaliable for DurationManager
@@ -36,11 +35,5 @@ public class BeatManager : BaseBeatManager {
         _offset = _level.startOffset;
         _audioSource.time = _offset * SecondsPerBeat;
         _audioSource.Play();
-    }
-    
-    public override void TryEndLevel() {
-        if(SongPositionInBeats >= LevelEnd) {
-            _levelCompleteManager.LevelComplete(StateNameManager.Level.id);
-        }
     }
 }

@@ -14,7 +14,12 @@ public class ServerLevelCard : MonoBehaviour, ILevelCard {
     [SerializeField] TMP_Text _bpmText;
     [SerializeField] Button _importButton;
     [SerializeField] Button _deleteButton;
-    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks) {
+    [SerializeField] Slider _baseSlider;
+    [SerializeField] Image _completionFill;
+    [SerializeField] Slider _completionSlider;
+    [SerializeField] Image _accuracyFill;
+    [SerializeField] TMP_Text _attemptCount;
+    public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks, Completion completion = null) {
         _playButton.onClick.AddListener(async () => await callbacks.OnPlayLevel(metadata));
         _nameText.text = metadata.name;
         // TODO: creator button
@@ -28,6 +33,18 @@ public class ServerLevelCard : MonoBehaviour, ILevelCard {
         } else {
             _importButton.gameObject.SetActive(false);
             _deleteButton.gameObject.SetActive(false);
+        }
+
+        // TODO: dedupe
+        if(completion != null) {
+            float completionPercent = Mathf.Clamp01(completion.percentage);
+            float accuracyPercent = Mathf.Clamp01(completion.accuracy);
+
+            _attemptCount.text = completion.attempts.ToString();
+            _baseSlider.value = completionPercent;
+            _completionFill.fillAmount = completionPercent;
+            _completionSlider.value = accuracyPercent;
+            _accuracyFill.fillAmount = accuracyPercent;
         }
     }
 }

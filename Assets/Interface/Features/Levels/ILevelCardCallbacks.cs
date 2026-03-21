@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 /// <summary>
 /// Single source of truth for all actions that a card can possibly access at any point in time.
 /// </summary>
-public interface ILevelCardCallbacks {
+public interface ILevelCardCallbacks : ICallbacks {
     Task OnPlayLevel(LevelMetadata metadata);
     Task OnOpenEditor(LevelMetadata metadata);
     Task OnExportLevel(int id);

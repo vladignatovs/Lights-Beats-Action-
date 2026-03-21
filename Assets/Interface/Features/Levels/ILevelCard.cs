@@ -2,6 +2,6 @@
 /// General interface describing a Level Card, the key component as
 /// it connects the main menu to the gameplay
 /// </summary>
-public interface ILevelCard {
-    void Setup(LevelMetadata metadata, ILevelCardCallbacks levelCardCallbacks, Completion completion = null);
+public interface ILevelCard : ICard {
+    void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks, Completion completion = null);
 }

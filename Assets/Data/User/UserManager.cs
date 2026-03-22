@@ -16,6 +16,7 @@ public class UserManager : DataManager {
     public event Action<string> OnNameChanged;
 
     public string Name { get; private set; } = "Guest";
+    public bool IsAdmin { get; private set; }
 
     void SetName(string value)
     {
@@ -23,15 +24,21 @@ public class UserManager : DataManager {
         OnNameChanged?.Invoke(Name);
     }
 
+    void SetRights(Rights rights) {
+        IsAdmin = rights == Rights.Admin;
+    }
+
     public async Task<User> CreateUser(string username)
     {
-        var user = new User {
+        var user = new UserInsert {
             Username = username
         };
-        var usr = await _client.From<User>().Insert(user);
+        var usr = await _client.From<UserInsert>().Insert(user);
 
-        SetName(usr.Model?.Username);
-        return usr.Model;
+        var createdUser = await LoadCurrentUser();
+        SetName(createdUser?.Username);
+        SetRights(createdUser?.Rights ?? Rights.User);
+        return createdUser;
     }
 
     public async Task LoadUserAsync()
@@ -41,13 +48,22 @@ public class UserManager : DataManager {
             return;
         }
 
-        var user = await _client
-            .From<User>()
-            .Where(x => x.Id == currentUserId)
-            .Select(u => new object[] { u.Username })
-            .Single();
+        var user = await LoadCurrentUser();
 
         SetName(user?.Username);
+        SetRights(user?.Rights ?? Rights.User);
+    }
+
+    async Task<User> LoadCurrentUser() {
+        if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {
+            return null;
+        }
+
+        return await _client
+            .From<User>()
+            .Where(x => x.Id == currentUserId)
+            .Select(u => new object[] { u.Username, u.Rights })
+            .Single();
     }
 
     public async Task<UserMetadata> LoadUserById(Guid userId) {

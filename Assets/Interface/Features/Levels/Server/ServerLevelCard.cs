@@ -26,11 +26,19 @@ public class ServerLevelCard : MonoBehaviour, ILevelCard {
         _creatorUsernameText.text = metadata.creatorUsername;
         _audioText.text = metadata.audioPath;
         _bpmText.text = metadata.bpm.ToString();
-        if(metadata.creatorId.HasValue && SupabaseManager.Instance.Client.Auth.CurrentUser.Id == metadata.creatorId.Value.ToString()) {
+
+        bool isCreator = metadata.creatorId.HasValue && SupabaseManager.Instance.Client.Auth.CurrentUser.Id == metadata.creatorId.Value.ToString();
+        bool canDeleteServerLevel = isCreator || SupabaseManager.Instance.User.IsAdmin;
+
+        if(isCreator) {
             _importButton.onClick.AddListener(async () => await callbacks.OnImportLevel(metadata.serverId.Value));
-            _deleteButton.onClick.AddListener(() => callbacks.OnDeleteServerLevel(metadata.serverId.Value));
         } else {
             _importButton.gameObject.SetActive(false);
+        }
+
+        if (canDeleteServerLevel) {
+            _deleteButton.onClick.AddListener(() => callbacks.OnDeleteServerLevel(metadata.serverId.Value));
+        } else {
             _deleteButton.gameObject.SetActive(false);
         }
 

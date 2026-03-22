@@ -9,6 +9,15 @@ public class User: BaseModel {
 
     [Column("username")]
     public string Username { get; set; }
+
+    [Column("rights")]
+    public Rights Rights { get; set; }
+}
+
+[Table("user")]
+public class UserInsert : BaseModel {
+    [Column("username")]
+    public string Username { get; set; }
 }
 
 [Table("user")]

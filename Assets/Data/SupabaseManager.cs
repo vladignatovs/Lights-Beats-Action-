@@ -24,6 +24,8 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
     public AuthManager Auth { get; private set; }
     public UserManager User { get; private set; }
     public BlockManager Block { get; private set; }
+    public FriendRequestManager FriendRequest { get; private set; }
+    public FriendshipManager Friendship { get; private set; }
     public LevelManager Level { get; private set; }
     public CompletionManager Completion { get; private set; }
 
@@ -48,6 +50,8 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
         Auth = new(Client);
         User = new(Client);
         Block = new(Client);
+        FriendRequest = new(Client);
+        Friendship = new(Client);
         Level = new(Client);
         Completion = new(Client);
 

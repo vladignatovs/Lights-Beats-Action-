@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 7710955278051220515}
   - component: {fileID: 8296850400016504766}
   - component: {fileID: 8555942531496260916}
-  - component: {fileID: 1422644571005969582}
+  - component: {fileID: 6093977080749772309}
   m_Layer: 5
   m_Name: BlockedUserCard
   m_TagString: Untagged
@@ -350,7 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
   m_AspectMode: 1
   m_AspectRatio: 3
---- !u!114 &1422644571005969582
+--- !u!114 &6093977080749772309
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,9 +359,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1134274234433657047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c1e91ce3f5697b439b6a8f0185f35c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 83907065da31d6d46854a8fcfc0c0a51, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UserCard
+  m_EditorClassIdentifier: Assembly-CSharp::BlockedUserCard
   _usernameText: {fileID: 7571100322312012302}
   _blockButton: {fileID: 838678328049604869}
   _blockButtonText: {fileID: 7226106093098140640}

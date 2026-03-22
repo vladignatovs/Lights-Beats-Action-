@@ -36,8 +36,14 @@ public class UserManager : DataManager {
 
     public async Task LoadUserAsync()
     {
+        if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {
+            SetName("Guest");
+            return;
+        }
+
         var user = await _client
             .From<User>()
+            .Where(x => x.Id == currentUserId)
             .Select(u => new object[] { u.Username })
             .Single();
 

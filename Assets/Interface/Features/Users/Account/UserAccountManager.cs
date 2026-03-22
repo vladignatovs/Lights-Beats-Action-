@@ -10,6 +10,14 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
     [SerializeField] TMP_Text _usernameText;
     [SerializeField] Transform _blockedUsersContent;
     [SerializeField] GameObject _blockedUserCardPrefab;
+    [SerializeField] Transform _sentRequestsContent;
+    [SerializeField] GameObject _sentRequestUserCardPrefab;
+    [SerializeField] Transform _receivedRequestsContent;
+    [SerializeField] GameObject _receivedRequestUserCardPrefab;
+    [SerializeField] Transform _friendsContent;
+    [SerializeField] GameObject _friendUserCardPrefab;
+
+    readonly Dictionary<System.Guid, UserFriendRequestState> _friendRequestStateByUserId = new();
 
     protected override void Start() {
         base.Start();
@@ -34,6 +42,51 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
 
         if (shouldOpen) {
             await RefreshBlockedUsers();
+            await RefreshFriendRequests();
+            await RefreshFriends();
+        }
+    }
+
+    async Task RefreshFriendRequests() {
+        _friendRequestStateByUserId.Clear();
+        await RefreshSentRequests();
+        await RefreshReceivedRequests();
+    }
+
+    async Task RefreshFriends() {
+        for (int i = _friendsContent.childCount - 1; i >= 0; i--) {
+            Destroy(_friendsContent.GetChild(i).gameObject);
+        }
+
+        var friendships = await SupabaseManager.Instance.Friendship.GetMyFriendships();
+        if (friendships.Count == 0) {
+            return;
+        }
+
+        if (!System.Guid.TryParse(SupabaseManager.Instance.Client.Auth.CurrentUser?.Id, out var me)) {
+            return;
+        }
+
+        var friendIds = friendships
+            .Select(x => x.FriendId == me ? x.FriendedId : x.FriendId)
+            .Distinct()
+            .ToList();
+
+        foreach (var friendId in friendIds) {
+            var user = await SupabaseManager.Instance.User.LoadUserById(friendId);
+            if (user == null) continue;
+
+            if (!_friendRequestStateByUserId.TryGetValue(user.id, out var state)) {
+                state = new UserFriendRequestState();
+                _friendRequestStateByUserId[user.id] = state;
+            }
+            state.isFriend = true;
+            state.hasIncomingRequest = false;
+            state.hasOutgoingRequest = false;
+
+            var cardObject = Instantiate(_friendUserCardPrefab, _friendsContent);
+            if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
+            card.Setup(user, this);
         }
     }
 
@@ -64,6 +117,123 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
             card.Setup(user, this);
         }
+    }
+
+    async Task RefreshSentRequests() {
+        for (int i = _sentRequestsContent.childCount - 1; i >= 0; i--) {
+            Destroy(_sentRequestsContent.GetChild(i).gameObject);
+        }
+
+        var outgoing = await SupabaseManager.Instance.FriendRequest.GetOutgoingRequests();
+        var pendingOrDenied = outgoing
+            .Where(x => x.Accepted != true)
+            .OrderByDescending(x => x.CreatedAt)
+            .GroupBy(x => x.ReceiverId)
+            .Select(x => x.First())
+            .ToList();
+
+        foreach (var request in pendingOrDenied) {
+            var user = await SupabaseManager.Instance.User.LoadUserById(request.ReceiverId);
+            if (user == null) continue;
+
+            if (!_friendRequestStateByUserId.TryGetValue(user.id, out var state)) {
+                state = new UserFriendRequestState();
+                _friendRequestStateByUserId[user.id] = state;
+            }
+            state.hasOutgoingRequest = true;
+            state.isFriend = false;
+
+            var cardObject = Instantiate(_sentRequestUserCardPrefab, _sentRequestsContent);
+            if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
+            card.Setup(user, this);
+        }
+    }
+
+    async Task RefreshReceivedRequests() {
+        for (int i = _receivedRequestsContent.childCount - 1; i >= 0; i--) {
+            Destroy(_receivedRequestsContent.GetChild(i).gameObject);
+        }
+
+        var incoming = await SupabaseManager.Instance.FriendRequest.GetIncomingRequests();
+        var pending = incoming
+            .Where(x => x.Accepted == null)
+            .OrderByDescending(x => x.CreatedAt)
+            .GroupBy(x => x.SenderId)
+            .Select(x => x.First())
+            .ToList();
+
+        foreach (var request in pending) {
+            var user = await SupabaseManager.Instance.User.LoadUserById(request.SenderId);
+            if (user == null) continue;
+
+            if (!_friendRequestStateByUserId.TryGetValue(user.id, out var state)) {
+                state = new UserFriendRequestState();
+                _friendRequestStateByUserId[user.id] = state;
+            }
+            state.hasIncomingRequest = true;
+            state.isFriend = false;
+
+            var cardObject = Instantiate(_receivedRequestUserCardPrefab, _receivedRequestsContent);
+            if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
+            card.Setup(user, this);
+        }
+    }
+
+    public UserFriendRequestState GetFriendRequestState(System.Guid userId) {
+        if (_friendRequestStateByUserId.TryGetValue(userId, out var state)) {
+            return state;
+        }
+
+        return new UserFriendRequestState {
+            isFriend = false,
+            hasIncomingRequest = false,
+            hasOutgoingRequest = false,
+        };
+    }
+
+    public async Task<bool> OnToggleFriendRequest(System.Guid userId, bool hasOutgoingRequest) {
+        if (hasOutgoingRequest) {
+            var outgoingRequests = await SupabaseManager.Instance.FriendRequest.GetOutgoingRequests();
+            var outgoing = outgoingRequests
+                .OrderByDescending(x => x.CreatedAt)
+                .FirstOrDefault(x => x.ReceiverId == userId && x.Accepted != true);
+
+            if (outgoing == null) {
+                return false;
+            }
+
+            await SupabaseManager.Instance.FriendRequest.DeleteRequest(outgoing.Id);
+            await RefreshFriendRequests();
+            await RefreshFriends();
+            return false;
+        }
+
+        await SupabaseManager.Instance.FriendRequest.SendRequest(userId);
+        await RefreshFriendRequests();
+        await RefreshFriends();
+        return true;
+    }
+
+    public async Task<bool> OnRespondToFriendRequest(System.Guid userId, bool accept) {
+        var incomingRequests = await SupabaseManager.Instance.FriendRequest.GetIncomingRequests();
+        var incoming = incomingRequests
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefault(x => x.SenderId == userId && x.Accepted == null);
+
+        if (incoming == null) {
+            return false;
+        }
+
+        await SupabaseManager.Instance.FriendRequest.SetRequestAccepted(incoming.Id, accept);
+        await RefreshFriendRequests();
+        await RefreshFriends();
+        return false;
+    }
+
+    public async Task OnRemoveFriend(System.Guid userId) {
+        await SupabaseManager.Instance.Friendship.DeleteFriendship(userId);
+        await RefreshFriendRequests();
+        await RefreshFriends();
     }
 
     public async Task<bool> OnToggleBlockUser(System.Guid userId, bool isBlocked) {

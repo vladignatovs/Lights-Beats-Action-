@@ -43,4 +43,21 @@ public class BlockManager : DataManager {
             .Select(x => x.Blocked)
             .ToHashSet();
     }
+
+    public async Task<HashSet<Guid>> GetUsersWhoBlockedMeIds() {
+        var currentUserId = _client.Auth.CurrentUser?.Id;
+        if (!Guid.TryParse(currentUserId, out var me)) {
+            return new HashSet<Guid>();
+        }
+
+        var response = await _client
+            .From<BlockRelationRecord>()
+            .Where(x => x.Blocked == me)
+            .Select("blocker_id,blocked_id")
+            .Get();
+
+        return response.Models
+            .Select(x => x.Blocker)
+            .ToHashSet();
+    }
 }

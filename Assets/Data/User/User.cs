@@ -24,6 +24,7 @@ public class UserMetadata {
     public Guid id { get; set; }
     public string username { get; set; }
     public bool isBlocked { get; set; }
+    public bool hasBlocked { get; set; }
 }
 
 public enum Rights {

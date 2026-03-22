@@ -23,6 +23,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
     // Data services
     public AuthManager Auth { get; private set; }
     public UserManager User { get; private set; }
+    public BlockManager Block { get; private set; }
     public LevelManager Level { get; private set; }
     public CompletionManager Completion { get; private set; }
 
@@ -46,6 +47,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
         // Initializing all the data services
         Auth = new(Client);
         User = new(Client);
+        Block = new(Client);
         Level = new(Client);
         Completion = new(Client);
 

@@ -22,8 +22,7 @@ public class ServerLevelCard : MonoBehaviour, ILevelCard {
     public void Setup(LevelMetadata metadata, ILevelCardCallbacks callbacks, Completion completion = null) {
         _playButton.onClick.AddListener(async () => await callbacks.OnPlayLevel(metadata));
         _nameText.text = metadata.name;
-        // TODO: creator button
-        // _creatorButton.onClick.AddListener(async () => await callbacks.OnCreatorOverview(metadata));
+        _creatorButton.onClick.AddListener(() => callbacks.OnCreatorOverview(metadata));
         _creatorUsernameText.text = metadata.creatorUsername;
         _audioText.text = metadata.audioPath;
         _bpmText.text = metadata.bpm.ToString();

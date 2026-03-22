@@ -44,6 +44,24 @@ public class UserManager : DataManager {
         SetName(user?.Username);
     }
 
+    public async Task<UserMetadata> LoadUserById(Guid userId) {
+        var user = await _client
+            .From<User>()
+            .Where(x => x.Id == userId)
+            .Select(u => new object[] { u.Id, u.Username })
+            .Single();
+
+        if (user == null) {
+            return null;
+        }
+
+        return new UserMetadata {
+            id = user.Id,
+            username = user.Username,
+            isBlocked = false,
+        };
+    }
+
     public async Task<(List<UserMetadata> items, int totalCount)> LazyLoadUsers(
         int offset,
         int limit,

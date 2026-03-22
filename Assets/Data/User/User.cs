@@ -23,6 +23,7 @@ public class ServerUserMetadata : BaseModel {
 public class UserMetadata {
     public Guid id { get; set; }
     public string username { get; set; }
+    public bool isBlocked { get; set; }
 }
 
 public enum Rights {

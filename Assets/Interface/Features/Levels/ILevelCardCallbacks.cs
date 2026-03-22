@@ -16,4 +16,5 @@ public interface ILevelCardCallbacks : ICallbacks {
     Task OnUpdateLevelBpm(int id, string value);
     Task OnImportLevel(Guid id);
     void OnDeleteServerLevel(Guid id);
+    void OnCreatorOverview(LevelMetadata metadata);
 }

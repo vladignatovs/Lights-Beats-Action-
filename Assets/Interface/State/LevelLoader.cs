@@ -25,11 +25,13 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [SerializeField] GameObject _serverLevelCard;
     [SerializeField] LevelPaginationManager _serverPaginationManager;
     [SerializeField] ServerLevelFilterPanel _serverFilterPanel;
+    [SerializeField] UserCard _overlayUserCard;
     ServerLevelManager _serverLevelManager;
 
     [Header ("Other")]
     [SerializeField] MainMenuManager _mainMenuManager;
     [SerializeField] ConfirmationManager _confirmationManager;
+    [SerializeField] UserLoader _userLoader;
 
     private void Awake() {
         _officialLevelManager = new();
@@ -249,5 +251,22 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _mainMenuManager.ToLocal();
         await SceneStateManager.Reload();
     }
+
+    public void OnCreatorOverview(LevelMetadata metadata) {
+        if (!metadata.creatorId.HasValue) return;
+        var user = new UserMetadata {
+            id = metadata.creatorId.Value,
+            username = metadata.creatorUsername
+        };
+        _overlayUserCard.Setup(user, _userLoader);
+        _overlayUserCard.gameObject.SetActive(true);
+        Overlay.ToggleOverlay(true);
+    }
 #endregion
+
+    [UsedImplicitly]
+    public void CloseCreatorOverview() {
+        _overlayUserCard.gameObject.SetActive(false);
+        Overlay.ToggleOverlay(false);
+    }
 }

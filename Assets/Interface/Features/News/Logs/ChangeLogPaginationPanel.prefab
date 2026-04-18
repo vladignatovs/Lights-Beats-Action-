@@ -1098,8 +1098,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3064218623836443529}
-        m_TargetAssemblyTypeName: NewsPaginationManager, Assembly-CSharp
+      - m_Target: {fileID: 7302044805217165684}
+        m_TargetAssemblyTypeName: ChangeLogPaginationManager, Assembly-CSharp
         m_MethodName: OnReloadButtonClicked
         m_Mode: 1
         m_Arguments:
@@ -1196,9 +1196,9 @@ GameObject:
   - component: {fileID: 9132059824150879715}
   - component: {fileID: 7046139257988043543}
   - component: {fileID: 1447369001116028692}
-  - component: {fileID: 3064218623836443529}
+  - component: {fileID: 7302044805217165684}
   m_Layer: 5
-  m_Name: NewsPaginationPanel
+  m_Name: ChangeLogPaginationPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3064218623836443529
+--- !u!114 &7302044805217165684
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1274,9 +1274,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4702829635685625113}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c7a3455ef2f4c278b525f319ea61cd8, type: 3}
+  m_Script: {fileID: 11500000, guid: a914a9daf7f32604e853168e5e7406c4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NewsPaginationManager
+  m_EditorClassIdentifier: Assembly-CSharp::ChangeLogPaginationManager
   _previousPageButton: {fileID: 4352657475870548580}
   _nextPageButton: {fileID: 8101899630951967408}
   _pageInput: {fileID: 7870940627752332197}

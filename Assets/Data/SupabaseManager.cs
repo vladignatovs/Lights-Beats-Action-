@@ -30,6 +30,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
     public LevelManager Level { get; private set; }
     public CompletionManager Completion { get; private set; }
     public NewsManager News { get; private set; }
+    public ChangeLogManager ChangeLog { get; private set; }
 
     private async void Awake() {
         if (Instance != null && Instance != this) {
@@ -58,6 +59,7 @@ public class SupabaseManager : MonoBehaviour, ISupabaseClientProvider {
         Level = new(Client);
         Completion = new(Client);
         News = new(Client);
+        ChangeLog = new(Client);
 
         // Try to authenticate user
         await Auth.TryAuthenticate();

@@ -1098,8 +1098,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelPaginationManager, Assembly-CSharp
+      - m_Target: {fileID: 8457247197533858391}
+        m_TargetAssemblyTypeName: UserPaginationManager, Assembly-CSharp
         m_MethodName: OnReloadButtonClicked
         m_Mode: 1
         m_Arguments:

@@ -13,6 +13,7 @@ public class NewsLoader : MonoBehaviour, INewsCardCallbacks {
     [SerializeField] NewsView _newsView;
     [SerializeField] NewsSectionManager _sectionManager;
     [SerializeField] GameObject _toggleCreateNewsButton;
+    [SerializeField] GameObject _toggleLogsButton;
 
     NewsPageManager _newsPageManager;
 
@@ -39,6 +40,7 @@ public class NewsLoader : MonoBehaviour, INewsCardCallbacks {
         _newsPanel.SetActive(shouldOpen);
         _sectionManager.ToListSection();
         _toggleCreateNewsButton.SetActive(SupabaseManager.Instance.User.IsAdmin);
+        _toggleLogsButton.SetActive(SupabaseManager.Instance.User.IsAdmin);
 
         if (shouldOpen) {
             await _paginationManager.GoToPage(0);

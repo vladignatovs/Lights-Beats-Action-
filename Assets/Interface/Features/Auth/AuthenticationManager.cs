@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,19 +24,9 @@ public class AuthenticationManager : AuthGated {
     TMP_Text _signInLabel;
     TMP_Text _signUpLabel;
 
-    protected override void Start() {
-        base.Start();
-        var user = SupabaseManager.Instance.Auth;
-        user.OnAuthenticationRequired += () => Overlay.ToggleOverlay(true);
-        user.OnAuthenticated += () => Overlay.ToggleOverlay(false);
-        Overlay.ToggleOverlay(!user.IsAuthenticated);
-    }
-
-    protected override void OnDestroy() {
-        base.OnDestroy();
-        var user = SupabaseManager.Instance.Auth;
-        user.OnAuthenticationRequired -= () => Overlay.ToggleOverlay(true);
-        user.OnAuthenticated -= () => Overlay.ToggleOverlay(false);
+    protected override void ApplyState(bool isAllowed) {
+        base.ApplyState(isAllowed);
+        Overlay.ToggleOverlay(isAllowed);
     }
 
     void Awake() {
@@ -104,9 +95,19 @@ public class AuthenticationManager : AuthGated {
 
     // TODO: keep guest session alive, give guest an option to authenticate later
     public void Guest() {
+        SupabaseManager.Instance.Auth.EnableGuestMode();
         Overlay.ToggleOverlay(false);
         CleanUp();
         gameObject.SetActive(false);
+    }
+
+    [UsedImplicitly]
+    public void ShowAuthenticationPanel() {
+        SupabaseManager.Instance.Auth.DisableGuestMode();
+        Overlay.ToggleOverlay(true);
+        CleanUp();
+        ValidateConfirm();
+        gameObject.SetActive(true);
     }
 
     void CleanUp() {

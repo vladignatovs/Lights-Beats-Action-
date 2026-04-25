@@ -11,6 +11,11 @@ public class UserManager : DataManager {
         SupabaseManager.Instance.Auth.OnAuthenticated += async () => {
             await LoadUserAsync();
         };
+
+        SupabaseManager.Instance.Auth.OnAuthenticationRequired += () => {
+            SetName("Guest");
+            SetRights(Rights.User);
+        };
     }
 
     public event Action<string> OnNameChanged;
@@ -45,6 +50,7 @@ public class UserManager : DataManager {
     {
         if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {
             SetName("Guest");
+            SetRights(Rights.User);
             return;
         }
 
@@ -135,6 +141,27 @@ public class UserManager : DataManager {
             .Delete();
 
         SetName("Guest");
+        SetRights(Rights.User);
+    }
+
+    public async Task UpdateUsername(string username) {
+        if (string.IsNullOrWhiteSpace(username)) {
+            throw new ArgumentException("Username must not be empty.");
+        }
+
+        if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {
+            throw new InvalidOperationException("Cannot update username without an authenticated user.");
+        }
+
+        string trimmedUsername = username.Trim();
+
+        await _client
+            .From<User>()
+            .Where(x => x.Id == currentUserId)
+            .Set(x => x.Username, trimmedUsername)
+            .Update();
+
+        SetName(trimmedUsername);
     }
 
     static UserMetadata ToLocalUserMetadata(ServerUserMetadata user) {

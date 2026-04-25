@@ -4,10 +4,15 @@ using Supabase;
 using UnityEngine;
 
 public sealed class AuthManager : DataManager {
+    const string GuestModePlayerPrefsKey = "guest_mode";
+
     public AuthManager(Client client) : base(client) { }
     public event System.Action OnAuthenticationRequired;
     public event System.Action OnAuthenticated;
+    public event Action<bool> OnGuestModeChanged;
     public bool IsAuthenticated => _client.Auth.CurrentUser != null;
+    public string Email => _client.Auth.CurrentUser?.Email ?? string.Empty;
+    public bool IsGuestMode { get; private set; } = PlayerPrefs.GetInt(GuestModePlayerPrefsKey, 0) == 1;
 
     public async Task<Supabase.Gotrue.Session> TryAuthenticate() {
         try {
@@ -17,6 +22,12 @@ public sealed class AuthManager : DataManager {
         } catch(Exception e) {
             // TODO: try to authenticate via steam
             Debug.LogError($"Authentication failed: {e.Message}");
+
+            if (IsGuestMode) {
+                OnGuestModeChanged?.Invoke(true);
+                return null;
+            }
+
             OnAuthenticationRequired?.Invoke();
             return null;
         }
@@ -45,7 +56,8 @@ public sealed class AuthManager : DataManager {
         return session;
     } 
 
-    public async void SignOut() {
+    public async Task SignOut() {
+        DisableGuestMode();
         await _client.Auth.SignOut();
         PlayerPrefs.DeleteKey("access_token");
         PlayerPrefs.DeleteKey("refresh_token");
@@ -53,9 +65,54 @@ public sealed class AuthManager : DataManager {
         Debug.Log("Signed out!");
     }
 
+    public async Task UpdateEmail(string email) {
+        if (string.IsNullOrWhiteSpace(email)) {
+            throw new ArgumentException("{ msg: \"Email must not be empty\" }");
+        }
+
+        await _client.Auth.Update(new Supabase.Gotrue.UserAttributes {
+            Email = email.Trim()
+        });
+
+        SaveCurrentSession();
+    }
+
+    public async Task UpdatePassword(string password) {
+        if (string.IsNullOrWhiteSpace(password)) {
+            throw new ArgumentException("{ msg: \"Password must not be empty\" }");
+        }
+
+        await _client.Auth.Update(new Supabase.Gotrue.UserAttributes {
+            Password = password
+        });
+
+        SaveCurrentSession();
+    }
+
+    public void EnableGuestMode() {
+        if (IsGuestMode) {
+            return;
+        }
+
+        IsGuestMode = true;
+        PlayerPrefs.SetInt(GuestModePlayerPrefsKey, 1);
+        OnGuestModeChanged?.Invoke(true);
+    }
+
+    public void DisableGuestMode() {
+        if (!IsGuestMode) {
+            return;
+        }
+
+        IsGuestMode = false;
+        PlayerPrefs.DeleteKey(GuestModePlayerPrefsKey);
+        OnGuestModeChanged?.Invoke(false);
+    }
+
 
     async Task<Supabase.Gotrue.Session> SetSession(Supabase.Gotrue.Session session) {
         var sess = await _client.Auth.SetSession(session.AccessToken, session.RefreshToken);
+
         SaveSession(sess);
         OnAuthenticated?.Invoke();
         return sess;
@@ -71,9 +128,15 @@ public sealed class AuthManager : DataManager {
         return sess;
     }
 
-    // TODO: playerprefs is dev only, use secure storage for prod
     void SaveSession(Supabase.Gotrue.Session session) {
         PlayerPrefs.SetString("access_token", session.AccessToken);
         PlayerPrefs.SetString("refresh_token", session.RefreshToken);
+    }
+
+    void SaveCurrentSession() {
+        var session = _client.Auth.CurrentSession;
+        if (session != null) {
+            SaveSession(session);
+        }
     }
 }

@@ -1,13 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
-public class UserAccountManager : AuthGated, IUserCardCallbacks {
-    public override bool ShowOnAuth => true;
+public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
     [SerializeField] GameObject _accountPanel;
+    [SerializeField] ConfirmationManager _confirmationManager;
     [SerializeField] TMP_Text _usernameText;
+    [SerializeField] TMP_InputField _changeUsernameInput;
+    [SerializeField] TMP_InputField _changeEmailInput;
+    [SerializeField] TMP_InputField _changePasswordInput;
+    [SerializeField] TMP_Text _accountActionText;
     [SerializeField] Transform _blockedUsersContent;
     [SerializeField] GameObject _blockedUserCardPrefab;
     [SerializeField] Transform _sentRequestsContent;
@@ -19,32 +25,52 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
 
     readonly Dictionary<System.Guid, UserFriendRequestState> _friendRequestStateByUserId = new();
 
-    protected override void Start() {
-        base.Start();
+    void Start() {
         // set immediately from cache
         _usernameText.SetText(SupabaseManager.Instance.User.Name);
         // subscribe for updates
         SupabaseManager.Instance.User.OnNameChanged += HandleNameChanged;
     }
 
-    protected override void OnDestroy() {
-        base.OnDestroy();
+    void OnDestroy() {
         SupabaseManager.Instance.User.OnNameChanged -= HandleNameChanged;
     }
 
     void HandleNameChanged(string name) {
         _usernameText.SetText(name);
     }
+
     public async void ToggleAccountPanel() {
         bool shouldOpen = !_accountPanel.activeSelf;
         Overlay.ToggleOverlay(shouldOpen);
         _accountPanel.SetActive(shouldOpen);
 
         if (shouldOpen) {
+            RefreshAccountInputs();
             await RefreshBlockedUsers();
             await RefreshFriendRequests();
             await RefreshFriends();
         }
+    }
+
+    [UsedImplicitly]
+    public void UpdateUsername() {
+        _confirmationManager.ShowConfirmation(async () => await ConfirmUpdateUsername());
+    }
+
+    [UsedImplicitly]
+    public void UpdateEmail() {
+        _confirmationManager.ShowConfirmation(async () => await ConfirmUpdateEmail());
+    }
+
+    [UsedImplicitly]
+    public void UpdatePassword() {
+        _confirmationManager.ShowConfirmation(async () => await ConfirmUpdatePassword());
+    }
+
+    [UsedImplicitly]
+    public void DeleteAccount() {
+        _confirmationManager.ShowConfirmation(ConfirmDeleteAccount);
     }
 
     async Task RefreshFriendRequests() {
@@ -90,9 +116,69 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
         }
     }
 
-    public void SignOut() {
-        SupabaseManager.Instance.Auth.SignOut();
-        ToggleAccountPanel();
+    public async void SignOut() {
+        if (_accountPanel.activeSelf) {
+            ToggleAccountPanel();
+        }
+
+        await SupabaseManager.Instance.Auth.SignOut();
+    }
+
+    void RefreshAccountInputs() {
+        _changeUsernameInput.text = SupabaseManager.Instance.User.Name;
+        _changeEmailInput.text = SupabaseManager.Instance.Auth.Email;
+        _changePasswordInput.text = string.Empty;
+        _accountActionText.text = string.Empty;
+    }
+
+    async Task ConfirmUpdateUsername() {
+        try {
+            await SupabaseManager.Instance.User.UpdateUsername(_changeUsernameInput.text);
+            _changeUsernameInput.text = SupabaseManager.Instance.User.Name;
+            _accountActionText.text = "Username updated.";
+        } catch (Exception e) {
+            _accountActionText.text = GetErrorMessage("Username update failed", e);
+        }
+    }
+
+    async Task ConfirmUpdateEmail() {
+        try {
+            await SupabaseManager.Instance.Auth.UpdateEmail(_changeEmailInput.text);
+            _accountActionText.text = "Email confirmation has been sent to you.";
+        } catch (Exception e) {
+            _accountActionText.text = GetErrorMessage("Email update failed", e);
+        }
+    }
+
+    async Task ConfirmUpdatePassword() {
+        try {
+            await SupabaseManager.Instance.Auth.UpdatePassword(_changePasswordInput.text);
+            _changePasswordInput.text = string.Empty;
+            _accountActionText.text = "Password updated.";
+        } catch (Exception e) {
+            _accountActionText.text = GetErrorMessage("Password update failed", e);
+        }
+    }
+
+    async void ConfirmDeleteAccount() {
+        try {
+            await SupabaseManager.Instance.User.DeleteCurrentUser();
+            if (_accountPanel.activeSelf) {
+                ToggleAccountPanel();
+            }
+
+            await SupabaseManager.Instance.Auth.SignOut();
+        } catch (Exception e) {
+            _accountActionText.text = GetErrorMessage("Account deletion failed", e);
+        }
+    }
+
+    static string GetErrorMessage(string prefix, Exception e) {
+        try {
+            return prefix + ": " + JsonUtility.FromJson<AuthError>(e.Message).msg;
+        } catch {
+            return prefix + ".";
+        }
     }
 
     async Task RefreshBlockedUsers() {
@@ -246,5 +332,10 @@ public class UserAccountManager : AuthGated, IUserCardCallbacks {
         await SupabaseManager.Instance.Block.BlockUser(userId);
         await RefreshBlockedUsers();
         return true;
+    }
+
+    [Serializable]
+    class AuthError {
+        public string msg;
     }
 }

@@ -12,6 +12,8 @@ public class MessengerManager : MonoBehaviour {
 
     [SerializeField] ChatMessage _chatMessagePrefab;
     [SerializeField] Transform _chatContent;
+    [SerializeField] TMP_Text _emptyMessengerText;
+    [SerializeField] TMP_Text _emptyChatText;
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] ScrollRect _scrollRect;
     [SerializeField] TMP_InputField _editInputField;
@@ -38,6 +40,8 @@ public class MessengerManager : MonoBehaviour {
         _inputField.onSubmit.AddListener(HandleInputSubmit);
         _cancelEditButton.onClick.AddListener(CancelEdit);
         ToggleEditMode(false);
+        ToggleEmptyMessengerState(true);
+        ToggleEmptyChatState(false);
 
         SupabaseManager.Instance.Auth.OnAuthenticated += HandleAuthenticated;
 
@@ -96,6 +100,7 @@ public class MessengerManager : MonoBehaviour {
     public async void OpenChat(Guid receiverId, string receiverUsername) {
         _activeChatUserId = receiverId;
         _activeChatUsername = receiverUsername;
+        ToggleEmptyMessengerState(false);
         await LoadChat(receiverId);
         await SupabaseManager.Instance.Message.SubscribeToConversation(receiverId);
     }
@@ -106,8 +111,12 @@ public class MessengerManager : MonoBehaviour {
         _renderedMessageIds.Clear();
         _renderedMessages.Clear();
         ClearRenderedMessages();
+        ToggleEmptyMessengerState(true);
+        ToggleEmptyChatState(false);
         SupabaseManager.Instance.Message.Unsubscribe();
     }
+
+    public bool HasActiveChat => _activeChatUserId.HasValue;
 
     public async void SendCurrentMessage() {
         if (!_activeChatUserId.HasValue) {
@@ -133,6 +142,7 @@ public class MessengerManager : MonoBehaviour {
         _renderedMessages.Clear();
 
         List<Message> messages = await SupabaseManager.Instance.Message.LoadConversation(receiverId);
+        ToggleEmptyChatState(messages.Count == 0);
         foreach (var message in messages) {
             RenderMessage(message);
         }
@@ -166,6 +176,8 @@ public class MessengerManager : MonoBehaviour {
         if (!_renderedMessageIds.Add(message.Id)) {
             return;
         }
+
+        ToggleEmptyChatState(false);
 
         var chatMessage = Instantiate(_chatMessagePrefab, _chatContent);
         bool canEdit = message.SenderId.ToString() == SupabaseManager.Instance.Client.Auth.CurrentUser?.Id;
@@ -221,6 +233,10 @@ public class MessengerManager : MonoBehaviour {
 
         _renderedMessages.Remove(messageId);
         Destroy(chatMessage.gameObject);
+
+        if (_activeChatUserId.HasValue && _renderedMessages.Count == 0) {
+            ToggleEmptyChatState(true);
+        }
     }
 
     void BeginEditMessage(Message message) {
@@ -262,6 +278,14 @@ public class MessengerManager : MonoBehaviour {
         for (int i = _chatContent.childCount - 1; i >= 0; i--) {
             Destroy(_chatContent.GetChild(i).gameObject);
         }
+    }
+
+    public void ToggleEmptyMessengerState(bool isVisible) {
+        _emptyMessengerText.gameObject.SetActive(isVisible);
+    }
+
+    public void ToggleEmptyChatState(bool isVisible) {
+        _emptyChatText.gameObject.SetActive(isVisible);
     }
 
     void ScrollToBottom() {

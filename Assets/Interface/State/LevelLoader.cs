@@ -1,12 +1,8 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using TMPro;
-using System.Linq;
-using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     [Header ("OfficialLevels")]
@@ -92,10 +88,24 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
 
     void OnLocalPageLoaded(List<LevelMetadata> metadatas) {
         RenderLevelCards(metadatas, _localLevelCard, _localContentTransform);
+
+        if (metadatas.Count == 0) {
+            _localPaginationManager.ShowEmptyState();
+            return;
+        }
+
+        _localPaginationManager.HideEmptyState();
     }
 
     void OnServerPageLoaded(List<LevelMetadata> metadatas) {
         RenderServerLevelCards(metadatas);
+
+        if (metadatas.Count == 0) {
+            _serverPaginationManager.ShowEmptyState();
+            return;
+        }
+
+        _serverPaginationManager.HideEmptyState();
     }
 
     async Task LoadOfficialLevels() {
@@ -108,6 +118,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         for (int i = contentTransform.childCount - 1; i >= 0; i--) {
             Destroy(contentTransform.GetChild(i).gameObject);
         }
+
         // load in the newly fetched ones
         foreach (var metadata in metadatas) {
             var cardObject = Instantiate(cardPrefab, contentTransform);

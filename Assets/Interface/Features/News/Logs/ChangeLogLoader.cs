@@ -41,6 +41,13 @@ public class ChangeLogLoader : MonoBehaviour {
             Destroy(_contentTransform.GetChild(i).gameObject);
         }
 
+        if (metadatas.Count == 0) {
+            _paginationManager.ShowEmptyState();
+            return;
+        }
+
+        _paginationManager.HideEmptyState();
+
         foreach (var metadata in metadatas) {
             var cardObject = Instantiate(_changeLogCard, _contentTransform);
             if (!cardObject.TryGetComponent<ChangeLogCard>(out var card)) {

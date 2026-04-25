@@ -10,4 +10,5 @@ public interface IUserCardCallbacks : ICallbacks {
     Task<bool> OnRespondToFriendRequest(System.Guid userId, bool accept);
     Task OnRemoveFriend(System.Guid userId);
     Task<bool> OnToggleBlockUser(Guid userId, bool isBlocked);
+    void OnMessageUser(UserMetadata metadata);
 }

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 public class ChatLoader : MonoBehaviour {
     [SerializeField] Transform _contentTransform;
     [SerializeField] GameObject _chatTogglePrefab;
+    [SerializeField] TMP_Text _emptyStateText;
 
     void Start() {
         SupabaseManager.Instance.Auth.OnAuthenticated += HandleAuthenticated;
@@ -19,20 +21,10 @@ public class ChatLoader : MonoBehaviour {
         if (SupabaseManager.Instance != null && SupabaseManager.Instance.Auth != null) {
             SupabaseManager.Instance.Auth.OnAuthenticated -= HandleAuthenticated;
         }
-
-        if (SupabaseManager.Instance != null && SupabaseManager.Instance.Friendship != null) {
-            SupabaseManager.Instance.Friendship.OnFriendshipsChanged -= HandleFriendshipsChanged;
-        }
     }
 
     void HandleAuthenticated() {
-        SupabaseManager.Instance.Friendship.OnFriendshipsChanged -= HandleFriendshipsChanged;
-        SupabaseManager.Instance.Friendship.OnFriendshipsChanged += HandleFriendshipsChanged;
         RefreshChats();
-    }
-
-    async void HandleFriendshipsChanged() {
-        await ReloadChats();
     }
 
     public async void RefreshChats() {
@@ -41,28 +33,30 @@ public class ChatLoader : MonoBehaviour {
 
     async Task ReloadChats() {
         ClearToggles();
+        ToggleEmptyState(false);
 
-        if (!System.Guid.TryParse(SupabaseManager.Instance.Client.Auth.CurrentUser?.Id, out var me)) {
+        var participantIds = await SupabaseManager.Instance.Message.LoadConversationUserIds();
+        if (participantIds.Count == 0) {
             return;
         }
-
-        var friendships = await SupabaseManager.Instance.Friendship.GetMyFriendships();
-        if (friendships.Count == 0) {
-            return;
-        }
-
-        var friendIds = friendships
-            .Select(x => x.FriendId == me ? x.FriendedId : x.FriendId)
-            .Distinct()
-            .ToList();
 
         var loadTasks = new List<Task<UserMetadata>>();
-        foreach (var friendId in friendIds) {
-            loadTasks.Add(SupabaseManager.Instance.User.LoadUserById(friendId));
+        foreach (var participantId in participantIds) {
+            loadTasks.Add(SupabaseManager.Instance.User.LoadUserById(participantId));
         }
 
         var users = await Task.WhenAll(loadTasks);
         RenderChatToggles(users.Where(x => x != null).OrderBy(x => x.username).ToList());
+        ToggleEmptyState(_contentTransform.childCount == 0);
+
+        if (_contentTransform.childCount == 0) {
+            MessengerManager.Instance.ToggleEmptyMessengerState(false);
+            return;
+        }
+
+        if (!MessengerManager.Instance.HasActiveChat) {
+            MessengerManager.Instance.ToggleEmptyMessengerState(true);
+        }
     }
 
     void RenderChatToggles(List<UserMetadata> users) {
@@ -77,5 +71,9 @@ public class ChatLoader : MonoBehaviour {
         for (int i = _contentTransform.childCount - 1; i >= 0; i--) {
             Destroy(_contentTransform.GetChild(i).gameObject);
         }
+    }
+
+    void ToggleEmptyState(bool isVisible) {
+        _emptyStateText.gameObject.SetActive(isVisible);
     }
 }

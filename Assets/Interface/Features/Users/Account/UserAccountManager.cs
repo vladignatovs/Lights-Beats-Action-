@@ -8,7 +8,10 @@ using UnityEngine;
 
 public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
     [SerializeField] GameObject _accountPanel;
+    [SerializeField] GameObject _messengerPanel;
     [SerializeField] ConfirmationManager _confirmationManager;
+    [SerializeField] MessengerPanelManager _messengerPanelManager;
+    [SerializeField] MessengerManager _messengerManager;
     [SerializeField] TMP_Text _usernameText;
     [SerializeField] TMP_InputField _changeUsernameInput;
     [SerializeField] TMP_InputField _changeEmailInput;
@@ -16,12 +19,16 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
     [SerializeField] TMP_Text _accountActionText;
     [SerializeField] Transform _blockedUsersContent;
     [SerializeField] GameObject _blockedUserCardPrefab;
+    [SerializeField] TMP_Text _blockedUsersEmptyStateText;
     [SerializeField] Transform _sentRequestsContent;
     [SerializeField] GameObject _sentRequestUserCardPrefab;
+    [SerializeField] TMP_Text _sentRequestsEmptyStateText;
     [SerializeField] Transform _receivedRequestsContent;
     [SerializeField] GameObject _receivedRequestUserCardPrefab;
+    [SerializeField] TMP_Text _receivedRequestsEmptyStateText;
     [SerializeField] Transform _friendsContent;
     [SerializeField] GameObject _friendUserCardPrefab;
+    [SerializeField] TMP_Text _friendsEmptyStateText;
 
     readonly Dictionary<System.Guid, UserFriendRequestState> _friendRequestStateByUserId = new();
 
@@ -80,16 +87,16 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
     }
 
     async Task RefreshFriends() {
-        for (int i = _friendsContent.childCount - 1; i >= 0; i--) {
-            Destroy(_friendsContent.GetChild(i).gameObject);
-        }
+        ClearContent(_friendsContent);
 
         var friendships = await SupabaseManager.Instance.Friendship.GetMyFriendships();
         if (friendships.Count == 0) {
+            ToggleEmptyState(_friendsEmptyStateText, true);
             return;
         }
 
         if (!System.Guid.TryParse(SupabaseManager.Instance.Client.Auth.CurrentUser?.Id, out var me)) {
+            ToggleEmptyState(_friendsEmptyStateText, true);
             return;
         }
 
@@ -114,6 +121,8 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
             card.Setup(user, this);
         }
+
+        ToggleEmptyState(_friendsEmptyStateText, _friendsContent.childCount == 0);
     }
 
     public async void SignOut() {
@@ -182,12 +191,11 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
     }
 
     async Task RefreshBlockedUsers() {
-        for (int i = _blockedUsersContent.childCount - 1; i >= 0; i--) {
-            Destroy(_blockedUsersContent.GetChild(i).gameObject);
-        }
+        ClearContent(_blockedUsersContent);
 
         var blockedIds = await SupabaseManager.Instance.Block.GetBlockedUserIds();
         if (blockedIds.Count == 0) {
+            ToggleEmptyState(_blockedUsersEmptyStateText, true);
             return;
         }
 
@@ -203,12 +211,12 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
             card.Setup(user, this);
         }
+
+        ToggleEmptyState(_blockedUsersEmptyStateText, _blockedUsersContent.childCount == 0);
     }
 
     async Task RefreshSentRequests() {
-        for (int i = _sentRequestsContent.childCount - 1; i >= 0; i--) {
-            Destroy(_sentRequestsContent.GetChild(i).gameObject);
-        }
+        ClearContent(_sentRequestsContent);
 
         var outgoing = await SupabaseManager.Instance.FriendRequest.GetOutgoingRequests();
         var pendingOrDenied = outgoing
@@ -217,6 +225,11 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             .GroupBy(x => x.ReceiverId)
             .Select(x => x.First())
             .ToList();
+
+        if (pendingOrDenied.Count == 0) {
+            ToggleEmptyState(_sentRequestsEmptyStateText, true);
+            return;
+        }
 
         foreach (var request in pendingOrDenied) {
             var user = await SupabaseManager.Instance.User.LoadUserById(request.ReceiverId);
@@ -233,12 +246,12 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
             card.Setup(user, this);
         }
+
+        ToggleEmptyState(_sentRequestsEmptyStateText, _sentRequestsContent.childCount == 0);
     }
 
     async Task RefreshReceivedRequests() {
-        for (int i = _receivedRequestsContent.childCount - 1; i >= 0; i--) {
-            Destroy(_receivedRequestsContent.GetChild(i).gameObject);
-        }
+        ClearContent(_receivedRequestsContent);
 
         var incoming = await SupabaseManager.Instance.FriendRequest.GetIncomingRequests();
         var pending = incoming
@@ -247,6 +260,11 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             .GroupBy(x => x.SenderId)
             .Select(x => x.First())
             .ToList();
+
+        if (pending.Count == 0) {
+            ToggleEmptyState(_receivedRequestsEmptyStateText, true);
+            return;
+        }
 
         foreach (var request in pending) {
             var user = await SupabaseManager.Instance.User.LoadUserById(request.SenderId);
@@ -263,6 +281,18 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
             card.Setup(user, this);
         }
+
+        ToggleEmptyState(_receivedRequestsEmptyStateText, _receivedRequestsContent.childCount == 0);
+    }
+
+    static void ClearContent(Transform content) {
+        for (int i = content.childCount - 1; i >= 0; i--) {
+            Destroy(content.GetChild(i).gameObject);
+        }
+    }
+
+    static void ToggleEmptyState(TMP_Text emptyStateText, bool isVisible) {
+        emptyStateText.gameObject.SetActive(isVisible);
     }
 
     public UserFriendRequestState GetFriendRequestState(System.Guid userId) {
@@ -332,6 +362,14 @@ public class UserAccountManager : MonoBehaviour, IUserCardCallbacks {
         await SupabaseManager.Instance.Block.BlockUser(userId);
         await RefreshBlockedUsers();
         return true;
+    }
+
+    public void OnMessageUser(UserMetadata metadata) {
+        if (!_messengerPanel.activeSelf) {
+            _messengerPanelManager.TogglePanel();
+        }
+
+        _messengerManager.OpenChat(metadata.id, metadata.username);
     }
 
     [Serializable]

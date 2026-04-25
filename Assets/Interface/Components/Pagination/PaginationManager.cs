@@ -14,6 +14,7 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     [SerializeField] Button _nextPageButton;
     [SerializeField] TMP_InputField _pageInput;
     [SerializeField] TMP_Text _pageCountText;
+    [SerializeField] TMP_Text _emptyStateText;
     int _pageSize = 10; // TODO: make configurable via settings
 
     protected int _currentPage = 0;
@@ -74,6 +75,16 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     /// <param name="pageProvider"></param>
     public void Initialize(IPageProvider<T> pageProvider) {
         _pageProvider = pageProvider;
+
+        HideEmptyState();
+    }
+
+    public void ShowEmptyState() {
+        _emptyStateText.gameObject.SetActive(true);
+    }
+
+    public void HideEmptyState() {
+        _emptyStateText.gameObject.SetActive(false);
     }
 
     public async Task GoToPage(int page) {

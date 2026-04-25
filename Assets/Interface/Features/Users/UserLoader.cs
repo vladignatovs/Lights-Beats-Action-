@@ -9,6 +9,9 @@ public class UserLoader : MonoBehaviour, IUserCardCallbacks {
     [SerializeField] UserPaginationManager _paginationManager;
     [SerializeField] UserFilterPanel _filterPanel;
     [SerializeField] ServerSectionManager _serverSectionManager;
+    [SerializeField] GameObject _messengerPanel;
+    [SerializeField] MessengerPanelManager _messengerPanelManager;
+    [SerializeField] MessengerManager _messengerManager;
 
     UserPageManager _userPageManager;
     bool _isBlockSubscriptionActive;
@@ -124,6 +127,13 @@ public class UserLoader : MonoBehaviour, IUserCardCallbacks {
             Destroy(_contentTransform.GetChild(i).gameObject);
         }
 
+        if (metadatas.Count == 0) {
+            _paginationManager.ShowEmptyState();
+            return;
+        }
+
+        _paginationManager.HideEmptyState();
+
         foreach (var metadata in metadatas) {
             var cardObject = Instantiate(_userCard, _contentTransform);
             if (!cardObject.TryGetComponent<IUserCard>(out var card)) continue;
@@ -185,5 +195,13 @@ public class UserLoader : MonoBehaviour, IUserCardCallbacks {
 
     public async Task OnRemoveFriend(System.Guid userId) {
         await SupabaseManager.Instance.Friendship.DeleteFriendship(userId);
+    }
+
+    public void OnMessageUser(UserMetadata metadata) {
+        if (!_messengerPanel.activeSelf) {
+            _messengerPanelManager.TogglePanel();
+        }
+
+        _messengerManager.OpenChat(metadata.id, metadata.username);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UserCard : MonoBehaviour, IUserCard {
     [SerializeField] TMP_Text _usernameText;
+    [SerializeField] Button _messageButton;
     [SerializeField] Button _blockButton;
     [SerializeField] TMP_Text _blockButtonText;
     [SerializeField] Button _friendRequestButton;
@@ -23,6 +24,9 @@ public class UserCard : MonoBehaviour, IUserCard {
         _usernameText.text = metadata.username;
         RefreshBlockButtonText();
         RefreshFriendRequestState();
+
+        _messageButton.onClick.RemoveAllListeners();
+        _messageButton.onClick.AddListener(MessageUser);
 
         _blockButton.onClick.RemoveAllListeners();
         _blockButton.onClick.AddListener(async () => await ToggleBlockedState());
@@ -55,6 +59,10 @@ public class UserCard : MonoBehaviour, IUserCard {
         _blockButtonText.text = _metadata.isBlocked ? "Unblock" : "Block";
     }
 
+    void MessageUser() {
+        _callbacks.OnMessageUser(_metadata);
+    }
+
     async Task ToggleFriendRequest() {
         var state = _callbacks.GetFriendRequestState(_metadata.id);
         bool nextOutgoing = await _callbacks.OnToggleFriendRequest(_metadata.id, state.hasOutgoingRequest);
@@ -81,6 +89,7 @@ public class UserCard : MonoBehaviour, IUserCard {
 
     void RefreshFriendRequestState() {
         if (IsSelf()) {
+            _messageButton.gameObject.SetActive(false);
             _friendRequestButton.gameObject.SetActive(false);
             _acceptFriendRequestButton.gameObject.SetActive(false);
             _denyFriendRequestButton.gameObject.SetActive(false);
@@ -89,6 +98,7 @@ public class UserCard : MonoBehaviour, IUserCard {
         }
 
         var state = _callbacks.GetFriendRequestState(_metadata.id);
+        _messageButton.gameObject.SetActive(state.isFriend || SupabaseManager.Instance.User.IsAdmin);
 
         bool showMainFriendButton = !state.isFriend && !state.hasIncomingRequest;
         bool hideForBlocked = (_metadata.isBlocked || _metadata.hasBlocked) && !state.hasOutgoingRequest;

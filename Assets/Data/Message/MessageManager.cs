@@ -47,6 +47,34 @@ public class MessageManager : DataManager {
             .ToList();
     }
 
+    public async Task<List<Guid>> LoadConversationUserIds() {
+        if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {
+            return new List<Guid>();
+        }
+
+        var sentTask = _client
+            .From<Message>()
+            .Where(x => x.SenderId == currentUserId)
+            .Get();
+
+        var receivedTask = _client
+            .From<Message>()
+            .Where(x => x.ReceiverId == currentUserId)
+            .Get();
+
+        await Task.WhenAll(sentTask, receivedTask);
+
+        var sent = (await sentTask).Models ?? new List<Message>();
+        var received = (await receivedTask).Models ?? new List<Message>();
+
+        return sent
+            .Select(x => x.ReceiverId)
+            .Concat(received.Select(x => x.SenderId))
+            .Where(x => x != currentUserId)
+            .Distinct()
+            .ToList();
+    }
+
     public async Task<Message> SendMessage(Guid receiverId, string text) {
         if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var senderId)) {
             throw new InvalidOperationException("Cannot send a message without an authenticated user.");

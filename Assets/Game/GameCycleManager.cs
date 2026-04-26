@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameCycleManager : MonoBehaviour {
     [Header("Dependencies")]
     [SerializeField] AttemptManager _attemptManager;
-    [SerializeField] LevelPauseManager _levelPauseManager;
+    [SerializeField] DashManager _dashManager;
+    [SerializeField] ParticlesMovement _particlesMovement;
 
     [Header("Death Screen")]
     [SerializeField] GameObject _deathScreen;
@@ -15,14 +15,11 @@ public class GameCycleManager : MonoBehaviour {
     [SerializeField] GameObject _levelCompletePanel;
     [SerializeField] float _pitchFadeDuration = 1f;
 
-    Text _levelCompleteRedirectText;
-    bool _redirectCountdownStarted;
     bool _levelCompleteSequenceStarted;
     float _pitchStart;
 
     void Start() {
         _pitchStart = _audioSource.pitch;
-        _levelCompleteRedirectText = _levelCompletePanel.GetComponentInChildren<Text>();
     }
 
     void OnEnable() {
@@ -35,14 +32,6 @@ public class GameCycleManager : MonoBehaviour {
         _attemptManager.OnLevelCompleted -= HandleLevelCompleted;
     }
 
-    void Update() {
-        if (_levelCompletePanel.activeSelf && !_redirectCountdownStarted) {
-            _redirectCountdownStarted = true;
-            PauseManager.CanPause = false;
-            StartCoroutine(RedirectCountdown());
-        }
-    }
-
     void HandleDeath() {
         Overlay.ToggleOverlay(true);
         _deathScreen.SetActive(true);
@@ -51,7 +40,6 @@ public class GameCycleManager : MonoBehaviour {
     void HandleLevelCompleted() {
         if (_levelCompleteSequenceStarted) return;
         _levelCompleteSequenceStarted = true;
-        Time.timeScale = 0;
         PauseManager.CanPause = false;
         Overlay.ToggleOverlay(true);
         StartCoroutine(PlayLevelCompleteSequence());
@@ -59,24 +47,31 @@ public class GameCycleManager : MonoBehaviour {
 
     IEnumerator PlayLevelCompleteSequence() {
         float timer = 0f;
+        float startTimeScale = Time.timeScale;
+        Vector3 playerStartScale = _dashManager.transform.localScale;
+        Vector3 dashRadiusStartScale = _dashManager.sr.transform.localScale;
+        Vector3 particlesStartScale = _particlesMovement.transform.localScale;
 
         while (timer < _pitchFadeDuration) {
             timer += Time.unscaledDeltaTime;
-            _audioSource.pitch = Mathf.Lerp(_pitchStart, 0f, timer / _pitchFadeDuration);
+            float progress = timer / _pitchFadeDuration;
+
+            Time.timeScale = Mathf.Lerp(startTimeScale, 0f, progress);
+            _audioSource.pitch = Mathf.Lerp(_pitchStart, 0f, progress);
+
+            _dashManager.transform.localScale = Vector3.Lerp(playerStartScale, Vector3.zero, progress);
+            _dashManager.sr.transform.localScale = Vector3.Lerp(dashRadiusStartScale, Vector3.zero, progress);
+            _particlesMovement.transform.localScale = Vector3.Lerp(particlesStartScale, Vector3.zero, progress);
+
             yield return null;
         }
 
+        Time.timeScale = 0f;
         _audioSource.pitch = 0f;
-        _levelCompletePanel.SetActive(true);
-    }
+        _dashManager.transform.localScale = Vector3.zero;
+        _dashManager.sr.transform.localScale = Vector3.zero;
+        _particlesMovement.transform.localScale = Vector3.zero;
 
-    IEnumerator RedirectCountdown() {
-        for (int i = 3; i > 0; i--) {
-            _levelCompleteRedirectText.text = "Redirecting in " + i + "...";
-            yield return new WaitForSecondsRealtime(1);
-        }
-        _levelCompleteRedirectText.text = "bye";
-        _levelPauseManager.GoToMenu();
-        PauseManager.CanPause = true;
+        _levelCompletePanel.SetActive(true);
     }
 }

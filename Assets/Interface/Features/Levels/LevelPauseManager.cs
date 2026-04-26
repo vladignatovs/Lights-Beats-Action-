@@ -13,13 +13,39 @@ public class LevelPauseManager : MonoBehaviour {
     [SerializeField] TMP_Text _levelName;
     [SerializeField] PauseManager _pauseManager;
     [SerializeField] GameObject _editorButton;
+    [SerializeField] GameObject _serverStatsPanel;
+    [SerializeField] TMP_Text _completionText;
+    [SerializeField] TMP_Text _accuracyText;
+    [SerializeField] TMP_Text _attemptCountText;
     [SerializeField] AttemptManager attemptManager;
     Level _level;
 
     void Start() {
         _level = StateNameManager.Level;
         _levelName.text = _level.name;
-        _editorButton.SetActive(StateNameManager.LatestMainMenuState == MainMenuState.Local);
+        _pauseManager.OnPauseChanged += HandlePauseChanged;
+
+        bool isLocalLevel = StateNameManager.LatestMainMenuState == MainMenuState.Local;
+        bool isServerLevel = StateNameManager.LatestMainMenuState == MainMenuState.Server;
+
+        _editorButton.SetActive(isLocalLevel);
+        _serverStatsPanel.SetActive(isServerLevel);
+
+        if (isServerLevel) {
+            RefreshServerStats();
+        }
+    }
+
+    void OnDestroy() {
+        _pauseManager.OnPauseChanged -= HandlePauseChanged;
+    }
+
+    void HandlePauseChanged(bool isPaused) {
+        if (!isPaused || StateNameManager.LatestMainMenuState != MainMenuState.Server) {
+            return;
+        }
+
+        RefreshServerStats();
     }
 
     [UsedImplicitly]
@@ -43,17 +69,31 @@ public class LevelPauseManager : MonoBehaviour {
     }
 
     async Task TryPersistServerLevelCompletion() {
-        Debug.Log("[LevelPauseManager]" + StateNameManager.LatestMainMenuState);
         if (StateNameManager.LatestMainMenuState != MainMenuState.Server) return;
 
-        var completion = StateNameManager.LoadedLevelCompletion ?? new Completion();
-        completion.percentage = Mathf.Max(completion.percentage, attemptManager.CompletionPercent);
-        completion.accuracy = Mathf.Max(completion.accuracy, attemptManager.AccuracyPercent);
-        completion.attempts = Mathf.Max(completion.attempts, attemptManager.AttemptCount);
+        var completion = GetCurrentServerCompletion();
 
         StateNameManager.LoadedLevelCompletion = completion;
 
         await SupabaseManager.Instance.Completion.CompleteLevel(StateNameManager.Level.serverId.Value, completion);
+    }
+
+    void RefreshServerStats() {
+        var completion = GetCurrentServerCompletion();
+        float completionPercent = Mathf.Clamp01(completion.percentage);
+        float accuracyPercent = Mathf.Clamp01(completion.accuracy);
+
+        _completionText.text = $"Completion: {completionPercent:P0}";
+        _accuracyText.text = $"Accuracy: {accuracyPercent:P0}";
+        _attemptCountText.text = $"Attempts: {completion.attempts}";
+    }
+
+    Completion GetCurrentServerCompletion() {
+        var completion = StateNameManager.LoadedLevelCompletion ?? new Completion();
+        completion.percentage = Mathf.Max(completion.percentage, attemptManager.CompletionPercent);
+        completion.accuracy = Mathf.Max(completion.accuracy, attemptManager.AccuracyPercent);
+        completion.attempts = Mathf.Max(completion.attempts, attemptManager.AttemptCount);
+        return completion;
     }
 
     [UsedImplicitly]

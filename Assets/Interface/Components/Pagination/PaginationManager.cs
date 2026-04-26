@@ -15,7 +15,7 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     [SerializeField] TMP_InputField _pageInput;
     [SerializeField] TMP_Text _pageCountText;
     [SerializeField] TMP_Text _emptyStateText;
-    int _pageSize = 10; // TODO: make configurable via settings
+    int _pageSize = 10;
 
     protected int _currentPage = 0;
     Dictionary<int, List<T>> _cache = new();
@@ -25,6 +25,15 @@ public abstract class PaginationManager<T> : MonoBehaviour {
 
     public event Action<List<T>> OnPageLoaded;
     public event Action<int, int> OnPageChanged; // currentPage / totalPages
+
+    async void OnEnable() {
+        GameSettingsManager.OnSettingsChanged += async () => await HandleSettingsChanged();
+        await HandleSettingsChanged();
+    }
+
+    void OnDisable() {
+        GameSettingsManager.OnSettingsChanged -= async () => await HandleSettingsChanged();
+    }
 
     [UsedImplicitly]
     public async void GoToPreviousPage() {
@@ -75,8 +84,26 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     /// <param name="pageProvider"></param>
     public void Initialize(IPageProvider<T> pageProvider) {
         _pageProvider = pageProvider;
+        _pageSize = GameSettingsManager.ItemsPerPage;
 
         HideEmptyState();
+    }
+
+    async System.Threading.Tasks.Task HandleSettingsChanged() {
+        int pageSize = GameSettingsManager.ItemsPerPage;
+        if (_pageSize == pageSize) {
+            return;
+        }
+
+        _pageSize = pageSize;
+
+        if (_pageProvider == null) {
+            return;
+        }
+
+        _cache.Clear();
+        _totalCount = 0;
+        await RefreshCurrentPage();
     }
 
     public void ShowEmptyState() {

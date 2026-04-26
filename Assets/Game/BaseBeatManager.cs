@@ -76,7 +76,7 @@ public abstract class BaseBeatManager : MonoBehaviour {
     /// This method is used to make sure that the audio and _dspTimeAtPause/Resume are all synced with the paused state of the game.
     /// </summary>
     void SyncAudioAndTimeWithPause() {
-        if(!GameStateManager.IsRunning && _audioSource.isPlaying) {
+        if(!GameStateManager.IsRunning && !GameStateManager.IsLevelCompleted && _audioSource.isPlaying) {
             _audioSource.Pause();
             _dspTimeAtPause += (float) AudioSettings.dspTime;
         } else if(GameStateManager.IsRunning && !_audioSource.isPlaying) {

@@ -35,7 +35,7 @@ public class LevelManager : DataManager {
         }
         
         var getTask = query.Range(offset, offset + limit - 1).Get();
-        var countTask = countQuery.Count(CountType.Exact); // TODO: might rethink this approach for scalability
+        var countTask = countQuery.Count(CountType.Exact);
         
         // run both pagination and count queries in parallel
         await Task.WhenAll(getTask, countTask);
@@ -105,7 +105,6 @@ public class LevelManager : DataManager {
         // if there is a server id, try to update the connected server level, if cant, fallback and create a new level
         if(level.serverId.HasValue) {
             try {
-                // TODO: separate metadata update and actions list update
                 var updateResponse = await _client
                     .From<ServerLevel>()
                     .Where(x => x.Id == level.serverId.Value)

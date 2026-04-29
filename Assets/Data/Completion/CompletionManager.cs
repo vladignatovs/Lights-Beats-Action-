@@ -10,7 +10,6 @@ using static Supabase.Postgrest.Constants;
 public class CompletionManager : DataManager {
     public CompletionManager(Client client) : base(client) { }
 
-    // what
     public async Task CompleteLevel(Guid serverId, Completion completion) {
         var serverCompletion = new ServerCompletion {
             LevelId = serverId,

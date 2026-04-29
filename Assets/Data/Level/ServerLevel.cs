@@ -34,11 +34,11 @@ public class ServerLevelMetadata : BaseModel {
     public string AudioPath { get; set; }
     [Column("bpm")]
     public float Bpm { get; set; }
-    [Column("start_offset")] // TODO: might not need to fetch start offset for metadata
+    [Column("start_offset")]
     public float StartOffset { get; set; }
 }
 
-[System.Serializable]
+[Serializable]
 public class ServerAction
 {
     public float Beat { get; set; }
@@ -53,6 +53,6 @@ public class ServerAction
     public float AnimationDuration { get; set; }
     public float LifeTime { get; set; }
 
-    // IMPORTANT: JArray prevents the Postgrest int-array converter from kicking in.
+    // JArray prevents the Postgrest int-array converter from throwing on List<int>
     public JArray Groups { get; set; } = new JArray(0);
 }

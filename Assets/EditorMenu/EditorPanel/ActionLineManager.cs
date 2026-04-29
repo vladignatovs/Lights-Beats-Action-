@@ -44,21 +44,13 @@ public class ActionLineManager : MonoBehaviour {
     [Header("Action visualization")]
     GameObject _visualizedGameObject;
     Transform _logicTransform;
-    void Awake() { //those were not avaliable for the showSettings functions as soon as an object was instantiated, so I added them in Awake() method instead
+    void Awake() { // not avaliable for the showSettings functions as soon as an object was instantiated
         _actionCreator = GameObject.FindGameObjectWithTag("ActionCreator").GetComponent<ActionCreator>();
         _selectPanel = _actionCreator.SelectPanel;
         _settingsPanel = _actionCreator.SettingsPanel;
         _logicTransform = GameObject.FindGameObjectWithTag("Logic").transform;
     }
     void Start() {
-        // TODO: proper saving of action metadata
-        // UP TO CHANGE
-        // var actionSettings = _actionCreator.ActionsSettings[_actionCreator.Actions.IndexOf(Action)];
-        // ShowTimes = actionSettings.Item1;
-        // ShowLifeTime = actionSettings.Item2;
-        // Layer = actionSettings.Item3;
-        // UP TO CHANGE
-
         UpdateTimesAndLifetime(Action.Times);
         _maxPos = (_actionCreator.Content.GetComponent<RectTransform>().rect.width-5) / 50;
 
@@ -159,10 +151,10 @@ public class ActionLineManager : MonoBehaviour {
     #endregion
     #region changeObject
     public void changeObject(int value) {
-        // used try to catch the IndexOutOfRangeException, as it can only occur when the celected option is 0
+        // used try to catch the IndexOutOfRangeException, as it can only occur when the selected option is 0
         try {
             Action.GObject = _actionCreator.CreatableObjects[value-1].name;
-        } catch (System.IndexOutOfRangeException) {
+        } catch (IndexOutOfRangeException) {
             Action.GObject = null; 
         }
         Destroy(_visualizedGameObject);
@@ -174,20 +166,6 @@ public class ActionLineManager : MonoBehaviour {
     }
     #endregion
     #region changePosition
-    /// <summary>
-    /// Used to change the position property of an action, as well as change the position of the <c>visualizedGameObject</c>. If 
-    /// char ';' is found:
-    /// <br/>Will set the value of <c>x</c> to the parsed value of string before ';' char.
-    /// <br/>Will set the value of <c>y</c> to the parsed value of string after ';' char.
-    /// <br/>NOTE: if parsing is unsuccessful (that part of string is null, or contains various symbols apart from numbers), will default that
-    /// value to 0.<br/><br/>
-    /// 
-    /// If the character is not found however, it will set <c>x</c> to the parsed string value, and set <c>y</c> to 0.
-    /// </summary>
-    /// <remarks>
-    /// Only works if the length of the value is greater than zero.
-    /// </remarks>
-    /// <param name="value"></param>
     public void changePosition(float x, float y) {
         Action.PositionX = x;
         Action.PositionY = y;
@@ -209,9 +187,6 @@ public class ActionLineManager : MonoBehaviour {
         }
         // TryParse the string value to a float, if cannot parse, it is defaulted to 0.
         value.FloatTryParse(out float angle);
-
-        // // Sets the rotation to the value of angle, created in the TryParse func
-        // Action.Rotation = Quaternion.AngleAxis(angle, transform.forward);
 
         Action.Rotation = angle;
 
@@ -278,11 +253,9 @@ public class ActionLineManager : MonoBehaviour {
         // sets the action object to the clone of the current one
         actionLineManager.Action = action;
 
-        //
         actionLineManager.ShowTimes = ShowTimes;
         actionLineManager.ShowLifeTime = ShowLifeTime;
         actionLineManager.Layer = Layer;
-        //
 
         // adds said action object to the list
         _actionCreator.AddActionToActionsList(actionLineManager.Action);
@@ -368,7 +341,7 @@ public class ActionLineManager : MonoBehaviour {
             _activeSelectedActionToggle.onValueChanged.AddListener((bool isOn) => ToggleSettingsPanel(isOn));
             _activeSelectedActionToggle.group = selectedActions.GetComponent<ToggleGroup>();
             
-            VisualizeAction(); // <------------- VISUALIZATION]
+            VisualizeAction(); // <------------- VISUALIZATION
 
             _actionLineImage.color = selectColor;
             UpdateTimesAndLifetime(Action.Times);
@@ -489,26 +462,11 @@ public class ActionLineManager : MonoBehaviour {
     #region ActionSettings
     public void ShowTimesClones(bool value) {
         ShowTimes = value;
-
-        // int actionIndex = _actionCreator.Actions.IndexOf(Action);
-        // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-        // if(actionSettings.HasValue) {
-        //     var newActionSettings = (value, actionSettings.Value.Item2, actionSettings.Value.Item3);
-        //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-        // }
-
         UpdateTimesAndLifetime(Action.Times);
     }
     
     public void ShowLifeTimeLine(bool value) {
         ShowLifeTime = value;
-
-        // int actionIndex = _actionCreator.Actions.IndexOf(Action);
-        // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-        // if(actionSettings.HasValue) {
-        //     var newActionSettings = (actionSettings.Value.Item1, value, actionSettings.Value.Item3);
-        //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-        // }
 
         UpdateTimesAndLifetime(Action.Times);
     }
@@ -528,15 +486,6 @@ public class ActionLineManager : MonoBehaviour {
     public void SetLayer(string value) {
         if(int.TryParse(value, out int layer)) {
             Layer = layer;
-
-            // TODO: handle action layers
-            // int actionIndex = _actionCreator.Actions.IndexOf(Action);
-
-            // var actionSettings = _actionCreator.ActionsSettings[actionIndex] as (bool, bool, int)?;
-            // if(actionSettings.HasValue) {
-            //     var newActionSettings = (actionSettings.Value.Item1, actionSettings.Value.Item2, layer);
-            //     _actionCreator.ActionsSettings[actionIndex] = newActionSettings;
-            // }
         }
     }
     #endregion

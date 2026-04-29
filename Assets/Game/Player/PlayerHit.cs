@@ -25,7 +25,6 @@ public class PlayerHit : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D collider2d) {
         if(dashImmunity) {
 
-            // Really dumb way of solving it, UP TO CHANGE !!!!!!!!!!!!!!!!!!!!!!!!!!
             if(!collider2d.gameObject.CompareTag("Attack")) {
                 return;
             }
@@ -38,14 +37,10 @@ public class PlayerHit : MonoBehaviour {
             logic.gameOver();
             playerIsAlive = false;
         }
-
-        // Physics2D.IgnoreLayerCollision(3, 6, true);
     }
 
     void OnTriggerStay2D(Collider2D collider2d) {
         if(dashImmunity) {
-
-            // Really dumb way of solving it, UP TO CHANGE !!!!!!!!!!!!!!!!!!!!!!!!!!
             if(!collider2d.gameObject.CompareTag("Attack")) {
                 return;
             }

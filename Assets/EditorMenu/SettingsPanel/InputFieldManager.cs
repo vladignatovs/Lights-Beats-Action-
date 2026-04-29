@@ -18,7 +18,6 @@ public class InputFieldManager : MonoBehaviour {
         var action = actionLineManager.Action;
         // Creates a dictionary with key - value pairs, where key is an input fields name 
         // and value is a function which puts the value into the field
-        // TODO: fix the values not being correctly rounded
         _fields = new Dictionary<string, Func<string>>() {
             { "beat", () => action.Beat.ToString() },
             { "times", () => action.Times.ToString() },
@@ -36,7 +35,7 @@ public class InputFieldManager : MonoBehaviour {
             // MOVE CONTROLLER
             { "targetSpeedX", () => action.PositionX.ToString()},
             { "targetSpeedY", () => action.PositionY.ToString()},
-            { "acceleration", () => action.ScaleY.ToString()}, // TODO: this
+            { "acceleration", () => action.ScaleY.ToString()},
             // WIGGLE CONTROLLER
             { "frequency", () => action.PositionX.ToString()},
             { "amplitude", () => action.PositionY.ToString()},

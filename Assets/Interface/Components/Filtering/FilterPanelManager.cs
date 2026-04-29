@@ -18,7 +18,7 @@ public abstract class FilterPanelManager<T> : MonoBehaviour {
     }
 
     protected abstract List<IFilter> BuildFilters();
-    protected abstract void ClearInputs();
+    internal abstract void ClearInputs();
 
     /// <summary>
     /// Exponsed method to be manually set to the onClick of the apply button

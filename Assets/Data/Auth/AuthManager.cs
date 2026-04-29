@@ -20,7 +20,6 @@ public sealed class AuthManager : DataManager {
             Debug.Log("Authenticated via saved session!");
             return session;
         } catch(Exception e) {
-            // TODO: try to authenticate via steam
             Debug.LogError($"Authentication failed: {e.Message}");
 
             if (IsGuestMode) {

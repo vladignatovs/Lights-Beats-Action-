@@ -23,7 +23,6 @@ public class EditorMenuManager : MonoBehaviour {
         }
     }
 
-    // handle exiting editor
     void OnDestroy() {
         GameStateManager.ToggleEditor(false);
         Time.timeScale = 1;

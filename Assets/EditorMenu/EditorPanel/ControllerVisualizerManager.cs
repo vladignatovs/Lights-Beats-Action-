@@ -7,7 +7,7 @@ public class ControllerVisualizerManager : MonoBehaviour {
         transform.SetParent(_controllerPanelTransform);
     }
 
-    void Update() { // perhaps could replace with scale contstraint
+    void Update() {
         if (transform.localScale != Vector3.one) {
             transform.localScale = Vector3.one;
         }

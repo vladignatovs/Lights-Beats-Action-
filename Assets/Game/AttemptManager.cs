@@ -37,7 +37,6 @@ public class AttemptManager : MonoBehaviour {
         if (UsesGameplayStats && CompletionPercent == 1) CompleteLevel();
     }
 
-    // todo: make restart not a scene reload
     public async void restartGame() {
         PersistAttemptForRetry();
         await SceneStateManager.Reload();

@@ -32,9 +32,6 @@ public class ActionCreator : MonoBehaviour {
     public List<Action> Actions; //important VERY 
     public GameObject[] CreatableObjects; // pretty important, could try make it static
     public Level Level;
-    // TODO: put action settings as fields of actions
-    // LevelSettings _levelSettings;
-    // public List<(bool,bool,int)> ActionsSettings;
     #region Set Up
     /// <summary>
     /// Used to manually spawn in the beatLines, set the Content size and load in the Level property.
@@ -51,20 +48,8 @@ public class ActionCreator : MonoBehaviour {
         // Sets the size of the Content to fit the number of beatlines
         Content.sizeDelta = new Vector2(StateNameManager.BeatAmount*50 + 5, 180);
         Level = StateNameManager.Level;
-        // foreach(var action in Level.actions) {
-        //     Debug.Log(action.Beat);
-        //     Debug.Log(action.Times);
-        //     Debug.Log(action.Delay);
-        //     Debug.Log(action.GObject);
-        //     Debug.Log(action.PositionX + "; " + action.PositionY);
-        //     Debug.Log(action.Rotation);
-        //     Debug.Log(action.ScaleX + "; " + action.ScaleY);
-        //     Debug.Log(action.AnimationDuration);
-        //     Debug.Log(action.LifeTime);
-        //     foreach(var group in action.Groups)
-        //         Debug.Log(group);
-        // }
     }
+
     /// <summary>
     /// Used to set the Actions list value, audioClip and bpm to the ones in the loaded Level property. Also spawns in actionLines
     /// if there are any actions saved in the Actions list.
@@ -94,9 +79,6 @@ public class ActionCreator : MonoBehaviour {
         foreach(Action action in Actions) {
             float x = action.Beat*50 + action.Delay*50;
             var newActionLine = CreateActionLineAt(new(x, 0));
-            // var newActionLine = Instantiate(_actionLine, Content);
-            // RectTransform rt = newActionLine.GetComponent<RectTransform>();
-            // rt.anchoredPosition = new Vector2(x, 0);
             newActionLine.GetComponent<ActionLineManager>().Action = action; 
         }
     }
@@ -147,11 +129,9 @@ public class ActionCreator : MonoBehaviour {
     public void AddActionToActionsList(Action a) {
         Debug.Log("added an action: " + a.GObject);
         Actions.Add(a);
-        // ActionsSettings.Add((true, true, LayerPanelManager.Layer));
     }
 
     public void RemoveActionFromActionsList(Action a) {
-        // ActionsSettings.RemoveAt(Actions.IndexOf(a));
         Actions.Remove(a);
     }
 

@@ -21,13 +21,13 @@ public class PillarMovement : MonoBehaviour {
         _invisibleColor.a = 0;
     }
     void Update() {
-        //Counts the timer, and changes the color from 0 to 1, 
+        // Counts the timer, and changes the color from 0 to 1, 
         // which would happen in a single second, however since 
         // it is also divided by the duration, the effect is either
         // sped up or slowed down.(0,1/0,25=0,4) ~ 4 times faster, or 0.25 sec.
         float timer = _durationsManager.Timer;
         _spriteRenderer.color = Color.Lerp(Color.white, _curColor, timer/_duration);
-        //Added lifeTime, not decreasing or adding duration to the timer, as that
+        // Added lifeTime, not decreasing or adding duration to the timer, as that
         // makes the first spawn animation be a part of overall lifeTime
         if(timer >= (_lifeTime-_duration)) {
             transform.localScale = Vector3.Lerp(_curScale, _scaledDown, (timer - (_lifeTime - _duration)) / _duration);

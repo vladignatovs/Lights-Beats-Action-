@@ -28,19 +28,17 @@ public class PlayerMovement : MonoBehaviour {
         return animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         playerHit = GetComponent<PlayerHit>();
         Vector3 target = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {   
         if (PlayerHit.playerIsAlive) {
 
-            //In case of using controller, the animation will be different
+            // In case of using controller, the animation will be different
             // and go to the default state later, making the game easier.
             animator.SetBool("IsMoving", false);
 
@@ -92,8 +90,6 @@ public class PlayerMovement : MonoBehaviour {
             movementDirection.Normalize();
 
             rb.linearVelocity = movementDirection * speed * magnitude;
-            // NOT CERTAIN OF THE CHANGES MADE, DO NOT ERASE THE COMMENT BELOW 
-            // transform.Translate(movementDirection * speed * magnitude * Time.deltaTime, Space.World);
 
             if(movementDirection != Vector2.zero) {
                 animator.SetBool("IsMoving", true);
@@ -110,8 +106,6 @@ public class PlayerMovement : MonoBehaviour {
                 previousHorizontal = horizontal;
                 previousVertical = vertical;
             }
-            // IMPORTANT, MIGHT WANT TO USE LATER
-            // Debug.Log(previousHorizontal + " H : V " + previousVertical);
 
             if(animator.GetBool("IsMoving")) {
                 cc2d.enabled = false;

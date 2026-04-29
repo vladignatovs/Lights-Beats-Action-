@@ -29,7 +29,6 @@ public class MainMenuManager : MonoBehaviour {
             // play animation out of game
             GameTo();
             await MoveToCenter(0.75f);
-            // TODO: figure out restarts with the animator states, currently hardcoded
         } else if (StateNameManager.LatestMainMenuState == MainMenuState.Local) {
             _mainMenuAnimator.Play("LocalLevelMenu");
         } else if (StateNameManager.LatestMainMenuState == MainMenuState.Server) {

@@ -6,7 +6,6 @@ public class PanelToZoomManager : MonoBehaviour, IScrollHandler {
     [SerializeField] float zoomSpeed = 0.1f;
     [SerializeField] float maxZoom = 5f;
     RectTransform rectTransform;
-    // Start is called before the first frame update
     void Start() {
         initialScale = transform.localScale;
         rectTransform = transform as RectTransform;

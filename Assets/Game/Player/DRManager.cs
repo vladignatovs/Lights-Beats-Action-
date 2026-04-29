@@ -11,7 +11,6 @@ public class DRManager : MonoBehaviour {
     // (26, 40, 37, 1) OLD
     // (26, 26, 45, 1) NEW
 
-    // Update is called once per frame
     void Update() {
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
         if(GameStateManager.IsRunning && PlayerHit.playerIsAlive) {

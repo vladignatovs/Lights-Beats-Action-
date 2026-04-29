@@ -30,7 +30,7 @@ public class UserFilterPanel : FilterPanelManager<UserMetadata> {
         return genericFilters;
     }
 
-    protected override void ClearInputs() {
+    internal override void ClearInputs() {
         _usernameInput.text = "";
     }
 }

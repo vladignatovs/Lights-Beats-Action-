@@ -7,7 +7,7 @@ public class MoveControllerManager : ControllerManager {
     float _targetSpeedX;
     float _targetSpeedY;
 
-    float _acceleration; // might change all of this due to the fact that is replacable with movement easing and stuff
+    float _acceleration;
 
     void Update() {
         // Gets all the keys from the dictionary. The keys are GameObjects.

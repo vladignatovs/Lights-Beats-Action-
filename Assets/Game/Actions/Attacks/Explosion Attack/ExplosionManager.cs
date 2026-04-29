@@ -9,7 +9,6 @@ public class ExplosionManager : MonoBehaviour {
     Vector3 _initialScale;
     Color _visible;
     Color _invisible;
-    // Update is called once per frame
     void Start() {
         _visible = _spriteRenderer.color;
         _invisible = new Color(_visible.r, _visible.g, _visible.b, 0);

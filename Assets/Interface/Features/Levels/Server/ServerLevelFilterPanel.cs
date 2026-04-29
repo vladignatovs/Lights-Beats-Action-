@@ -26,7 +26,6 @@ public class ServerLevelFilterPanel : FilterPanelManager<LevelMetadata> {
             }
         }
 
-        // Name filter - check which mode is selected
         if (!string.IsNullOrWhiteSpace(_nameInput.text)) {
             if (_nameStartsWithToggle.isOn) {
                 filters.Add(new NameStartsWithFilter(_nameInput.text));
@@ -50,7 +49,7 @@ public class ServerLevelFilterPanel : FilterPanelManager<LevelMetadata> {
 
         _audioDropdown.EnsurePopulated();
         var dropdown = _audioDropdown.GetComponent<TMP_Dropdown>();
-        if (dropdown != null && dropdown.value > 0) { // 0 is "None", TODO: might remove None from dropdown values
+        if (dropdown != null && dropdown.value > 0) { // 0 is "None"
             string selectedAudio = dropdown.options[dropdown.value].text;
             filters.Add(new AudioPathEqualsFilter(selectedAudio));
         }
@@ -62,7 +61,7 @@ public class ServerLevelFilterPanel : FilterPanelManager<LevelMetadata> {
         return genericFilters;
     }
 
-    protected override void ClearInputs() {
+    internal override void ClearInputs() {
         _nameInput.text = "";
         _bpmMinInput.text = "";
         _bpmMaxInput.text = "";

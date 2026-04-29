@@ -27,7 +27,6 @@ public class ControllerGroupManager : MonoBehaviour {
             // checks if any group in the groupManager equals to the target group of THIS controller
             if(_groupManager.groups.Any(group => group == targetGroup) && !ObjectsAndSettings.ContainsKey(_groupManager.gameObject)) {
                 // adds the gameObject that holds that gameObject
-                // groupSharingObjects.Add(_groupManager.gameObject);
                 ObjectsAndSettings.Add(_groupManager.gameObject, new ());
             }
         }

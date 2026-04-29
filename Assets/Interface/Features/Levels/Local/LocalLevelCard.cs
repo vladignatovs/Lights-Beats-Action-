@@ -43,6 +43,5 @@ public class LocalLevelCard : MonoBehaviour, ILevelCard {
         _publishButton.onClick.AddListener(() => callbacks.OnPublishLevel(id));
         _exportButton.onClick.AddListener(async () => await callbacks.OnExportLevel(id));
         _deleteButton.onClick.AddListener(() => callbacks.OnDeleteLocalLevel(id));
-        // TODO: find a quick way to go to editor, aka set statenamemanager.level and beatamount
     }
 }

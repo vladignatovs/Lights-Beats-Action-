@@ -7,7 +7,6 @@ public class RainDropletManager : MonoBehaviour {
     float _lifeTime;
     Color _curColor;
     Color _invisibleColor;
-    // Start is called before the first frame update
     void Start() {
         _curColor = _spriteRenderer.color;
         _invisibleColor = _curColor;
@@ -17,7 +16,6 @@ public class RainDropletManager : MonoBehaviour {
         _lifeTime = _durationsManager.getLifeTimeInSeconds();
     }
 
-    // Update is called once per frame
     void Update() {   
         float timer = _durationsManager.Timer;
         _spriteRenderer.color = Color.Lerp(Color.white, _curColor, timer / _duration);

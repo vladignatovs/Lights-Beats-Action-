@@ -79,7 +79,6 @@ public class VisualizerManager : MonoBehaviour, IDragHandler, IScrollHandler {
                 actionLineManager.changeRotation(angle.ToString());
                 rotationInput.GetComponent<InputFieldManager>().ReAssignInputValue();
             } else {
-                // TODO: make an actually good way of scaling the object up/down.
                 var scroll = eventData.scrollDelta.y/10;
                 transform.localScale += new Vector3(scroll, scroll, 1);
                 actionLineManager.changeScale(transform.localScale.x, transform.localScale.y);

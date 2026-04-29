@@ -15,13 +15,12 @@ public class MissleManager : MonoBehaviour {
     [SerializeField] float _acceleration = 35f;
     Vector3 _target;
     Color _curColor;
-    // [SerializeField] private float lifeTime = 0.5f;
     void Start() {
         _curColor = _spriteRenderer.color;
         _playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         _lifeTime = _durationsManager.getLifeTimeInSeconds();
     }
-    // Update is called once per frame
+
     void Update()
     {   
         _target = _playerMovement.transform.position;
@@ -45,7 +44,6 @@ public class MissleManager : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
-        // PERHAPS UP TO CHANGE WITH FURTHER ADDITIONS
         if(!collider.CompareTag("Attack") && !collider.CompareTag("Border") && !collider.CompareTag("DashRadius")) {
             Explode();
             Destroy(gameObject);

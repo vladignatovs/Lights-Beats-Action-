@@ -24,7 +24,10 @@ public abstract class PaginationManager<T> : MonoBehaviour {
     List<IFilter> _currentFilters;
 
     public event Action<List<T>> OnPageLoaded;
-    public event Action<int, int> OnPageChanged; // currentPage / totalPages
+    public event Action<int, int> OnPageChanged;
+    public event Action<bool> OnFiltersChanged;
+
+    public bool HasCurrentFilters => _currentFilters != null && _currentFilters.Count > 0;
 
     async void OnEnable() {
         GameSettingsManager.OnSettingsChanged += async () => await HandleSettingsChanged();
@@ -75,6 +78,7 @@ public abstract class PaginationManager<T> : MonoBehaviour {
         _cache.Clear();
         _totalCount = 0;
         await GoToPage(0);
+        OnFiltersChanged?.Invoke(HasCurrentFilters);
     }
 
     /// <summary>
@@ -89,7 +93,7 @@ public abstract class PaginationManager<T> : MonoBehaviour {
         HideEmptyState();
     }
 
-    async System.Threading.Tasks.Task HandleSettingsChanged() {
+    async Task HandleSettingsChanged() {
         int pageSize = GameSettingsManager.ItemsPerPage;
         if (_pageSize == pageSize) {
             return;
@@ -147,7 +151,6 @@ public abstract class PaginationManager<T> : MonoBehaviour {
             return _cache[_currentPage];
         }
         
-        // Fetch from data provider with filters
         int offset = _currentPage * _pageSize;
         var (pageData, totalCount) = await _pageProvider.LoadPage(offset, _pageSize, _currentFilters);
         _totalCount = totalCount;
@@ -158,16 +161,14 @@ public abstract class PaginationManager<T> : MonoBehaviour {
 
     void UpdateUI() {
         int totalPages = GetTotalPages();
-        int currentPage = _currentPage + 1; // Display as 1-indexed
+        int currentPage = _currentPage + 1;
         
         _pageInput.text = currentPage.ToString();
         _pageCountText.text = totalPages.ToString();
         
-        // Dynamic button interactability
         _previousPageButton.interactable = _currentPage > 0;
         _nextPageButton.interactable = _currentPage < totalPages - 1;
         
-        // Dynamic input field interactability (only if there are multiple pages)
         _pageInput.interactable = totalPages > 1;
 
         OnPageChanged?.Invoke(_currentPage, totalPages);

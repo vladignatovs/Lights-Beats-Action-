@@ -10,7 +10,7 @@ public class ServerLevelManager : IPageProvider<LevelMetadata> {
     public static Dictionary<Guid, Completion> CompletionsByLevelId { get; private set; } = new();
 
     public async Task<(List<LevelMetadata> items, int totalCount)> LoadPage(int offset, int pageSize, List<IFilter> filters = null) {
-        // Convert generic IFilter<LevelMetadata> to data layer IDataFilter<ServerLevelMetadata>
+        // converts generic IFilter<LevelMetadata> to data layer IDataFilter<ServerLevelMetadata>
         List<IDataFilter<ServerLevelMetadata>> dataFilters = null;
         if (filters != null) {
             dataFilters = new List<IDataFilter<ServerLevelMetadata>>();

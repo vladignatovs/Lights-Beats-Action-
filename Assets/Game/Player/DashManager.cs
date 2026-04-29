@@ -1,8 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 public class DashManager : MonoBehaviour {   
 
@@ -42,34 +38,6 @@ public class DashManager : MonoBehaviour {
             StartCoroutine(fade(cooldownSeconds));
         }
     }
-
-    /* ABANDONED IDEAS:
-        | death animation (idea: graffiti explosion effect (not enough skill / will take away too much time & effort));
-        | Visualizer as a concept (cannot be done with the build I have currently, and if can be, then will make 0 sense. Reimagined into action visualization);
-        | Drag and drop action creation from a dropdown menu with icons (is not possible to combine UI elements and gameObjects like that (i think)).
-    *//* FUTURE NOTES:
-        Level completion should not be a basic "you won" screen as in gd, as in my opinion it will make the whole game look bland. 
-    What I do want is to try to create some kind of unique animation. I think that it should be tightly connected to the overall
-    UI design, as it should feel fitting and not soulless. Idk if its about time I try give this game its own charm or not, but I
-    do know that I've had my own problems with same task in the past gd levels and projects of mine. I think I should mark out 
-    the idea first, then try to improve it with time. Now that I'm looking at it, giving this game it's own vibe will make me redo
-    all of the UI design i've done, and I'm not sure if that's what I'm aiming at with the level completion. I think the best option
-    for now would be to make a simple and soulless end screen to keep on the progress going and not actually spend time brainstorming
-    ideas for my UI. I'll figure things out as I go.
-    *//* FEATURE IDEAS: 
-        -- walls (Simillar to action, yet has a collision that player can stuck to. Could have a few types (dashable and undashable));
-        -- dash Rs (dash resets, green floating orbs that act simillarly to dot attack, the difference being that it doesn't kill the player,
-    yet gives a dash reset whenever player dashes through it);
-        -- fog (?)(visibility reducing fog that dissipates whenever a player dashes beneath it). 
-    *//* TODO IDEAS: 
-        - revamp spawnpos; 
-        - add an animation to progress bar when the level is finished, for example a flash or something else;
-        - add ENUM options for MoveController;
-        - song appearance at the start of the level;
-        - fix dying in playtest mode accidentaly making you create a new action;
-        - optimize editor loading. 
-    */
-    // DONT FORGET TO WRITE UP EVERYTHING ON THE WAY, MAKE PLANS AND THINK THINGS THROUGH.
     
     IEnumerator dash() {
         playerHit.dashImmunity = true;
@@ -99,18 +67,6 @@ public class DashManager : MonoBehaviour {
         }
         onCooldown = false;
     }
-
-        // for(float i = 0; i < cooldownSeconds; i++) {
-        //     // USEFUL, MIGHT WANT TO USE LATER
-        //     // Debug.Log(i);
-        //     while(time < 1) {
-        //         Debug.Log(time);
-        //         time += Time.deltaTime;
-        //     }
-        //     time = time - 1;
-        //     yield return null;
-        //     // yield return new WaitForSeconds(1f * playerHit.cooldownBoost);
-        // }
 
     IEnumerator fade(float duration) {
         Color visible = drManager.defaultColor;

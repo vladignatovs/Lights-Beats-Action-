@@ -23,7 +23,6 @@ public class LevelCreator {
         Converters = { new FloatRoundingConverter() }
     };
 
-    // TODO: handle guest level migration to the first authenticated account
     string LevelsFolder => Path.Combine(
         Application.persistentDataPath, 
         SupabaseManager.Instance.Client.Auth.CurrentUser?.Id ?? "Guest", 
@@ -31,7 +30,7 @@ public class LevelCreator {
 
     string GetLevelPath(int id) => Path.Combine(LevelsFolder, $"{id}.lvl");
     int _lastId = 0;
-    // TODO: fix the bug with new levels carrying the last id from the previous account if changed
+
     public int GetNextId() {
         if (!Directory.Exists(LevelsFolder))
             return ++_lastId;
@@ -101,12 +100,10 @@ public class LevelCreator {
             return (new(), 0);
         }
         
-        // TODO: enumerate files returns files by alphabetic order, so 19.lvl comes before 2.lvl, hence the unexpected sorting of levels
-        // should be fixed to show in creation order
-        // Use EnumerateFiles for lazy evaluation
+        // EnumerateFiles for lazy evaluation
         var filePaths = Directory.EnumerateFiles(LevelsFolder, "*.lvl", SearchOption.TopDirectoryOnly);
         
-        // Count total while collecting only the page we need (single pass)
+        // count total while collecting for a single pass
         int totalCount = 0;
         var pagePaths = new List<string>();
         
@@ -117,7 +114,7 @@ public class LevelCreator {
             totalCount++;
         }
         
-        // Only read the metadata for files in this page
+        // only read the metadata for files on this page
         var tasks = pagePaths.Select(path => ReadLevelFileMetadata(path));
         var results = await Task.WhenAll(tasks);
         
@@ -162,7 +159,6 @@ public class LevelCreator {
     public async Task ExportLevelFile(Level level) {
         var path = StandaloneFileBrowser.SaveFilePanel("Open Files", "", level.name, extensions);
         if (string.IsNullOrWhiteSpace(path)) return;
-        // write the level file
         await WriteLevelFile(level, path);
     }
 

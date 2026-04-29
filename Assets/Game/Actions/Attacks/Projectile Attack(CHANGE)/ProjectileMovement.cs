@@ -8,19 +8,11 @@ public class ProjectileMovement : MonoBehaviour
     public float speed = 10f;
 
     public float acceleration = 0f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+    
+    void Update() {
         if(!(transform.position.y < 11)) {
             Destroy(gameObject);
         }
-
     }
 
     void FixedUpdate() {

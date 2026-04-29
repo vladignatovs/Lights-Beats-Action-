@@ -10,7 +10,6 @@ public class LocalLevelManager : IPageProvider<LevelMetadata> {
     static LevelCreator _levelCreator = new();
 
     public async Task<(List<LevelMetadata> items, int totalCount)> LoadPage(int offset, int pageSize, List<IFilter> filters = null) {
-        // TODO: local level filtering
         return await _levelCreator.ReadLevelFileMetadata(offset, pageSize);
     }
 

@@ -30,7 +30,6 @@ public class AuthenticationManager : AuthGated {
     }
 
     void Awake() {
-        // or get childcomponent
         _emailInput = _emailGroup.GetComponentInChildren<TMP_InputField>();
         _usernameInput = _usernameGroup.GetComponentInChildren<TMP_InputField>();
         _passwordInput = _passwordGroup.GetComponentInChildren<TMP_InputField>();
@@ -76,10 +75,8 @@ public class AuthenticationManager : AuthGated {
                 var session = await SupabaseManager.Instance.Auth.SignIn(email, password);
                 Debug.Log("Signed in: " + session.User.Email);
             } else {
-                // TODO: its possible for sign up to silently fail and create user to run, or vice versa, must be handled
                 var session = await SupabaseManager.Instance.Auth.SignUp(email, password);
                 var user = await SupabaseManager.Instance.User.CreateUser(username);
-                // TODO: if session is valid, create a user profile with the username
                 Debug.Log("Signed up: " + session.User.Email);
             }
             CleanUp();
@@ -93,7 +90,6 @@ public class AuthenticationManager : AuthGated {
         }
     }
 
-    // TODO: keep guest session alive, give guest an option to authenticate later
     public void Guest() {
         SupabaseManager.Instance.Auth.EnableGuestMode();
         Overlay.ToggleOverlay(false);

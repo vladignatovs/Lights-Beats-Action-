@@ -29,6 +29,7 @@ public class ControllerPanelManager : MonoBehaviour {
             }
         }
     }
+
     /// <summary>
     /// Used to set childs sibling index to the one saved in the dictionary in case it changed.
     /// </summary>

@@ -45,7 +45,6 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     async void Start() {
         // On start, load persisted page
         int pageToLoad = StateNameManager.LastLevelPage;
-        // TODO: might want to try and preserve the opened page on reload of the scene?
         StateNameManager.LastLevelPage = 0; // clear persisted to account for reloading to show 0 page
         await LoadCurrentState(pageToLoad);
     }

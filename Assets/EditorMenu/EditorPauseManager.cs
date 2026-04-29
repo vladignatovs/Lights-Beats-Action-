@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// Class reliable for the UI and logic handling of the editor pause menu, 
-/// specific to the <see cref="Scene.Editor"/> Is built to be used alongside PauseManager on a
+/// specific to the <see cref="Scene.Editor"/>. Is built to be used alongside PauseManager on a
 /// shared prefab representing the editor pause menu.
 /// </summary>
 public class EditorPauseManager : MonoBehaviour {
@@ -20,7 +20,7 @@ public class EditorPauseManager : MonoBehaviour {
     }
 
     [UsedImplicitly]
-    public void Publish() { // TODO: provide a success state feedback
+    public void Publish() {
         _confirmationManager.ShowConfirmation(
             async () => await _actionCreator.PublishLevel());
     }
@@ -54,7 +54,7 @@ public class EditorPauseManager : MonoBehaviour {
         _pauseManager.Resume();
     }
 
-    [UsedImplicitly] // TODO: show a confirmation only when exiting without saving
+    [UsedImplicitly]
     public void GoToMenu() {
         _confirmationManager.ShowConfirmation(
             async () => {

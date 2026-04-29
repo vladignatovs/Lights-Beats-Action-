@@ -41,7 +41,7 @@ public class NewsFilterPanel : FilterPanelManager<NewsMetadata> {
         return genericFilters;
     }
 
-    protected override void ClearInputs() {
+    internal override void ClearInputs() {
         _titleInput.text = "";
 
         var dropdown = _categoryDropdown.GetComponent<TMP_Dropdown>();

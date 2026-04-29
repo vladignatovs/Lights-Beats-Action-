@@ -10,7 +10,6 @@ public class ConfirmationManager : MonoBehaviour {
     [SerializeField] Button _cancelButton;
     private System.Action _onConfirm;
 
-    // TODO: could also pass custom text to the confirmation?
     public void ShowConfirmation(System.Action onConfirm) {
         _onConfirm = onConfirm;
         Overlay.ToggleOverlay(true);

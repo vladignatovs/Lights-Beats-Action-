@@ -19,7 +19,6 @@ public class CreateLevelManager : MonoBehaviour{
             _audioDropdown.options[_audioDropdown.value].text
         );
         // reload the scene after creating a new level to update the list of levels
-        // TODO: a MUCH better result would be if i reloaded the current page
         await SceneStateManager.Reload();
     }
 

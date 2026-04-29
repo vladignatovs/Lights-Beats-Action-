@@ -20,19 +20,9 @@ public class SettingsPanelManager : MonoBehaviour {
         ActionLineManager.changeObject(value);
     }
 
-    // TODO:
-    // public void ChangePosition(string value) {
-    //     ActionLineManager.changePosition(value);
-    // }
-
     public void ChangeRotation(string value) {
         ActionLineManager.changeRotation(value);
     }
-
-    // TODO
-    // public void ChangeScale(string value) {
-    //     ActionLineManager.changeScale(value);
-    // }
 
     public void ChangeAnimationDuration(string value) {
         ActionLineManager.changeAnimationDuration(value);
@@ -94,7 +84,6 @@ public class SettingsPanelManager : MonoBehaviour {
             Debug.Log("Couldnt parse this value: " + value);
     }
 
-    // TODO
     public void ChangeScaleX(string value) {
         if (value.FloatTryParse(out var result))
             ActionLineManager.changeScale(result, ActionLineManager.Action.ScaleY);

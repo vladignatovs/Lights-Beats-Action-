@@ -99,7 +99,6 @@ public class LevelPauseManager : MonoBehaviour {
     [UsedImplicitly]
     public async void Replay() {
         attemptManager.PersistAttemptForRetry();
-        // TODO: might avoid reloading the scene here all together and instead re-initialize the beat-manager
         await SceneStateManager.Reload();
         _pauseManager.Resume();
     }

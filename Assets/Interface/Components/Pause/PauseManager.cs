@@ -10,7 +10,7 @@ public class PauseManager : MonoBehaviour {
     [SerializeField] CanvasGroup _canvasGroup;
     public static bool IsPaused { get; private set; } = false;
     public static bool CanPause { get; set; } = true;
-    public KeyCode PauseBind { get; private set; } = KeyCode.Escape; // TODO: make pause bind button configurable
+    public KeyCode PauseBind { get; private set; } = KeyCode.Escape;
     public event Action<bool> OnPauseChanged;
 
     void Update() {

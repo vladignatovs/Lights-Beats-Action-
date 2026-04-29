@@ -37,20 +37,5 @@ public class LayerPanelManager : MonoBehaviour {
         foreach(var actionLineManager in actionLineManagers) {
             actionLineManager.CompareWithLayer();
         }
-        // var childCount = _scrollablePanelContentTransform.childCount;
-        // var layerIsZero = Layer == 0;
-
-        // for(int i = 0; i < childCount; i++) {
-        //     var child = _scrollablePanelContentTransform.GetChild(i);
-
-        //     if(child.CompareTag(ACTIONLINETAG)) {
-        //         // only using this to optimize call of GetComponent()
-        //         if(layerIsZero) {
-        //             child.gameObject.SetActive(true);
-        //         } else {
-        //             child.GetComponent<ActionLineManager>().CompareWithLayer();
-        //         }
-        //     }
-        // }
     }
 }

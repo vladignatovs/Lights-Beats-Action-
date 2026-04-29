@@ -42,7 +42,6 @@ public class ServerLevelCard : MonoBehaviour, ILevelCard {
             _deleteButton.gameObject.SetActive(false);
         }
 
-        // TODO: dedupe
         if(completion != null) {
             float completionPercent = Mathf.Clamp01(completion.percentage);
             float accuracyPercent = Mathf.Clamp01(completion.accuracy);

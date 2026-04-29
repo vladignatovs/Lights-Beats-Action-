@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-// TODO: find a proper place for action and level locally used classes
 [System.Serializable] public class Action {
     public float Beat { get; set; }
     public int Times { get; set; } = 1;
@@ -14,7 +13,6 @@ using System.Collections.Generic;
     public float AnimationDuration { get; set; }
     public float LifeTime { get; set; }
     public List<int> Groups { get; set; } = new() {0};
-    //
     internal float FirstBeat { get; set; } // required to count times
     internal int TimesDone { get; set; } // required to count times
     public Action() {}

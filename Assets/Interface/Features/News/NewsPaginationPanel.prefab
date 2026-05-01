@@ -121,8 +121,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelPaginationManager, Assembly-CSharp
+      - m_Target: {fileID: 3064218623836443529}
+        m_TargetAssemblyTypeName: NewsPaginationManager, Assembly-CSharp
         m_MethodName: GoToNextPage
         m_Mode: 1
         m_Arguments:
@@ -465,8 +465,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelPaginationManager, Assembly-CSharp
+      - m_Target: {fileID: 3064218623836443529}
+        m_TargetAssemblyTypeName: NewsPaginationManager, Assembly-CSharp
         m_MethodName: GoToPreviousPage
         m_Mode: 1
         m_Arguments:
@@ -851,8 +851,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelPaginationManager, Assembly-CSharp
+      - m_Target: {fileID: 3064218623836443529}
+        m_TargetAssemblyTypeName: NewsPaginationManager, Assembly-CSharp
         m_MethodName: OnPageInputChanged
         m_Mode: 0
         m_Arguments:
@@ -1281,6 +1281,7 @@ MonoBehaviour:
   _nextPageButton: {fileID: 8101899630951967408}
   _pageInput: {fileID: 7870940627752332197}
   _pageCountText: {fileID: 1363075355487254417}
+  _emptyStateText: {fileID: 0}
 --- !u!1 &5577684416406484904
 GameObject:
   m_ObjectHideFlags: 0

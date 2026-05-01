@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 using JetBrains.Annotations;
 
 public class CreateLevelManager : MonoBehaviour{
     [SerializeField] GameObject _createLevelPanel;
-    [SerializeField] InputField _levelNameInput;
-    [SerializeField] InputField _bpmInput;
+    [SerializeField] TMP_InputField _levelNameInput;
+    [SerializeField] TMP_InputField _bpmInput;
     [SerializeField] TMP_Dropdown _audioDropdown;
     [SerializeField] Button _createButton;
 

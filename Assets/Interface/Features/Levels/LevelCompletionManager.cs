@@ -88,10 +88,6 @@ public class LevelCompletionManager : MonoBehaviour {
     }
 
     Completion GetCurrentServerCompletion() {
-        var completion = StateNameManager.LoadedLevelCompletion ?? new Completion();
-        completion.percentage = Mathf.Max(completion.percentage, _attemptManager.CompletionPercent);
-        completion.accuracy = Mathf.Max(completion.accuracy, _attemptManager.AccuracyPercent);
-        completion.attempts = Mathf.Max(completion.attempts, _attemptManager.AttemptCount);
-        return completion;
+        return _attemptManager.GetCurrentCompletionSnapshot();
     }
 }

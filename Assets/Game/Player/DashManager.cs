@@ -17,7 +17,7 @@ public class DashManager : MonoBehaviour {
     public float dashSpeed = 50f;
     private Vector3 target;
     public bool onCooldown = false;
-    public float cooldownSeconds = 3f;
+    public float cooldownSeconds = 1f;
 
     void Start() {
         drManager = GameObject.FindGameObjectWithTag("DashRadius").GetComponent<DRManager>();

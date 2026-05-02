@@ -47,8 +47,36 @@ public class AttemptManager : MonoBehaviour {
             return;
         }
 
-        StateNameManager.LoadedLevelCompletion ??= new Completion();
-        StateNameManager.LoadedLevelCompletion.attempts = AttemptCount;
+        StateNameManager.LoadedLevelCompletion = GetCurrentCompletionSnapshot();
+    }
+
+    public Completion GetCurrentCompletionSnapshot() {
+        float currentCompletionPercent = Mathf.Clamp01(CompletionPercent);
+        float currentAccuracyPercent = Mathf.Clamp01(AccuracyPercent);
+        var savedCompletion = StateNameManager.LoadedLevelCompletion;
+
+        if (savedCompletion == null) {
+            return new Completion {
+                percentage = currentCompletionPercent,
+                accuracy = currentAccuracyPercent,
+                attempts = AttemptCount
+            };
+        }
+
+        var mergedCompletion = new Completion {
+            percentage = savedCompletion.percentage,
+            accuracy = savedCompletion.accuracy,
+            attempts = Mathf.Max(savedCompletion.attempts, AttemptCount)
+        };
+
+        if (currentCompletionPercent > mergedCompletion.percentage) {
+            mergedCompletion.percentage = currentCompletionPercent;
+            mergedCompletion.accuracy = currentAccuracyPercent;
+        } else if (Mathf.Approximately(currentCompletionPercent, mergedCompletion.percentage)) {
+            mergedCompletion.accuracy = Mathf.Max(mergedCompletion.accuracy, currentAccuracyPercent);
+        }
+
+        return mergedCompletion;
     }
 
     public virtual void gameOver() {

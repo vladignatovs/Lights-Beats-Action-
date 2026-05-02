@@ -1,0 +1,1197 @@
+{
+  "meta": {
+    "id": 2,
+    "name": "The Void",
+    "bpm": 95,
+    "audioPath": "DM DOKURO - Servants of The Scourge (95)",
+    "startOffset": 303
+  },
+  "actions": [
+    {
+      "beat": 304,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 3,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 9.25,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -9,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 3,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 5,
+      "lifeTime": 37,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -3,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -3,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 5,
+      "lifeTime": 37,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -9,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 5,
+      "lifeTime": 37,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 9.25,
+      "rotation": 90,
+      "scaleX": 1,
+      "scaleY": 36,
+      "animationDuration": 5,
+      "lifeTime": 37,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 0.25,
+      "times": 120,
+      "delay": 304,
+      "gObject": "RainDroplet",
+      "positionX": -18,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "animationDuration": 0.5,
+      "lifeTime": 8,
+      "groups": [
+        0,
+        1
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "MoveController",
+      "positionX": 5,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 0.05,
+      "animationDuration": 0,
+      "lifeTime": 39,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "RandPosController",
+      "positionX": -9,
+      "positionY": 9,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 2,
+      "animationDuration": 0,
+      "lifeTime": 38,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 0.25,
+      "times": 120,
+      "delay": 304,
+      "gObject": "RainDroplet",
+      "positionX": 18,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "animationDuration": 0.5,
+      "lifeTime": 8,
+      "groups": [
+        0,
+        2
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "MoveController",
+      "positionX": -5,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 2,
+      "scaleY": 0.05,
+      "animationDuration": 0,
+      "lifeTime": 39,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "RandPosController",
+      "positionX": -9,
+      "positionY": 9,
+      "rotation": 0,
+      "scaleX": 2,
+      "scaleY": 2,
+      "animationDuration": 0,
+      "lifeTime": 38,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 1,
+      "times": 38,
+      "delay": 303.5,
+      "gObject": "MissleTelegraph",
+      "positionX": 16,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 4,
+      "scaleY": 2,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 1,
+      "times": 38,
+      "delay": 303.5,
+      "gObject": "MissleTelegraph",
+      "positionX": -16,
+      "positionY": 0,
+      "rotation": 270,
+      "scaleX": 4,
+      "scaleY": 2,
+      "animationDuration": 0.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 304,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 305.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 306,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 306.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 307,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 307.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 308,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 308.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 1.5,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 308,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 309.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 1.5,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 309,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 310.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 1.5,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 310,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 311.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 312,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 312,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 313.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 313.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 90,
+      "scaleX": 5,
+      "scaleY": 36,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 314.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 315.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 316.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 317,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 317,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 317.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 317.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1,
+      "lifeTime": 1,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": -12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 318,
+      "times": 1,
+      "delay": 0,
+      "gObject": "PillarTelegraph",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 1.5,
+      "lifeTime": 0,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 319.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": -6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 319.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 0,
+      "positionY": 6.125,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 319.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": 12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 319.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "Pillar",
+      "positionX": -12,
+      "positionY": 0,
+      "rotation": 0,
+      "scaleX": 12,
+      "scaleY": 5,
+      "animationDuration": 2,
+      "lifeTime": 2,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "WiggleController",
+      "positionX": 1,
+      "positionY": 1,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 2,
+      "animationDuration": 0,
+      "lifeTime": 38,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 303,
+      "times": 1,
+      "delay": 0,
+      "gObject": "WiggleController",
+      "positionX": 1,
+      "positionY": 1,
+      "rotation": 0,
+      "scaleX": 2,
+      "scaleY": 2,
+      "animationDuration": 0,
+      "lifeTime": 38,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 328.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "WiggleController",
+      "positionX": 0.5,
+      "positionY": 2,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 3,
+      "animationDuration": 0,
+      "lifeTime": 13.5,
+      "groups": [
+        0
+      ]
+    },
+    {
+      "beat": 328.5,
+      "times": 1,
+      "delay": 0,
+      "gObject": "WiggleController",
+      "positionX": 0.5,
+      "positionY": 2,
+      "rotation": 0,
+      "scaleX": 2,
+      "scaleY": 3,
+      "animationDuration": 0,
+      "lifeTime": 13.5,
+      "groups": [
+        0
+      ]
+    }
+  ]
+}

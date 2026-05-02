@@ -89,11 +89,7 @@ public class LevelPauseManager : MonoBehaviour {
     }
 
     Completion GetCurrentServerCompletion() {
-        var completion = StateNameManager.LoadedLevelCompletion ?? new Completion();
-        completion.percentage = Mathf.Max(completion.percentage, attemptManager.CompletionPercent);
-        completion.accuracy = Mathf.Max(completion.accuracy, attemptManager.AccuracyPercent);
-        completion.attempts = Mathf.Max(completion.attempts, attemptManager.AttemptCount);
-        return completion;
+        return attemptManager.GetCurrentCompletionSnapshot();
     }
 
     [UsedImplicitly]

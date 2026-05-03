@@ -7,8 +7,7 @@ using Supabase;
 public class FriendRequestManager : DataManager {
     public event System.Action OnFriendRequestsChanged;
 
-    public FriendRequestManager(Client client) : base(client) {
-    }
+    public FriendRequestManager(Client client) : base(client) { }
 
     public async Task<FriendRequestRecord> SendRequest(Guid receiverId) {
         var request = new FriendRequestInsert {

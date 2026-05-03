@@ -6,16 +6,16 @@ public class EditorBeatManager : BaseBeatManager {
     [SerializeField] EditorMenuManager _editorMenuManager;
     [SerializeField] StartOffsetManager _startOffsetManager;
     [SerializeField] Transform _controllerPanelTransform;
-    void Awake() { // Using awake to make Durations manager work properly in editor (also used in Visualiser Manager)
+    void Awake() { // using awake to make Durations manager work properly in editor (also used in Visualiser Manager)
         _bpm = _actionCreator.Level.bpm;
         SecondsPerBeat = 60f / _bpm;
     }
     void OnEnable() {
-        // Clearing leftover data from previous playtest; not required in main game as each attempt is a unique run of a scene
+        // clearing leftover data from previous playtest; not required in main game as each attempt is a unique run of a scene
         _actionList.Clear();
         _levelEnd = 0;
 
-        // Filling _actionList and _levelEnd variables
+        // filling _actionList and _levelEnd variables
         foreach(Action action in _actionCreator.Actions) {
             _actionList.Add(action.Clone());
             var thisActionEnd = action.Delay + action.Beat*action.Times + action.LifeTime;
@@ -25,13 +25,13 @@ public class EditorBeatManager : BaseBeatManager {
         }
         _levelEnd += 5;
         
-        // Ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
+        // ensure LevelEnd is at least startOffset + 5 to prevent immediate level end
         _levelEnd = Mathf.Max(_levelEnd, _startOffsetManager.StartOffset + 5);
 
         _audioSource.clip = _audioLineManager.audioSource.clip;
 
         _firstUpdate = true;
-        _offset = _startOffsetManager.StartOffset; //sets the offset of the spawn of the player to the position of the audioLine
+        _offset = _startOffsetManager.StartOffset; // sets the offset of the spawn of the player to the position of the audioLine
         _audioSource.time = _offset * SecondsPerBeat;
         _audioSource.Play();
         ClearChildren();

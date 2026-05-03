@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
@@ -47,7 +45,7 @@ public class PlayerMovement : MonoBehaviour {
 
             if(movementDirection == Vector2.zero) {
 
-                //IF PLAYER IS GOING UP && WAS NOT MOVING SIDEWAYS && WENT DOWN OR STAYED ON THE LAST FRAME BEFORE STOP
+                // IF PLAYER IS GOING UP && WAS NOT MOVING SIDEWAYS && WENT DOWN OR STAYED ON THE LAST FRAME BEFORE STOP
                 if(vertical > 0) {
                     if(!isIdlePlaying() && previousHorizontal == 0 && !(previousVertical > 0)) {
                         transform.eulerAngles = Vector3.forward * 0;
@@ -56,7 +54,7 @@ public class PlayerMovement : MonoBehaviour {
                         transform.eulerAngles = Vector3.forward * 0;
                     } 
 
-                //IF PLAYER IS GOING DOWN && WAS NOT MOVING SIDEWAYS && WENT UP OR STAYED ON THE LAST FRAME BEFORE STOP
+                // IF PLAYER IS GOING DOWN && WAS NOT MOVING SIDEWAYS && WENT UP OR STAYED ON THE LAST FRAME BEFORE STOP
                 } else if(vertical < 0) {
                     if(!isIdlePlaying() && previousHorizontal == 0 && !(previousVertical < 0)) {
                         transform.eulerAngles = Vector3.forward * 180;
@@ -65,7 +63,7 @@ public class PlayerMovement : MonoBehaviour {
                         transform.eulerAngles = Vector3.forward * 180;
                     }
 
-                //IF PLAYER IS GOING RIGHT && WAS NOT MOVING VERTICALLY && WENT LEFT OR STAYED ON THE LAST FRAME BEFORE STOP
+                // IF PLAYER IS GOING RIGHT && WAS NOT MOVING VERTICALLY && WENT LEFT OR STAYED ON THE LAST FRAME BEFORE STOP
                 } else if(horizontal > 0) {
                     if(!isIdlePlaying() && previousVertical == 0 && !(previousHorizontal > 0)) {
                         transform.eulerAngles = Vector3.forward * -90;
@@ -74,7 +72,7 @@ public class PlayerMovement : MonoBehaviour {
                         transform.eulerAngles = Vector3.forward * -90;
                     }
 
-                //IF PLAYER IS GOING LEFT && WAS NOT MOVING VERTICALLY && WENT RIGHT OR STAYED ON THE LAST FRAME BEFORE STOP
+                // IF PLAYER IS GOING LEFT && WAS NOT MOVING VERTICALLY && WENT RIGHT OR STAYED ON THE LAST FRAME BEFORE STOP
                 } else if(horizontal < 0) {
                     if(!isIdlePlaying() && previousVertical == 0 && !(previousHorizontal < 0)) {
                         transform.eulerAngles = Vector3.forward * 90;

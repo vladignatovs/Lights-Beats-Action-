@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Supabase;
 using Supabase.Postgrest.Interfaces;
-using UnityEngine;
 using static Supabase.Postgrest.Constants;
 
 public class LevelManager : DataManager {
@@ -19,14 +18,14 @@ public class LevelManager : DataManager {
         var table = _client.From<ServerLevelMetadata>();
         var query = table.Select("id,creator_id,creator_username,name,audio_path,bpm,start_offset");
 
-        // Apply filters to the query
+        // apply filters to the query
         if (filters != null) {
             foreach (var filter in filters) {
                 query = filter.Apply(query);
             }
         }
 
-        // Build separate count query with same filters
+        // build separate count query with same filters
         IPostgrestTable<ServerLevelMetadata> countQuery = _client.From<ServerLevelMetadata>();
         if (filters != null) {
             foreach (var filter in filters) {
@@ -118,9 +117,7 @@ public class LevelManager : DataManager {
                 var updated = updateResponse?.Model;
                 level.serverId = updated.Id;
                 return level;
-            } catch (Exception e) {
-                Debug.Log("Couldn't update, fallback to regular insert. " + e);
-            }
+            } catch { }
         }
 
         var insertResponse = await _client

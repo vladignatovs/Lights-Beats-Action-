@@ -15,8 +15,7 @@ public class MessageManager : DataManager {
     public event Action<Message> OnMessageUpdated;
     public event Action<Message> OnMessageDeleted;
 
-    public MessageManager(Supabase.Client client) : base(client) {
-    }
+    public MessageManager(Supabase.Client client) : base(client) { }
 
     public async Task<List<Message>> LoadConversation(Guid otherUserId) {
         if (!Guid.TryParse(_client.Auth.CurrentUser?.Id, out var currentUserId)) {

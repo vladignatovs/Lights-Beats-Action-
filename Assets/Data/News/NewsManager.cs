@@ -7,8 +7,7 @@ using Supabase.Postgrest.Interfaces;
 using static Supabase.Postgrest.Constants;
 
 public class NewsManager : DataManager {
-    public NewsManager(Client client) : base(client) {
-    }
+    public NewsManager(Client client) : base(client) { }
 
     public async Task<(List<NewsMetadata> items, int totalCount)> LazyLoadNews(
         int offset,

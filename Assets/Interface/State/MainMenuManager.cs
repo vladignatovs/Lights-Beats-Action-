@@ -86,8 +86,8 @@ public class MainMenuManager : MonoBehaviour {
     void SetState(MainMenuState newState, bool skipAnimation = false) {
         bool stateChanged = StateNameManager.LatestMainMenuState != newState;
         StateNameManager.LatestMainMenuState = newState;
-        _mainMenuAnimator.SetInteger("MainMenuState", (int)newState); // Always sync animator
-        // Only fire event if state actually changed
+        _mainMenuAnimator.SetInteger("MainMenuState", (int)newState); // always sync animator
+        // only fire event if state actually changed
         if (stateChanged) OnStateChanged?.Invoke(newState);
         if (skipAnimation) _mainMenuAnimator.Update(0f);
     }

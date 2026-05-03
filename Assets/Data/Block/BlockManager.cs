@@ -7,8 +7,7 @@ using Supabase;
 public class BlockManager : DataManager {
     public event System.Action OnBlocksChanged;
 
-    public BlockManager(Client client) : base(client) {
-    }
+    public BlockManager(Client client) : base(client) { }
 
     public async Task<BlockRecord> BlockUser(Guid blockedUserId) {
         var block = new BlockRecord {

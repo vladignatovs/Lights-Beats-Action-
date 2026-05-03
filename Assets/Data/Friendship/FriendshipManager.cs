@@ -7,8 +7,7 @@ using Supabase;
 public class FriendshipManager : DataManager {
     public event System.Action OnFriendshipsChanged;
 
-    public FriendshipManager(Client client) : base(client) {
-    }
+    public FriendshipManager(Client client) : base(client) { }
 
     public async Task<List<FriendshipRecord>> GetMyFriendships() {
         var currentUserId = _client.Auth.CurrentUser?.Id;

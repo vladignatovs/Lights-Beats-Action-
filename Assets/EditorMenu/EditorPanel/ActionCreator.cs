@@ -29,7 +29,7 @@ public class ActionCreator : MonoBehaviour {
     public InputField ScaleYInput;
     public LayerPanelManager LayerPanelManager;
     [Header("Global Settings (IMPORTANT)")]
-    public List<Action> Actions; //important VERY 
+    public List<Action> Actions; // important VERY 
     public GameObject[] CreatableObjects; // pretty important, could try make it static
     public Level Level;
     #region Set Up
@@ -57,7 +57,6 @@ public class ActionCreator : MonoBehaviour {
     void Start() {
         // Sets the value of actions list to the value of the actions list in the saved Level, found by id
         Actions = Level.actions;
-        // ActionsSettings = _levelSettings.actionsSettings;
 
         // Use the statically preserved audio clip from StateNameManager instead of reloading
         _audioLineManager.audioSource.clip = StateNameManager.LoadedAudioClip;

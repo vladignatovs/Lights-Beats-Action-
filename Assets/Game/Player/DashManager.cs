@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+
 public class DashManager : MonoBehaviour {   
 
     [Header ("DR SETTINGS ---------------")]

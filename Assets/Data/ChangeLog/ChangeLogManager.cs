@@ -6,8 +6,7 @@ using Supabase.Postgrest.Interfaces;
 using static Supabase.Postgrest.Constants;
 
 public class ChangeLogManager : DataManager {
-    public ChangeLogManager(Client client) : base(client) {
-    }
+    public ChangeLogManager(Client client) : base(client) { }
 
     public async Task<(List<ChangeLogMetadata> items, int totalCount)> LazyLoadChangeLogs(int offset, int limit) {
         var query = _client

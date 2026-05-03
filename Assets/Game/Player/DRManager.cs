@@ -8,8 +8,7 @@ public class DRManager : MonoBehaviour {
     public Color defaultColor;
     // (26, 26, 37, 1)
     public Color onHoverColor;
-    // (26, 40, 37, 1) OLD
-    // (26, 26, 45, 1) NEW
+    // (26, 26, 45, 1)
 
     void Update() {
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);

@@ -17,11 +17,8 @@ public sealed class AuthManager : DataManager {
     public async Task<Supabase.Gotrue.Session> TryAuthenticate() {
         try {
             var session = await SetSession();
-            Debug.Log("Authenticated via saved session!");
             return session;
-        } catch(Exception e) {
-            Debug.LogError($"Authentication failed: {e.Message}");
-
+        } catch {
             if (IsGuestMode) {
                 OnGuestModeChanged?.Invoke(true);
                 return null;
@@ -47,11 +44,9 @@ public sealed class AuthManager : DataManager {
         }
         var session = await _client.Auth.SignUp(email, password);
         if (session == null) {
-            Debug.Log("Sign up failed!");
             return null;
         }
         session = await SetSession(session);
-        Debug.Log("Signed up!");
         return session;
     } 
 
@@ -61,7 +56,6 @@ public sealed class AuthManager : DataManager {
         PlayerPrefs.DeleteKey("access_token");
         PlayerPrefs.DeleteKey("refresh_token");
         OnAuthenticationRequired?.Invoke();
-        Debug.Log("Signed out!");
     }
 
     public async Task UpdateEmail(string email) {

@@ -34,16 +34,16 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         _localLevelManager = new();
         _serverLevelManager = new();
 
-        // Provide the pagination managers with a page provider
+        // provide the pagination managers with a page provider
         _localPaginationManager.Initialize(_localLevelManager);
         _serverPaginationManager.Initialize(_serverLevelManager);
 
-        // Initialize filter panel with pagination manager
+        // initialize filter panel with pagination manager
         _serverFilterPanel.Initialize(_serverPaginationManager);
     }
 
     async void Start() {
-        // On start, load persisted page
+        // on start, load persisted page
         int pageToLoad = StateNameManager.LastLevelPage;
         StateNameManager.LastLevelPage = 0; // clear persisted to account for reloading to show 0 page
         await LoadCurrentState(pageToLoad);
@@ -52,7 +52,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     void OnEnable() {
         _mainMenuManager.OnStateChanged += HandleStateChanged;
         
-        // Subscribe to pagination events
+        // subscribe to pagination events
         _localPaginationManager.OnPageLoaded += OnLocalPageLoaded;
         _serverPaginationManager.OnPageLoaded += OnServerPageLoaded;
     }
@@ -60,7 +60,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
     void OnDisable() {
         _mainMenuManager.OnStateChanged -= HandleStateChanged;
         
-        // Unsubscribe from pagination events
+        // unsubscribe from pagination events
         _localPaginationManager.OnPageLoaded -= OnLocalPageLoaded;
         _serverPaginationManager.OnPageLoaded -= OnServerPageLoaded;
     }
@@ -152,7 +152,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
 
 #region Level Card Callbacks
     public async Task OnPlayLevel(LevelMetadata metadata) {
-        // Save the current page before leaving to play level
+        // save the current page before leaving to play level
         switch (StateNameManager.LatestMainMenuState) {
             case MainMenuState.Local:
                 _localPaginationManager.PersistCurrentPage();
@@ -175,7 +175,7 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
             StateNameManager.LoadedLevelCompletion = completion;
         }
 
-        // Initialize all static level data
+        // initialize all static level data
         LevelInitializer.InitializeLevel(
             await (StateNameManager.LatestMainMenuState switch {
                 MainMenuState.Official => _officialLevelManager.LoadLevel(metadata.id),

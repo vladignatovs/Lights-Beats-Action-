@@ -1,10 +1,8 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Supabase;
-using UnityEngine;
 using static Supabase.Postgrest.Constants;
 
 public class CompletionManager : DataManager {
@@ -22,16 +20,8 @@ public class CompletionManager : DataManager {
             await _client
                 .From<ServerCompletion>()
                 .Insert(serverCompletion);
-            Debug.Log("[CompletionManager] Inserted completion row.");
             return;
-        } catch (Exception e) {
-            if (!IsDuplicateKeyError(e)) {
-                Debug.LogError("[CompletionManager] Insert failed (not duplicate). " + e.Message);
-                return;
-            }
-
-            Debug.Log("[CompletionManager] Insert hit duplicate key, trying update.");
-        }
+        } catch { }
 
         try {
             await _client
@@ -41,22 +31,7 @@ public class CompletionManager : DataManager {
                 .Set(x => x.Percentage, serverCompletion.Percentage)
                 .Set(x => x.Attempts, serverCompletion.Attempts)
                 .Update();
-            Debug.Log("[CompletionManager] Updated completion row.");
-        } catch (Exception e) {
-            Debug.LogError("[CompletionManager] Update after duplicate insert failed. " + e.Message);
-        }
-    }
-
-    static bool IsDuplicateKeyError(Exception e) {
-        if (e.Message != null && e.Message.Contains("23505")) return true;
-
-        var sqlStateProp = e.GetType().GetProperty("SqlState");
-        if (sqlStateProp != null) {
-            var sqlState = sqlStateProp.GetValue(e) as string;
-            if (sqlState == "23505") return true;
-        }
-
-        return false;
+        } catch { }
     }
 
     public async Task<Dictionary<Guid, Completion>> GetCompletionsByLevelIds(List<Guid> levelIds) {

@@ -33,14 +33,14 @@ public class DashManager : MonoBehaviour {
         && GameStateManager.IsRunning ) {
             target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             target.z = transform.position.z;
-            StartCoroutine(dash());
+            StartCoroutine(Dash());
             onCooldown = true;
-            StartCoroutine(cooldown());
-            StartCoroutine(fade(cooldownSeconds));
+            StartCoroutine(Cooldown());
+            StartCoroutine(Fade(cooldownSeconds));
         }
     }
     
-    IEnumerator dash() {
+    IEnumerator Dash() {
         playerHit.dashImmunity = true;
         curColor = player_sr.color;
         player_sr.color = Color.white;
@@ -60,7 +60,7 @@ public class DashManager : MonoBehaviour {
         playerHit.dashImmunity = false;
     }
 
-    IEnumerator cooldown() {
+    IEnumerator Cooldown() {
         float time = 0;
         while(time < cooldownSeconds * playerHit.cooldownBoost) {
             time += Time.deltaTime;
@@ -69,9 +69,9 @@ public class DashManager : MonoBehaviour {
         onCooldown = false;
     }
 
-    IEnumerator fade(float duration) {
+    IEnumerator Fade(float duration) {
         Color visible = drManager.defaultColor;
-        Color notVisible = new Color(visible.r, visible.g, visible.b, 0);
+        Color notVisible = new(visible.r, visible.g, visible.b, 0);
         float time = 0f;
         while(time < duration * playerHit.cooldownBoost) {
             if(player_sr.color != Color.white) {

@@ -12,6 +12,9 @@ using System.Collections.Generic;
     public float ScaleY { get; set; } = 1;
     public float AnimationDuration { get; set; }
     public float LifeTime { get; set; }
+    public int Layer { get; set; } = 0;
+    public bool ShowTimes { get; set; } = true;
+    public bool ShowLifeTime { get; set; } = true;
     public List<int> Groups { get; set; } = new() {0};
     internal float FirstBeat { get; set; } // required to count times
     internal int TimesDone { get; set; } // required to count times
@@ -23,7 +26,7 @@ using System.Collections.Generic;
         FirstBeat = beat; // required to count times
     }
 
-    public Action(float beat, int times, float delay, string gObject, float positionX, float positionY, float rotation,  float scaleX, float scaleY, float animationDuration, float lifeTime, List<int> groups) {
+    public Action(float beat, int times, float delay, string gObject, float positionX, float positionY, float rotation,  float scaleX, float scaleY, float animationDuration, float lifeTime, List<int> groups, int layer = 0, bool showTimes = true, bool showLifeTime = true) {
         Beat = beat;
         Times = times;
         Delay = delay;
@@ -35,9 +38,12 @@ using System.Collections.Generic;
         ScaleY = scaleY;
         AnimationDuration = animationDuration; 
         LifeTime = lifeTime;
+        Layer = layer;
+        ShowTimes = showTimes;
+        ShowLifeTime = showLifeTime;
         Groups = new(groups);
         FirstBeat = beat; // required to count times
     }
 
-    public Action Clone() => new(Beat, Times, Delay, GObject, PositionX, PositionY, Rotation, ScaleX, ScaleY, AnimationDuration, LifeTime, Groups);
+    public Action Clone() => new(Beat, Times, Delay, GObject, PositionX, PositionY, Rotation, ScaleX, ScaleY, AnimationDuration, LifeTime, Groups, Layer, ShowTimes, ShowLifeTime);
 }

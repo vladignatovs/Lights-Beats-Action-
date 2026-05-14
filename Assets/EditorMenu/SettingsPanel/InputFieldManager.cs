@@ -29,7 +29,7 @@ public class InputFieldManager : MonoBehaviour {
             { "scaleY", () => action.ScaleY.ToString() },
             { "animationDuration", () => action.AnimationDuration.ToString() },
             { "lifeTime", () => action.LifeTime.ToString()},
-            { "layer", () => actionLineManager.Layer.ToString()},
+            { "layer", () => action.Layer.ToString()},
             // CUSTOM KEY - VALUE PAIRS, USED FOR CONTROLLERS
             { "targetGroup", () => action.ScaleX.ToString()},
             // MOVE CONTROLLER

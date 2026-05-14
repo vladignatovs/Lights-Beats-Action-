@@ -97,6 +97,9 @@ public class LevelManager : DataManager {
                 ScaleY = a.ScaleY,
                 AnimationDuration = a.AnimationDuration,
                 LifeTime = a.LifeTime,
+                Layer = a.Layer,
+                ShowTimes = a.ShowTimes,
+                ShowLifeTime = a.ShowLifeTime,
                 Groups = new JArray(a.Groups)
             })
         };
@@ -146,6 +149,9 @@ public class LevelManager : DataManager {
             ScaleY = sa.ScaleY,
             AnimationDuration = sa.AnimationDuration,
             LifeTime = sa.LifeTime,
+            Layer = sa.Layer,
+            ShowTimes = sa.ShowTimes,
+            ShowLifeTime = sa.ShowLifeTime,
             Groups = sa.Groups != null ? sa.Groups.ToObject<List<int>>() : new List<int>{0}
         };
     }

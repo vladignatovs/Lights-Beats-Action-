@@ -18,25 +18,6 @@ public class ActionLineManager : MonoBehaviour {
     [SerializeField] Image _actionLineImage;
     [SerializeField] Color normalColor;
     [SerializeField] Color selectColor;
-    bool _showTimes = true;
-    public bool ShowTimes  {
-        get => _showTimes;
-        private set { _showTimes = value; }
-    }
-    bool _showLifeTime = true;
-    public bool ShowLifeTime {
-        get => _showLifeTime;
-        private set { _showLifeTime = value; }
-    }
-
-    int _layer;
-    public int Layer {
-        get => _layer;
-        private set {
-            _layer = Mathf.Max(value, 0);
-            CompareWithLayer();
-        }
-    }
     [Header("Instantiating")]
     [SerializeField] GameObject _timesActionLine;
     [SerializeField] GameObject _selectedActionToggle;
@@ -97,7 +78,7 @@ public class ActionLineManager : MonoBehaviour {
     void UpdateTimesAndLifetime(int times) {
         ClearTimesClones();
         UpdateLifeTimeLine(transform);
-        if(ShowTimes) {
+        if(Action.ShowTimes) {
             for(int i = 2; i <= times; i++) {
                 var timesAction = Instantiate(_timesActionLine, transform); // parent set immediately
                 RectTransform rt = timesAction.GetComponent<RectTransform>();
@@ -118,7 +99,7 @@ public class ActionLineManager : MonoBehaviour {
     }
     void UpdateLifeTimeLine(Transform parentTransform) {
         var rectTransform = parentTransform.GetChild(0) as RectTransform;
-        rectTransform.sizeDelta = new Vector2(ShowLifeTime ? Action.LifeTime*50 : 0, 5);
+        rectTransform.sizeDelta = new Vector2(Action.ShowLifeTime ? Action.LifeTime*50 : 0, 5);
         rectTransform.anchoredPosition = new Vector2(0, Action.GObject != null && Action.GObject.Contains("Controller") ? -175 : 0);
         var actionLineColor = _actionLineImage.color;
         rectTransform.GetComponent<Image>().color = new Color(actionLineColor.r, actionLineColor.g, actionLineColor.b, .03f);
@@ -252,10 +233,6 @@ public class ActionLineManager : MonoBehaviour {
         var action = Action.Clone();
         // sets the action object to the clone of the current one
         actionLineManager.Action = action;
-
-        actionLineManager.ShowTimes = ShowTimes;
-        actionLineManager.ShowLifeTime = ShowLifeTime;
-        actionLineManager.Layer = Layer;
 
         // adds said action object to the list
         _actionCreator.AddActionToActionsList(actionLineManager.Action);
@@ -461,12 +438,12 @@ public class ActionLineManager : MonoBehaviour {
     #endregion
     #region ActionSettings
     public void ShowTimesClones(bool value) {
-        ShowTimes = value;
+        Action.ShowTimes = value;
         UpdateTimesAndLifetime(Action.Times);
     }
     
     public void ShowLifeTimeLine(bool value) {
-        ShowLifeTime = value;
+        Action.ShowLifeTime = value;
 
         UpdateTimesAndLifetime(Action.Times);
     }
@@ -477,16 +454,21 @@ public class ActionLineManager : MonoBehaviour {
     /// If layer is equal to the it, sets active state to true, else false.
     /// </summary>
     public bool CompareWithLayer() { 
-        var activeState = _actionCreator.LayerPanelManager.Layer == 0 || _actionCreator.LayerPanelManager.Layer == Layer;
+        var activeState = _actionCreator.LayerPanelManager.Layer == 0 || _actionCreator.LayerPanelManager.Layer == Action.Layer;
         gameObject.SetActive(activeState);
         return activeState;
     }
-    public void MinusLayer() => Layer--;
-    public void PlusLayer() => Layer++;
+    public void MinusLayer() => SetLayer(Action.Layer - 1);
+    public void PlusLayer() => SetLayer(Action.Layer + 1);
     public void SetLayer(string value) {
         if(int.TryParse(value, out int layer)) {
-            Layer = layer;
+            SetLayer(layer);
         }
+    }
+
+    void SetLayer(int layer) {
+        Action.Layer = Mathf.Max(layer, 0);
+        CompareWithLayer();
     }
     #endregion
 }

@@ -21,8 +21,8 @@ public class ToggleManager : MonoBehaviour {
         Action action = actionLineManager.Action;
         
         _toggles = new Dictionary<string, Func<bool>>() {
-            { "ShowTimes", () => actionLineManager.ShowTimes },
-            { "ShowLifeTime", () => actionLineManager.ShowLifeTime },
+            { "ShowTimes", () => action.ShowTimes },
+            { "ShowLifeTime", () => action.ShowLifeTime },
             // CUSTOM KEY - VALUE PAIRS, USED FOR CONTROLLERS
             { "vertical", () => action.ScaleY % 2 == 0 && action.ScaleY >= 1 && action.ScaleY <= 4}, // returns true if scale is 2,4
             { "horizontal", () => action.ScaleY > 2 && action.ScaleY >= 1 && action.ScaleY <= 4} // returns true if scale is 3,4

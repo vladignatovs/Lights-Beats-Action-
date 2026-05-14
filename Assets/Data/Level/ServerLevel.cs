@@ -52,6 +52,9 @@ public class ServerAction
     public float ScaleY { get; set; } = 1;
     public float AnimationDuration { get; set; }
     public float LifeTime { get; set; }
+    public int Layer { get; set; } = 0;
+    public bool ShowTimes { get; set; } = true;
+    public bool ShowLifeTime { get; set; } = true;
 
     // JArray prevents the Postgrest int-array converter from throwing on List<int>
     public JArray Groups { get; set; } = new JArray(0);

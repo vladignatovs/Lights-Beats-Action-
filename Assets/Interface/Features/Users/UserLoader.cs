@@ -160,6 +160,22 @@ public class UserLoader : MonoBehaviour, IUserCardCallbacks {
         return state;
     }
 
+    public async Task LoadUserRelationshipState(UserMetadata metadata) {
+        var blockedUserIds = await SupabaseManager.Instance.Block.GetBlockedUserIds();
+        var usersWhoBlockedMeIds = await SupabaseManager.Instance.Block.GetUsersWhoBlockedMeIds();
+        var outgoing = await SupabaseManager.Instance.FriendRequest.GetOutgoingRequests();
+        var incoming = await SupabaseManager.Instance.FriendRequest.GetIncomingRequests();
+        var friendships = await SupabaseManager.Instance.Friendship.GetMyFriendships();
+
+        metadata.isBlocked = blockedUserIds.Contains(metadata.id);
+        metadata.hasBlocked = usersWhoBlockedMeIds.Contains(metadata.id);
+
+        var relationState = GetFriendRequestState(metadata.id);
+        relationState.hasOutgoingRequest = outgoing.Any(x => x.ReceiverId == metadata.id && x.Accepted != true);
+        relationState.hasIncomingRequest = incoming.Any(x => x.SenderId == metadata.id && x.Accepted == null);
+        relationState.isFriend = friendships.Any(x => x.FriendId == metadata.id || x.FriendedId == metadata.id);
+    }
+
     public async Task<bool> OnToggleFriendRequest(System.Guid userId, bool hasOutgoingRequest) {
         if (hasOutgoingRequest) {
             var outgoingRequests = await SupabaseManager.Instance.FriendRequest.GetOutgoingRequests();

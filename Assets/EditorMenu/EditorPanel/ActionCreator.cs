@@ -193,12 +193,7 @@ public class ActionCreator : MonoBehaviour {
     /// Used by the UI to set the active state of the audioLine.
     /// </summary>
     public void ToggleAudioLine() {
-        var audioSource = _audioLineManager.audioSource;
-        if(audioSource.isPlaying) {
-            _audioLineManager.gameObject.SetActive(false);
-        } else if(!audioSource.isPlaying) {
-            _audioLineManager.gameObject.SetActive(true);
-        }
+        _audioLineManager.gameObject.SetActive(!_audioLineManager.gameObject.activeSelf);
     }
     #endregion
 }

@@ -29,7 +29,10 @@ public class ServerLevelManager : IPageProvider<LevelMetadata> {
             .Distinct()
             .ToList();
 
-        CompletionsByLevelId = await SupabaseManager.Instance.Completion.GetCompletionsByLevelIds(levelIds);
+        var completions = await SupabaseManager.Instance.Completion.GetCompletionsByLevelIds(levelIds);
+        foreach (var completion in completions) {
+            CompletionsByLevelId[completion.Key] = completion.Value;
+        }
 
         return page;
     }

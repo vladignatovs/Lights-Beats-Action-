@@ -262,12 +262,13 @@ public class LevelLoader : MonoBehaviour, ILevelCardCallbacks {
         await SceneStateManager.Reload();
     }
 
-    public void OnCreatorOverview(LevelMetadata metadata) {
+    public async void OnCreatorOverview(LevelMetadata metadata) {
         if (!metadata.creatorId.HasValue) return;
         var user = new UserMetadata {
             id = metadata.creatorId.Value,
             username = metadata.creatorUsername
         };
+        await _userLoader.LoadUserRelationshipState(user);
         _overlayUserCard.Setup(user, _userLoader);
         _overlayUserCard.gameObject.SetActive(true);
         Overlay.ToggleOverlay(true);

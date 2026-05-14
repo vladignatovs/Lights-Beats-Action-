@@ -35,6 +35,11 @@ public class AudioLineManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if(audioSource.time >= audioSource.clip.length) {
+            gameObject.SetActive(false);
+            return;
+        }
+
         songPositionInSeconds = (float) AudioSettings.dspTime - dspTimeAtStart + offset;
         songPositionInBeats = songPositionInSeconds / secondsPerBeat;
         rectTransform.localPosition = new Vector3(songPositionInBeats*50, rectTransform.localPosition.y, rectTransform.localPosition.z);

@@ -100,7 +100,9 @@ public class ActionCreator : MonoBehaviour {
 
         var newActionLine = CreateActionLineAt(new(localPos.x,0));
         newActionLine.GetComponent<ActionLineManager>().Action =
-        new Action(newActionLine.GetComponent<RectTransform>().anchoredPosition.x / 50);
+        new Action(newActionLine.GetComponent<RectTransform>().anchoredPosition.x / 50) {
+            Layer = LayerPanelManager.Layer
+        };
         AddActionToActionsList(newActionLine.GetComponent<ActionLineManager>().Action);
     }
     /// <summary>
@@ -119,7 +121,8 @@ public class ActionCreator : MonoBehaviour {
         var newActionLine = CreateActionLineAt(localPos);
         newActionLine.GetComponent<ActionLineManager>().Action = new Action(newActionLine.transform.localPosition.x/50) {
             GObject = "Explosion",
-            LifeTime = 1
+            LifeTime = 1,
+            Layer = LayerPanelManager.Layer
         };
         AddActionToActionsList(newActionLine.GetComponent<ActionLineManager>().Action);
         newActionLine.GetComponent<ActionLineManager>().SelfSelect();

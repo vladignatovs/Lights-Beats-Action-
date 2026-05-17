@@ -150,7 +150,8 @@ public class ActionLineManager : MonoBehaviour {
     public void changePosition(float x, float y) {
         Action.PositionX = x;
         Action.PositionY = y;
-        _visualizedGameObject.transform.position = new(x, y, 0); // <------------- VISUALIZATION
+        _visualizedGameObject.transform.position = new(x, y, _visualizedGameObject.transform.position.z); // <------------- VISUALIZATION
+        Physics2D.SyncTransforms();
     }
     #endregion
     #region changeRotation
@@ -426,6 +427,7 @@ public class ActionLineManager : MonoBehaviour {
             _visualizedGameObject.transform.localScale = new(Action.ScaleX, Action.ScaleY, 1);
             _visualizedGameObject.GetComponent<VisualizerManager>().actionLineManager = this;
         }
+        Physics2D.SyncTransforms();
 
         // try update toggle image
         var toggleImage = _activeSelectedActionToggle.transform.GetChild(1).GetComponent<Image>();

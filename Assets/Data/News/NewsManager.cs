@@ -15,7 +15,10 @@ public class NewsManager : DataManager {
         List<IDataFilter<ServerNewsMetadata>> filters = null
     ) {
         var table = _client.From<ServerNewsMetadata>();
-        var query = table.Select("id,title,category,thumbnail,created_at");
+        var query = table
+            .Select("id,title,category,thumbnail,created_at")
+            .Order(x => x.CreatedAt, Ordering.Descending)
+            .Order(x => x.Id, Ordering.Descending);
 
         if (filters != null) {
             foreach (var filter in filters) {
